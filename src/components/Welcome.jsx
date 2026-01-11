@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "@tanstack/react-router";
-import styles from "./Welcome.module.css";
+import styles from "../styles/Welcome.module.css";
 
 export default function Welcome() {
   const navigate = useNavigate();

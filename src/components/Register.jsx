@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { toast } from "sonner";
 import { registerUser, googleRegister, fetchUserInfo } from "../api/auth";
 import { useNavigate, useSearch } from "@tanstack/react-router";
 import { useAuth } from "../contexts/AuthContext";
@@ -75,9 +76,16 @@ export const Register = () => {
       login(userData);
 
       // ✅ Redirect to dashboard after successful registration
+      toast.success("Account created successfully! Welcome to Linguini.");
       navigate({ to: "/dashboard" });
     } catch (err) {
-      setError(err.response?.data?.detail || "Registration failed");
+      const errorMsg = err.response?.data?.detail || "Registration failed";
+      setError(errorMsg);
+      if (err.response?.status === 409) {
+        toast.error("Email already registered. Please log in.");
+      } else {
+        toast.error(errorMsg);
+      }
     } finally {
       setLoading(false);
     }
@@ -132,9 +140,7 @@ export const Register = () => {
           />
           {/* ✅ Password validation feedback */}
           {passwordError && (
-            <div className="password-error">
-              {passwordError}
-            </div>
+            <div className="password-error">{passwordError}</div>
           )}
           <button
             type="submit"

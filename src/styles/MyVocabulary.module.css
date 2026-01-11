@@ -448,6 +448,48 @@
   font-style: italic;
 }
 
+/* Pagination Styles */
+.paginationContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.pageInfo {
+  color: #6b7280;
+  font-weight: 500;
+  min-width: 200px;
+  text-align: center;
+}
+
+.paginationButton {
+  padding: 0.75rem 1.5rem;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.paginationButton:hover:not(:disabled) {
+  background: #2563eb;
+}
+
+.paginationButton:disabled {
+  background: #d1d5db;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .vocabularyPage {
@@ -513,5 +555,14 @@
   .wordMeta {
     flex-direction: column;
     gap: 0.5rem;
+  }
+
+  .paginationContainer {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .paginationButton {
+    width: 100%;
   }
 }

@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import vocabularyService from "../api/vocabulary.js";
-import styles from "./VocabularyPanel.module.css";
-
+import styles from "../styles/VocabularyPanel.module.css";
 // Save state configuration
 const SAVE_STATE_CONFIG = {
   checking: {

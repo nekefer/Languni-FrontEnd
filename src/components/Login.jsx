@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { toast } from "sonner";
 import { loginUser, googleLogin, fetchUserInfo } from "../api/auth";
 import { useNavigate, useSearch } from "@tanstack/react-router";
 import { useAuth } from "../contexts/AuthContext";
@@ -34,9 +35,16 @@ export const Login = () => {
       await loginUser(email, password);
       const userData = await fetchUserInfo();
       login(userData); // Update auth context
+      toast.success("Login successful! Welcome back.");
       navigate({ to: "/dashboard" });
     } catch (err) {
-      setError(err.response?.data?.detail || "Login failed");
+      const errorMsg = err.response?.data?.detail || "Login failed";
+      setError(errorMsg);
+      if (err.response?.status === 401) {
+        toast.error("Invalid email or password.");
+      } else {
+        toast.error(errorMsg);
+      }
     } finally {
       setLoading(false);
     }

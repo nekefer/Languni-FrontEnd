@@ -22,7 +22,10 @@ function VideoPlayer({ videoId }) {
   const handleWordClick = (vocabularyData) => {
     // Handle word click from CaptionPanel
     // Pause video when vocabulary panel opens
-    playerRef.pauseVideo();
+    // Added optional chaining to avoid errors if playerRef is null
+    // because we can get the captions before the player is ready
+    // the user can still click on words before the video loads
+    playerRef?.pauseVideo();
     setVocabularyData(vocabularyData);
     setIsVocabularyPanelOpen(true);
   };

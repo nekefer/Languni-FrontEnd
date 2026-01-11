@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import dictionaryService from "../api/dictionary.js";
 import vocabularyService from "../api/vocabulary.js";
-import styles from "./WordDetail.module.css";
+import styles from "../styles/WordDetail.module.css";
 
 export const WordDetail = ({ word }) => {
   const navigate = useNavigate();

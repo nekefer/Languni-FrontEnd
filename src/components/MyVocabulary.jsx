@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
+import { toast } from "sonner";
 import vocabularyService from "../api/vocabulary.js";
 import dictionaryService from "../api/dictionary.js";
-import styles from "./MyVocabulary.module.css";
+import styles from "../styles/MyVocabulary.module.css";
 
-const WORDS_PER_PAGE = 20;
+const WORDS_PER_PAGE = 12;
 
 // Search and sort controls component
 const VocabularyControls = ({
@@ -223,22 +224,23 @@ export const MyVocabulary = () => {
   const [savedWords, setSavedWords] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [sortBy, setSortBy] = useState("date_desc");
   const [totalWords, setTotalWords] = useState(0);
+  const [page, setPage] = useState(1);
 
   const navigate = useNavigate();
+  const totalPages = Math.ceil(totalWords / WORDS_PER_PAGE);
 
-  // Load saved words
-  const loadSavedWords = async () => {
+  // Load saved words with pagination
+  const loadSavedWords = async (pageNum = 1) => {
     try {
       setLoading(true);
       setError(null);
 
-      const response = await vocabularyService.getSavedWords({
-        skip: 0,
-        limit: 1000, // Load all words for now
-      });
+      const skip = (pageNum - 1) * WORDS_PER_PAGE;
+      const response = await vocabularyService.getSavedWords(
+        skip,
+        WORDS_PER_PAGE
+      );
 
       // Transform backend response to match frontend expectations
       const transformedWords =
@@ -252,10 +254,11 @@ export const MyVocabulary = () => {
         })) || [];
 
       setSavedWords(transformedWords);
-      setTotalWords(response.total || transformedWords.length);
+      setTotalWords(response.total || 0);
     } catch (error) {
       console.error("Failed to load vocabulary:", error);
       setError(error.message || "Failed to load your vocabulary");
+      toast.error("Failed to load vocabulary. Please try again.");
       setSavedWords([]);
     } finally {
       setLoading(false);
@@ -269,9 +272,12 @@ export const MyVocabulary = () => {
       // Remove the word from current list
       setSavedWords((prev) => prev.filter((w) => w.word !== word));
       setTotalWords((prev) => prev - 1);
+      toast.success(`"${word}" removed from vocabulary.`);
+      // Reload page if necessary
+      loadSavedWords(page);
     } catch (error) {
       console.error("Failed to delete word:", error);
-      alert("Failed to delete word. Please try again.");
+      toast.error("Failed to delete word. Please try again.");
     }
   };
 
@@ -288,57 +294,35 @@ export const MyVocabulary = () => {
     });
   };
 
-  // Handle search (client-side for now)
-  const getFilteredWords = () => {
-    let filtered = [...savedWords];
+  // Load words on component mount and page change
+  useEffect(() => {
+    loadSavedWords(page);
+  }, [page]);
 
-    // Apply search filter
-    if (searchTerm.trim()) {
-      const search = searchTerm.toLowerCase();
-      filtered = filtered.filter((word) =>
-        word.word.toLowerCase().includes(search)
-      );
+  // Handle page navigation
+  const handleNextPage = () => {
+    if (page < totalPages) {
+      setPage(page + 1);
     }
-
-    // Apply sorting
-    switch (sortBy) {
-      case "word_asc":
-        filtered.sort((a, b) => a.word.localeCompare(b.word));
-        break;
-      case "word_desc":
-        filtered.sort((a, b) => b.word.localeCompare(a.word));
-        break;
-      case "date_asc":
-        filtered.sort((a, b) => new Date(a.saved_at) - new Date(b.saved_at));
-        break;
-      case "date_desc":
-      default:
-        filtered.sort((a, b) => new Date(b.saved_at) - new Date(a.saved_at));
-        break;
-    }
-
-    return filtered;
   };
 
-  // Load words on component mount
-  useEffect(() => {
-    loadSavedWords();
-  }, []);
-
-  const filteredWords = getFilteredWords();
+  const handlePrevPage = () => {
+    if (page > 1) {
+      setPage(page - 1);
+    }
+  };
 
   return (
     <div className={styles.vocabularyPage}>
-      <VocabularyControls
-        searchTerm={searchTerm}
-        onSearchChange={setSearchTerm}
-        sortBy={sortBy}
-        onSortChange={setSortBy}
-        totalWords={totalWords}
-      />
+      <div className={styles.vocabularyControls}>
+        <div className={styles.vocabularyStats}>
+          <h3>📚 My Vocabulary</h3>
+          <p className={styles.statsText}>{totalWords} words saved</p>
+        </div>
+      </div>
 
       <VocabularyGrid
-        words={filteredWords}
+        words={savedWords}
         onDelete={handleDeleteWord}
         onViewVideo={handleViewVideo}
         onViewDetails={handleViewDetails}
@@ -346,9 +330,26 @@ export const MyVocabulary = () => {
         error={error}
       />
 
-      {searchTerm && (
-        <div className={styles.searchResultsInfo}>
-          Found {filteredWords.length} word(s) matching "{searchTerm}"
+      {/* Pagination Controls */}
+      {totalWords > 0 && (
+        <div className={styles.paginationContainer}>
+          <button
+            onClick={handlePrevPage}
+            disabled={page === 1 || loading}
+            className={styles.paginationButton}
+          >
+            ← Previous
+          </button>
+          <span className={styles.pageInfo}>
+            Page {page} of {totalPages || 1} ({totalWords} words total)
+          </span>
+          <button
+            onClick={handleNextPage}
+            disabled={page >= totalPages || loading}
+            className={styles.paginationButton}
+          >
+            Next →
+          </button>
         </div>
       )}
     </div>
