@@ -45,7 +45,7 @@
   font-size: 0.875rem;
   margin-bottom: 10px;
   font-weight: 500;
-  
+
 }
 
 .register-form button:disabled {
@@ -54,4 +54,72 @@
   color: #6c757d;
   cursor: not-allowed;
   opacity: 0.65;
+}
+
+/* ✅ Validation Feedback Styles */
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group input {
+  margin-bottom: 8px;
+}
+
+.validation-feedback {
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 10px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.validation-feedback.valid {
+  color: #10b981;
+  background-color: #f0fdf4;
+}
+
+.validation-feedback.invalid {
+  color: #ef4444;
+  background-color: #fef2f2;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.validation-feedback.invalid div {
+  display: flex;
+  gap: 6px;
+}
+
+/* ✅ Password Strength Indicator */
+.password-strength-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.password-strength-background {
+  flex: 1;
+  height: 6px;
+  background-color: #e5e7eb;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.password-strength-bar {
+  height: 100%;
+  width: 0%;
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.password-strength-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  min-width: 50px;
+  text-align: right;
 }

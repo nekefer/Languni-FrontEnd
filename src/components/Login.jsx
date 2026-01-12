@@ -38,15 +38,43 @@ export const Login = () => {
       toast.success("Login successful! Welcome back.");
       navigate({ to: "/dashboard" });
     } catch (err) {
-      const errorMsg = err.response?.data?.detail || "Login failed";
-      setError(errorMsg);
-      if (err.response?.status === 401) {
-        toast.error("Invalid email or password.");
+      // Handle different error types
+      if (!err.response) {
+        // Network error
+        const errorMsg = "Network error. Please check your connection.";
+        setError(errorMsg);
+        toast.error(errorMsg);
+      } else if (err.response?.status === 401) {
+        const errorMsg = "Invalid email or password.";
+        setError(errorMsg);
+        toast.error(errorMsg);
+      } else if (err.response?.status === 422 || err.response?.status === 400) {
+        // Validation error
+        const errorMsg =
+          err.response?.data?.detail || "Please check your input.";
+        setError(errorMsg);
+        toast.error(errorMsg);
+      } else if (err.response?.status === 429) {
+        // Rate limit
+        const errorMsg = "Too many login attempts. Please try again later.";
+        setError(errorMsg);
+        toast.error(errorMsg);
       } else {
+        const errorMsg =
+          err.response?.data?.detail || "Login failed. Please try again.";
+        setError(errorMsg);
         toast.error(errorMsg);
       }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      await googleLogin();
+    } catch (err) {
+      toast.error("Google login failed. Please try again.");
     }
   };
 
@@ -73,7 +101,7 @@ export const Login = () => {
           <button type="submit" disabled={loading}>
             {loading ? "Logging in..." : "Login"}
           </button>
-          <button type="button" onClick={googleLogin}>
+          <button type="button" onClick={handleGoogleLogin} disabled={loading}>
             Continue with Google
           </button>
           <div>
