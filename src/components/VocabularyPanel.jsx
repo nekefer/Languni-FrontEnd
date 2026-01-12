@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { toast } from "sonner";
 import vocabularyService from "../api/vocabulary.js";
 import styles from "../styles/VocabularyPanel.module.css";
 // Save state configuration
@@ -175,10 +176,32 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
       await vocabularyService.saveWord(vocabularyData.word, videoId);
 
       setSaveState("saved");
+      const wordText = vocabularyData.definition?.word || vocabularyData.word;
+      toast.success(`"${wordText}" added to vocabulary! 🎉`);
     } catch (error) {
       console.error("Failed to save word:", error);
-      setSaveState("error");
-      setSaveError(error.message);
+      const wordText = vocabularyData.definition?.word || vocabularyData.word;
+
+      // Handle different error types
+      if (
+        error.response?.status === 409 ||
+        error.message?.includes("already saved")
+      ) {
+        setSaveState("already-saved");
+        toast.info(`"${wordText}" is already in your vocabulary`);
+      } else if (error.response?.status === 401) {
+        setSaveState("error");
+        setSaveError("Please log in to save words");
+        toast.error("Please log in to save words");
+      } else if (!error.response) {
+        setSaveState("error");
+        setSaveError("Network error. Please check your connection.");
+        toast.error("Network error. Please check your connection.");
+      } else {
+        setSaveState("error");
+        setSaveError(error.message || "Failed to save word");
+        toast.error("Failed to save word. Please try again.");
+      }
     }
   };
 

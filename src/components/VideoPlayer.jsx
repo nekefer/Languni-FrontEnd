@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
+import { toast } from "sonner";
 import YouTubePlayer from "./YouTubePlayer";
 import CaptionPanel from "./CaptionPanel";
 import VocabularyPanel from "./VocabularyPanel";

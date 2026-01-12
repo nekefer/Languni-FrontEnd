@@ -269,15 +269,36 @@ export const MyVocabulary = () => {
   const handleDeleteWord = async (word) => {
     try {
       await vocabularyService.deleteSavedWord(word);
-      // Remove the word from current list
-      setSavedWords((prev) => prev.filter((w) => w.word !== word));
+
+      // Optimistically remove from UI
+      const newWords = savedWords.filter((w) => w.word !== word);
+      setSavedWords(newWords);
       setTotalWords((prev) => prev - 1);
-      toast.success(`"${word}" removed from vocabulary.`);
-      // Reload page if necessary
-      loadSavedWords(page);
+
+      toast.success(`"${word}" removed from vocabulary`);
+
+      // If deleting last word on page and not on first page, go to previous page
+      if (newWords.length === 0 && page > 1) {
+        setPage(page - 1);
+      } else {
+        // Reload to get accurate count
+        loadSavedWords(page);
+      }
     } catch (error) {
       console.error("Failed to delete word:", error);
-      toast.error("Failed to delete word. Please try again.");
+
+      // Handle different error types
+      if (!error.response) {
+        toast.error("Network error. Please check your connection.");
+      } else if (error.response?.status === 401) {
+        toast.error("Please log in to delete words");
+      } else if (error.response?.status === 404) {
+        toast.error("Word not found in vocabulary");
+        // Reload to sync state
+        loadSavedWords(page);
+      } else {
+        toast.error("Failed to delete word. Please try again.");
+      }
     }
   };
 
