@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { getCaptions } from "../api/youtube";
 import vocabularyService from "../api/vocabulary";
 
@@ -7,6 +7,8 @@ function CaptionPanel({ videoId, currentTime, onSeek, onWordClick }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const captionPanelRef = useRef(null);
+  const scrollTimeoutRef = useRef(null);
+  const lastScrolledIndexRef = useRef(-1);
 
   // Memoize the function with useCallback
   const fetchCaptions = useCallback(async () => {
@@ -29,23 +31,20 @@ function CaptionPanel({ videoId, currentTime, onSeek, onWordClick }) {
   // Now include fetchCaptions in the dependency array
   useEffect(() => {
     fetchCaptions();
-  }, [fetchCaptions]); // ← Fixed: includes fetchCaptions
+  }, [fetchCaptions]);
 
-  const getCurrentCaptionIndex = () => {
+  // Memoize currentCaptionIndex to prevent recalculating on every render
+  const currentCaptionIndex = useMemo(() => {
     if (!captions.length) return -1;
 
-    // Small buffer to handle timing discrepancies
-    const bufferTime = 0.2; // 200ms buffer for better synchronization
+    const bufferTime = 0.2;
     const adjustedTime = currentTime + bufferTime;
 
-    // Find the caption that should be active at the current time
     for (let i = 0; i < captions.length; i++) {
       const caption = captions[i];
       const nextCaption = captions[i + 1];
 
-      // More forgiving timing logic
       if (adjustedTime >= caption.start) {
-        // If this is the last caption OR current time is before next caption starts
         if (!nextCaption || adjustedTime < nextCaption.start) {
           return i;
         }
@@ -53,19 +52,29 @@ function CaptionPanel({ videoId, currentTime, onSeek, onWordClick }) {
     }
 
     return -1;
-  };
+  }, [captions, currentTime]);
 
-  const currentCaptionIndex = getCurrentCaptionIndex();
-
-  // Auto-scroll to current caption
+  // Optimized auto-scroll with RAF and debouncing
   useEffect(() => {
-    if (currentCaptionIndex !== -1 && captionPanelRef.current) {
+    // Skip if no change or invalid index
+    if (currentCaptionIndex === -1 || currentCaptionIndex === lastScrolledIndexRef.current) {
+      return;
+    }
+
+    // Clear any pending scroll timeout
+    if (scrollTimeoutRef.current) {
+      clearTimeout(scrollTimeoutRef.current);
+    }
+
+    // Debounce scroll to prevent rapid consecutive scrolls
+    scrollTimeoutRef.current = setTimeout(() => {
+      if (!captionPanelRef.current) return;
+
       const captionElement = captionPanelRef.current.querySelector(
         `[data-caption-index="${currentCaptionIndex}"]`
       );
 
       if (captionElement) {
-        // Check if element is already in view to prevent excessive scrolling
         const container = captionPanelRef.current;
         const containerRect = container.getBoundingClientRect();
         const elementRect = captionElement.getBoundingClientRect();
@@ -75,41 +84,48 @@ function CaptionPanel({ videoId, currentTime, onSeek, onWordClick }) {
           elementRect.bottom <= containerRect.bottom;
 
         if (!isInView) {
-          captionElement.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
+          // Use RAF to ensure DOM has updated before scrolling
+          requestAnimationFrame(() => {
+            captionElement.scrollIntoView({
+              behavior: "smooth",
+              block: "center",
+            });
+            lastScrolledIndexRef.current = currentCaptionIndex;
           });
+        } else {
+          lastScrolledIndexRef.current = currentCaptionIndex;
         }
       }
-    }
+    }, 50); // 50ms debounce
+
+    return () => {
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
   }, [currentCaptionIndex]);
 
   // Handle caption card click (seek to beginning of caption)
-  const handleCaptionClick = (captionStartTime) => {
-    // console.log("Seeking to caption start:", captionStartTime);
-    const buffer = 0.1; // Small buffer to ensure caption is fully visible
+  const handleCaptionClick = useCallback((captionStartTime) => {
+    const buffer = 0.1;
     onSeek?.(captionStartTime - buffer);
-  };
+  }, [onSeek]);
 
   // Handle word click for vocabulary learning
-  const handleWordClick = async (word, captionStartTime) => {
-    // Clean the word (remove punctuation)
-    console.log("Word clicked:", word);
+const handleWordClick = useCallback(async (word, captionStartTime) => {
     const cleanWord = word
-      .replace(/[^\w'’]/g, "") // keep letters, digits, underscores, internal apostrophes
+      .replace(/[^\w'']/g, "")
       .toLowerCase();
-    console.log("Cleaned word:", cleanWord);
+    
     if (!cleanWord) return;
 
     try {
-      // Find current caption index for context
       const captionIndex = captions.findIndex(
         (caption) => caption.start === captionStartTime
       );
 
       if (captionIndex === -1) return;
 
-      // Process word with vocabulary service
       const vocabularyData = await vocabularyService.processWordClick(
         cleanWord,
         captions,
@@ -117,7 +133,6 @@ function CaptionPanel({ videoId, currentTime, onSeek, onWordClick }) {
         currentTime
       );
 
-      // Notify parent component to show vocabulary panel
       if (onWordClick) {
         onWordClick(vocabularyData);
       }
@@ -125,27 +140,30 @@ function CaptionPanel({ videoId, currentTime, onSeek, onWordClick }) {
       console.error("Word processing error:", error);
       alert(`Error loading definition for "${cleanWord}": ${error.message}`);
     }
-  };
+  }, [captions, currentTime, onWordClick]);
 
-  const parseTextWithTimestamps = (text, captionStart) => {
-    const words = text.split(" ");
-
-    return words.map((word, index) => {
-      return (
-        <span
-          key={index}
-          className="caption-word"
-          onClick={(e) => {
-            e.stopPropagation(); // Prevent caption card click
-            handleWordClick(word, captionStart);
-          }}
-          title={`Get definition for "${word}"`}
-        >
-          {word}{" "}
-        </span>
-      );
+  // Memoize parsed captions to prevent re-parsing on every render
+  const parsedCaptions = useMemo(() => {
+    return captions.map((caption) => {
+      const words = caption.text.split(" ");
+      return {
+        ...caption,
+        parsedWords: words.map((word, index) => (
+          <span
+            key={index}
+            className="caption-word"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleWordClick(word, caption.start);
+            }}
+            title={`Get definition for "${word}"`}
+          >
+            {word}{" "}
+          </span>
+        )),
+      };
     });
-  };
+  }, [captions, handleWordClick]);
 
   if (loading) {
     return (
@@ -168,7 +186,7 @@ function CaptionPanel({ videoId, currentTime, onSeek, onWordClick }) {
     );
   }
 
-  if (!captions.length) {
+  if (!parsedCaptions.length) {
     return (
       <div className="caption-panel">
         <div className="caption-empty">
@@ -188,7 +206,7 @@ function CaptionPanel({ videoId, currentTime, onSeek, onWordClick }) {
       </div>
 
       <div className="caption-list">
-        {captions.map((caption, index) => (
+        {parsedCaptions.map((caption, index) => (
           <div
             key={index}
             className={`caption-item ${index === currentCaptionIndex ? "active" : ""}`}
@@ -205,7 +223,7 @@ function CaptionPanel({ videoId, currentTime, onSeek, onWordClick }) {
               </span>
             </div>
             <div className="caption-text">
-              {parseTextWithTimestamps(caption.text, caption.start)}
+              {caption.parsedWords}
             </div>
           </div>
         ))}

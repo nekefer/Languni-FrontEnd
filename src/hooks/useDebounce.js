@@ -22,39 +22,3 @@ export const useDebounce = (value, delay = 500) => {
 
   return debouncedValue;
 };
-
-/**
- * Advanced debounce hook for async operations (like API calls)
- * Executes a callback with debouncing
- *
- * @param {Function} callback - Async function to call
- * @param {Array} dependencies - Dependency array
- * @param {number} delay - Delay in milliseconds (default: 500ms)
- * @returns {object} { isPending: boolean, error: Error | null }
- */
-export const useDebouncedEffect = (
-  callback,
-  dependencies = [],
-  delay = 500
-) => {
-  const [isPending, setIsPending] = useState(false);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    setIsPending(true);
-    const handler = setTimeout(async () => {
-      try {
-        await callback();
-        setError(null);
-      } catch (err) {
-        setError(err);
-      } finally {
-        setIsPending(false);
-      }
-    }, delay);
-
-    return () => clearTimeout(handler);
-  }, dependencies);
-
-  return { isPending, error };
-};
