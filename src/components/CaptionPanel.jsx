@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+} from "react";
 import { getCaptions } from "../api/youtube";
 import vocabularyService from "../api/vocabulary";
 
@@ -57,7 +63,10 @@ function CaptionPanel({ videoId, currentTime, onSeek, onWordClick }) {
   // Optimized auto-scroll with RAF and debouncing
   useEffect(() => {
     // Skip if no change or invalid index
-    if (currentCaptionIndex === -1 || currentCaptionIndex === lastScrolledIndexRef.current) {
+    if (
+      currentCaptionIndex === -1 ||
+      currentCaptionIndex === lastScrolledIndexRef.current
+    ) {
       return;
     }
 
@@ -106,41 +115,45 @@ function CaptionPanel({ videoId, currentTime, onSeek, onWordClick }) {
   }, [currentCaptionIndex]);
 
   // Handle caption card click (seek to beginning of caption)
-  const handleCaptionClick = useCallback((captionStartTime) => {
-    const buffer = 0.1;
-    onSeek?.(captionStartTime - buffer);
-  }, [onSeek]);
+  const handleCaptionClick = useCallback(
+    (captionStartTime) => {
+      const buffer = 0.1;
+      onSeek?.(captionStartTime - buffer);
+    },
+    [onSeek]
+  );
 
   // Handle word click for vocabulary learning
-const handleWordClick = useCallback(async (word, captionStartTime) => {
-    const cleanWord = word
-      .replace(/[^\w'']/g, "")
-      .toLowerCase();
-    
-    if (!cleanWord) return;
+  const handleWordClick = useCallback(
+    async (word, captionStartTime) => {
+      const cleanWord = word.replace(/[^\w'']/g, "").toLowerCase();
 
-    try {
-      const captionIndex = captions.findIndex(
-        (caption) => caption.start === captionStartTime
-      );
+      if (!cleanWord) return;
 
-      if (captionIndex === -1) return;
+      try {
+        const captionIndex = captions.findIndex(
+          (caption) => caption.start === captionStartTime
+        );
 
-      const vocabularyData = await vocabularyService.processWordClick(
-        cleanWord,
-        captions,
-        captionIndex,
-        currentTime
-      );
+        if (captionIndex === -1) return;
 
-      if (onWordClick) {
-        onWordClick(vocabularyData);
+        const vocabularyData = await vocabularyService.processWordClick(
+          cleanWord,
+          captions,
+          captionIndex,
+          currentTime
+        );
+
+        if (onWordClick) {
+          onWordClick(vocabularyData);
+        }
+      } catch (error) {
+        console.error("Word processing error:", error);
+        alert(`Error loading definition for "${cleanWord}": ${error.message}`);
       }
-    } catch (error) {
-      console.error("Word processing error:", error);
-      alert(`Error loading definition for "${cleanWord}": ${error.message}`);
-    }
-  }, [captions, currentTime, onWordClick]);
+    },
+    [captions, currentTime, onWordClick]
+  );
 
   // Memoize parsed captions to prevent re-parsing on every render
   const parsedCaptions = useMemo(() => {
@@ -222,9 +235,7 @@ const handleWordClick = useCallback(async (word, captionStartTime) => {
                 ({caption.duration.toFixed(1)}s)
               </span>
             </div>
-            <div className="caption-text">
-              {caption.parsedWords}
-            </div>
+            <div className="caption-text">{caption.parsedWords}</div>
           </div>
         ))}
       </div>
