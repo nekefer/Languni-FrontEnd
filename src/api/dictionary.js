@@ -1,7 +1,6 @@
 // var expandContractions = require( '@stdlib/nlp-expand-contractions' );
 // var expandContractions = require( '@stdlib/nlp-expand-contractions' );
-import expandContractions from '@stdlib/nlp-expand-contractions';
-
+import expandContractions from "@stdlib/nlp-expand-contractions";
 
 class DictionaryService {
   constructor() {
@@ -20,7 +19,6 @@ class DictionaryService {
       throw new Error("Word must be a non-empty string");
     }
 
-
     // Check cache first
     if (this.cache.has(word)) {
       return this.cache.get(word);
@@ -31,11 +29,11 @@ class DictionaryService {
 
       if (!response.ok) {
         if (response.status === 404) {
-          // Word not found
-          this.cacheResult(word, null);
+          // Word not found is expected, return null instead of throwing
           return null;
         }
-        throw new Error(`HTTP error! status: ${response.status}`);
+        // Other HTTP errors are actual errors
+        throw new Error(`API error: ${response.status}`);
       }
 
       const data = await response.json();
@@ -46,10 +44,12 @@ class DictionaryService {
 
       return processedData;
     } catch (error) {
-      console.error("Dictionary API error:", error);
-
-
-      throw error;
+      // Re-throw API errors
+      if (error.message?.includes('API error')) {
+        throw error;
+      }
+      // Network errors
+      throw new Error(`Network error: ${error.message}`);
     }
   }
 
@@ -311,9 +311,7 @@ class DictionaryService {
       return { valid: false, type: "invalid" };
     }
 
-
-
-    return { valid: true, type: 'regular', word: cleanWord };
+    return { valid: true, type: "regular", word: cleanWord };
   }
 }
 

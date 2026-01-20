@@ -3,12 +3,14 @@ import { useNavigate } from "@tanstack/react-router";
 import dictionaryService from "../api/dictionary.js";
 import vocabularyService from "../api/vocabulary.js";
 import styles from "../styles/WordDetail.module.css";
+import NotFound from "./NotFound.jsx";
 
 export const WordDetail = ({ word }) => {
   const navigate = useNavigate();
   const [definition, setDefinition] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [notFound, setNotFound] = useState(false);
   const [audioPlaying, setAudioPlaying] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const audioRef = useRef(null);
@@ -17,14 +19,25 @@ export const WordDetail = ({ word }) => {
     const loadData = async () => {
       try {
         setLoading(true);
+        setError(null);
+        setNotFound(false);
+        
         const [defData, saved] = await Promise.all([
           dictionaryService.getDefinition(word),
           vocabularyService.isWordSaved(word),
         ]);
-        setDefinition(defData);
-        setIsSaved(saved);
+        
+        // Word not found - service returns null
+        if (defData === null) {
+          setNotFound(true);
+        } else {
+          setDefinition(defData);
+          setIsSaved(saved);
+        }
       } catch (err) {
-        setError(err.message || "Word not found");
+        // Only real errors (network, API failures) reach here
+        setError(err?.message || "Failed to load word");
+        console.error("Failed to load word data:", err);
       } finally {
         setLoading(false);
       }
@@ -90,9 +103,9 @@ export const WordDetail = ({ word }) => {
       <div className={styles.wordPage}>
         <div className={styles.wordContainer}>
           <div className={styles.errorState}>
-            <span className={styles.errorIcon}>📖</span>
-            <h2>Word not found</h2>
-            <p>We couldn't find "{word}" in the dictionary.</p>
+            <span className={styles.errorIcon}>⚠️</span>
+            <h2>Error loading word</h2>
+            <p>{error}</p>
             <button onClick={() => navigate({ to: "/my-vocabulary" })}>
               ← Back to vocabulary
             </button>
@@ -100,6 +113,10 @@ export const WordDetail = ({ word }) => {
         </div>
       </div>
     );
+  }
+
+  if (notFound) {
+    return <NotFound />;
   }
 
   return (

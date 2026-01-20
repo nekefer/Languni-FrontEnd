@@ -1,0 +1,136 @@
+/* Simple Error Page Styles for MVP */
+.error-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20px;
+}
+
+.error-content {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    padding: 40px 30px;
+    text-align: center;
+    max-width: 500px;
+    width: 100%;
+}
+
+.error-code {
+    font-size: 100px;
+    font-weight: bold;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0;
+    line-height: 1;
+}
+
+.error-content h2 {
+    font-size: 28px;
+    color: #333;
+    margin: 20px 0 10px;
+}
+
+.error-description {
+    color: #666;
+    font-size: 16px;
+    line-height: 1.5;
+    margin: 10px 0 20px;
+}
+
+.error-path {
+    background: #f5f5f5;
+    border-radius: 6px;
+    padding: 10px;
+    margin: 15px 0;
+}
+
+.error-path code {
+    color: #d32f2f;
+    font-family: monospace;
+    font-size: 14px;
+}
+
+.error-actions {
+    display: flex;
+    gap: 10px;
+    margin: 25px 0 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.error-actions button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background: #667eea;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #5568d3;
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: #f0f0f0;
+    color: #333;
+}
+
+.btn-secondary:hover {
+    background: #e0e0e0;
+}
+
+.error-info {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+.text-muted {
+    color: #999;
+    font-size: 14px;
+}
+
+.text-muted a {
+    color: #667eea;
+    text-decoration: none;
+}
+
+.text-muted a:hover {
+    text-decoration: underline;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .error-content {
+        padding: 30px 20px;
+    }
+
+    .error-code {
+        font-size: 70px;
+    }
+
+    .error-content h2 {
+        font-size: 22px;
+    }
+
+    .error-actions {
+        flex-direction: column;
+    }
+
+    .error-actions button {
+        width: 100%;
+    }
+}

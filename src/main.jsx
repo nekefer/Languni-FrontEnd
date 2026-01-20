@@ -7,5 +7,5 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <Toaster position="top-right" richColors expand closeButton />
     <App />
-  </React.StrictMode>
+  </React.StrictMode>,
 );

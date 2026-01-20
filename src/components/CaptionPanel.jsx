@@ -5,6 +5,7 @@ import React, {
   useCallback,
   useMemo,
 } from "react";
+import { toast } from "sonner";
 import { getCaptions } from "../api/youtube";
 import vocabularyService from "../api/vocabulary";
 
@@ -80,7 +81,7 @@ function CaptionPanel({ videoId, currentTime, onSeek, onWordClick }) {
       if (!captionPanelRef.current) return;
 
       const captionElement = captionPanelRef.current.querySelector(
-        `[data-caption-index="${currentCaptionIndex}"]`
+        `[data-caption-index="${currentCaptionIndex}"]`,
       );
 
       if (captionElement) {
@@ -120,7 +121,7 @@ function CaptionPanel({ videoId, currentTime, onSeek, onWordClick }) {
       const buffer = 0.1;
       onSeek?.(captionStartTime - buffer);
     },
-    [onSeek]
+    [onSeek],
   );
 
   // Handle word click for vocabulary learning
@@ -132,7 +133,7 @@ function CaptionPanel({ videoId, currentTime, onSeek, onWordClick }) {
 
       try {
         const captionIndex = captions.findIndex(
-          (caption) => caption.start === captionStartTime
+          (caption) => caption.start === captionStartTime,
         );
 
         if (captionIndex === -1) return;
@@ -141,7 +142,7 @@ function CaptionPanel({ videoId, currentTime, onSeek, onWordClick }) {
           cleanWord,
           captions,
           captionIndex,
-          currentTime
+          currentTime,
         );
 
         if (onWordClick) {
@@ -149,10 +150,10 @@ function CaptionPanel({ videoId, currentTime, onSeek, onWordClick }) {
         }
       } catch (error) {
         console.error("Word processing error:", error);
-        alert(`Error loading definition for "${cleanWord}": ${error.message}`);
+        toast.error(`Can't find definition for "${cleanWord}"`);
       }
     },
-    [captions, currentTime, onWordClick]
+    [captions, currentTime, onWordClick],
   );
 
   // Memoize parsed captions to prevent re-parsing on every render

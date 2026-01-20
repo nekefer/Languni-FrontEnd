@@ -3,6 +3,7 @@ import { useNavigate } from "@tanstack/react-router";
 import YouTubePlayer from "./YouTubePlayer";
 import CaptionPanel from "./CaptionPanel";
 import VocabularyPanel from "./VocabularyPanel";
+import NotFound from "./NotFound";
 import "../styles/VideoPlayer.css";
 
 function VideoPlayer({ videoId }) {
@@ -38,6 +39,14 @@ function VideoPlayer({ videoId }) {
   const handleBackToDashboard = () => {
     navigate({ to: "/dashboard" });
   };
+
+  // Early guard: missing or invalid videoId → show 404 page
+  console.log("VideoPlayer received videoId:", videoId);
+  const isMissing = !videoId || videoId === "undefined" || videoId === "null";
+  const isInvalidFormat = !/^[a-zA-Z0-9_-]{11}$/.test(videoId || "");
+  if (isMissing || isInvalidFormat) {
+    return <NotFound />;
+  }
 
   return (
     <div className="video-player-page">
