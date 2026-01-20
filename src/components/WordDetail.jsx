@@ -21,12 +21,12 @@ export const WordDetail = ({ word }) => {
         setLoading(true);
         setError(null);
         setNotFound(false);
-        
+
         const [defData, saved] = await Promise.all([
           dictionaryService.getDefinition(word),
           vocabularyService.isWordSaved(word),
         ]);
-        
+
         // Word not found - service returns null
         if (defData === null) {
           setNotFound(true);

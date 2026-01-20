@@ -45,7 +45,7 @@ class DictionaryService {
       return processedData;
     } catch (error) {
       // Re-throw API errors
-      if (error.message?.includes('API error')) {
+      if (error.message?.includes("API error")) {
         throw error;
       }
       // Network errors
