@@ -1,5 +1,6 @@
 import axios from "axios";
 import dictionaryService from "./dictionary.js";
+import translationService from "./translation.js";
 
 const API_URL = "http://localhost:8000";
 
@@ -134,15 +135,41 @@ class VocabularyService {
    * Save a word to user's vocabulary collection
    * @param {string} word - The word to save (already validated when modal opened)
    * @param {string} videoId - ID of the video where the word was encountered
+   * @param {Object} options - Additional options
+   * @param {string} options.translation - Pre-computed translation (optional)
+   * @param {string} options.nativeLanguage - User's native language code (optional)
+   * @param {string} options.learningLanguage - Language being learned (optional)
    * @returns {Promise<Object>} Save result
    */
-  async saveWord(word, videoId) {
+  async saveWord(word, videoId, options = {}) {
     try {
-      // No validation needed - word is already validated when modal opened
+      const cleanWord = word.toLowerCase().trim();
+      
+      // Build save data
       const saveData = {
-        word: word.toLowerCase().trim(),
+        word: cleanWord,
         video_id: videoId,
       };
+
+      // Add translation if provided or if we have language info to compute it
+      if (options.translation) {
+        saveData.translation = options.translation;
+        saveData.native_language = options.nativeLanguage;
+      } else if (options.nativeLanguage && options.learningLanguage) {
+        // Auto-translate if languages are provided
+        try {
+          const translation = await translationService.translateWord(
+            cleanWord,
+            options.learningLanguage,
+            options.nativeLanguage
+          );
+          saveData.translation = translation;
+          saveData.native_language = options.nativeLanguage;
+        } catch (translateError) {
+          console.warn("Translation failed, saving without:", translateError);
+          // Continue without translation
+        }
+      }
 
       const response = await axios.post(`${API_URL}/vocabulary/save`, saveData);
 
