@@ -24,12 +24,12 @@ class VideosService {
       return response.data;
     } catch (error) {
       console.error("Get recommended videos error:", error);
-      
+
       // Handle specific error for incomplete onboarding
       if (error.response?.status === 400) {
         throw new Error("Please complete onboarding to get recommendations");
       }
-      
+
       const errorMessage =
         error.response?.data?.detail ||
         error.message ||
@@ -73,16 +73,16 @@ class VideosService {
   async getVideoByYoutubeId(youtubeVideoId) {
     try {
       const response = await axios.get(
-        `${API_URL}/api/videos/${encodeURIComponent(youtubeVideoId)}`
+        `${API_URL}/api/videos/${encodeURIComponent(youtubeVideoId)}`,
       );
       return response.data;
     } catch (error) {
       console.error("Get video error:", error);
-      
+
       if (error.response?.status === 404) {
         return null;
       }
-      
+
       const errorMessage =
         error.response?.data?.detail ||
         error.message ||
@@ -108,7 +108,7 @@ class VideosService {
       return response.data;
     } catch (error) {
       console.error("Import video error:", error);
-      
+
       // Handle duplicate video
       if (error.response?.status === 400) {
         throw new Error(error.response.data.detail || "Invalid YouTube URL");
@@ -116,7 +116,7 @@ class VideosService {
       if (error.response?.status === 409) {
         throw new Error("Video already exists in database");
       }
-      
+
       const errorMessage =
         error.response?.data?.detail ||
         error.message ||
@@ -132,7 +132,11 @@ class VideosService {
    * @param {string} difficultyLevel - Difficulty level
    * @returns {Promise<Object>} Created video data
    */
-  async importFromYoutubeId(youtubeVideoId, topics = [], difficultyLevel = null) {
+  async importFromYoutubeId(
+    youtubeVideoId,
+    topics = [],
+    difficultyLevel = null,
+  ) {
     try {
       const response = await axios.post(`${API_URL}/api/videos/from-youtube`, {
         youtube_video_id: youtubeVideoId,
@@ -142,11 +146,11 @@ class VideosService {
       return response.data;
     } catch (error) {
       console.error("Import video error:", error);
-      
+
       if (error.response?.status === 409) {
         throw new Error("Video already exists in database");
       }
-      
+
       const errorMessage =
         error.response?.data?.detail ||
         error.message ||

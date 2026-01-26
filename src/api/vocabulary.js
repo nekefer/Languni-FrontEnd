@@ -106,7 +106,7 @@ class VocabularyService {
         word,
         captions,
         currentIndex,
-        currentTime
+        currentTime,
       );
 
       // Get dictionary definition
@@ -144,7 +144,7 @@ class VocabularyService {
   async saveWord(word, videoId, options = {}) {
     try {
       const cleanWord = word.toLowerCase().trim();
-      
+
       // Build save data
       const saveData = {
         word: cleanWord,
@@ -161,7 +161,7 @@ class VocabularyService {
           const translation = await translationService.translateWord(
             cleanWord,
             options.learningLanguage,
-            options.nativeLanguage
+            options.nativeLanguage,
           );
           saveData.translation = translation;
           saveData.native_language = options.nativeLanguage;
@@ -194,7 +194,7 @@ class VocabularyService {
 
       const cleanWord = word.toLowerCase().trim();
       const response = await axios.get(
-        `${API_URL}/vocabulary/check/${encodeURIComponent(cleanWord)}`
+        `${API_URL}/vocabulary/check/${encodeURIComponent(cleanWord)}`,
       );
 
       return response.data.saved || false;
@@ -236,7 +236,7 @@ class VocabularyService {
     try {
       const cleanWord = word.toLowerCase().trim();
       const response = await axios.delete(
-        `${API_URL}/vocabulary/${encodeURIComponent(cleanWord)}`
+        `${API_URL}/vocabulary/${encodeURIComponent(cleanWord)}`,
       );
 
       return response.data;

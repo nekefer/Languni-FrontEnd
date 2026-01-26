@@ -2,7 +2,7 @@
  * Translation API Service
  * Uses MyMemory Translation API (free, no API key required)
  * Rate limit: ~1000 requests/day for anonymous users
- * 
+ *
  * Docs: https://mymemory.translated.net/doc/spec.php
  */
 
@@ -31,7 +31,9 @@ class TranslationService {
    */
   async translate(text, sourceLang, targetLang) {
     if (!text || !sourceLang || !targetLang) {
-      throw new Error("Text, source language, and target language are required");
+      throw new Error(
+        "Text, source language, and target language are required",
+      );
     }
 
     // Don't translate if same language
@@ -54,9 +56,9 @@ class TranslationService {
     try {
       // MyMemory API uses langpair format: "en|fr"
       const langPair = `${sourceLang}|${targetLang}`;
-      
+
       const response = await fetch(
-        `${MYMEMORY_API_URL}?q=${encodeURIComponent(cleanText)}&langpair=${langPair}`
+        `${MYMEMORY_API_URL}?q=${encodeURIComponent(cleanText)}&langpair=${langPair}`,
       );
 
       if (!response.ok) {
@@ -72,7 +74,7 @@ class TranslationService {
       }
 
       const translatedText = data.responseData?.translatedText;
-      
+
       if (!translatedText) {
         throw new Error("No translation returned");
       }
@@ -109,13 +111,13 @@ class TranslationService {
    */
   async translateBatch(words, sourceLang, targetLang) {
     const results = {};
-    
+
     // Process in sequence to avoid rate limiting
     for (const word of words) {
       try {
         results[word] = await this.translate(word, sourceLang, targetLang);
         // Small delay between requests to be nice to the API
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise((resolve) => setTimeout(resolve, 100));
       } catch (error) {
         console.error(`Failed to translate "${word}":`, error);
         results[word] = null; // Mark as failed

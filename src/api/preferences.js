@@ -42,7 +42,7 @@ class PreferencesService {
     try {
       const response = await axios.post(
         `${API_URL}/api/user/preferences`,
-        preferences
+        preferences,
       );
       return response.data;
     } catch (error) {
@@ -64,7 +64,7 @@ class PreferencesService {
     try {
       const response = await axios.put(
         `${API_URL}/api/user/preferences`,
-        preferences
+        preferences,
       );
       return response.data;
     } catch (error) {
