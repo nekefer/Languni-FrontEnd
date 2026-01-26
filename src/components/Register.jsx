@@ -39,7 +39,7 @@ export const Register = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const search = useSearch({ from: "/register" });
-  const { login } = useAuth();
+  const { register } = useAuth();
 
   // Debounce form values for validation
   const debouncedEmail = useDebounce(form.email, 500);
@@ -139,7 +139,7 @@ export const Register = () => {
 
     const matchValidation = validatePasswordMatch(
       debouncedPassword,
-      debouncedConfirmPassword
+      debouncedConfirmPassword,
     );
     setValidation((prev) => ({
       ...prev,
@@ -172,7 +172,7 @@ export const Register = () => {
       await registerUser(registrationData);
 
       const userData = await fetchUserInfo();
-      login(userData);
+      register(userData); // Use register() to set isNewUser flag
 
       toast.success("Account created successfully! Welcome to Linguini.");
       navigate({ to: "/dashboard" });
@@ -305,7 +305,7 @@ export const Register = () => {
                     style={{
                       width: `${getPasswordStrengthWidth(validation.password.strength)}%`,
                       backgroundColor: getPasswordStrengthColor(
-                        validation.password.strength
+                        validation.password.strength,
                       ),
                     }}
                   />

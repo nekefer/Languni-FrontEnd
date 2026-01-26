@@ -3,16 +3,18 @@ import { useNavigate, Link } from "@tanstack/react-router";
 import { useAuth } from "../contexts/AuthContext";
 import { googleLogin } from "../api/auth";
 import { getLastLikedVideo } from "../api/youtube";
+import preferencesService from "../api/preferences";
 import useTrendingStore from "../stores/trendingStore";
 import VideoCard from "./VideoCard";
 import "../styles/Dashboard.css";
 
 export const Dashboard = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, isNewUser, clearNewUserFlag } = useAuth();
   const navigate = useNavigate();
   const [lastLikedVideo, setLastLikedVideo] = useState(null);
   const [videoLoading, setVideoLoading] = useState(true);
   const [videoError, setVideoError] = useState(null);
+  const [checkingOnboarding, setCheckingOnboarding] = useState(isNewUser); // Only check if new user
 
   // Trending videos from Zustand store (with region persistence)
   const {
@@ -40,12 +42,40 @@ export const Dashboard = () => {
     } catch (error) {
       console.error("Error fetching last liked video:", error);
       setVideoError(
-        error.response?.data?.detail || "Failed to fetch last liked video"
+        error.response?.data?.detail || "Failed to fetch last liked video",
       );
     } finally {
       setVideoLoading(false);
     }
   };
+
+  // Check onboarding status ONLY for new users (after registration)
+  useEffect(() => {
+    const checkOnboarding = async () => {
+      // Skip if not a new user - no check needed
+      if (!isNewUser) {
+        setCheckingOnboarding(false);
+        return;
+      }
+
+      try {
+        const completed = await preferencesService.isOnboardingCompleted();
+        if (!completed) {
+          navigate({ to: "/onboarding" });
+          return;
+        }
+        // Onboarding already completed, clear the flag
+        clearNewUserFlag();
+      } catch (error) {
+        console.error("Error checking onboarding status:", error);
+        clearNewUserFlag(); // Clear flag even on error
+      } finally {
+        setCheckingOnboarding(false);
+      }
+    };
+
+    checkOnboarding();
+  }, [isNewUser, navigate, clearNewUserFlag]);
 
   useEffect(() => {
     // Fetch trending videos on mount only if we don't have videos
@@ -68,6 +98,19 @@ export const Dashboard = () => {
       setVideoError("Please sign in with Google to view your last liked video");
     }
   }, [user]);
+
+  // Show loading while checking onboarding for new users only
+  if (checkingOnboarding) {
+    return (
+      <div className="dashboard-container">
+        <div style={{ padding: "2rem", textAlign: "center" }}>
+          <p>Setting up your account...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // If we get here, onboarding is completed
 
   return (
     <div className="dashboard-container">

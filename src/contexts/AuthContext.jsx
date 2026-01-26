@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
 import { fetchUserInfo, logoutUser, refreshToken } from "../api/auth";
 
 const AuthContext = createContext();
@@ -17,6 +23,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isNewUser, setIsNewUser] = useState(false); // Track new registration
 
   // Check if user is authenticated on app start
   const checkAuth = useCallback(async () => {
@@ -55,6 +62,19 @@ export const AuthProvider = ({ children }) => {
   const login = (userData) => {
     setUser(userData);
     setError(null);
+    setIsNewUser(false); // Login = NOT a new user
+  };
+
+  // Called after registration to set user and mark as new
+  const register = (userData) => {
+    setUser(userData);
+    setError(null);
+    setIsNewUser(true); // Register = IS a new user
+  };
+
+  // Clear the new user flag after onboarding is handled
+  const clearNewUserFlag = () => {
+    setIsNewUser(false);
   };
 
   const logout = async () => {
@@ -65,6 +85,7 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setUser(null);
       setError(null);
+      setIsNewUser(false); // Reset on logout
     }
   };
 
@@ -78,9 +99,12 @@ export const AuthProvider = ({ children }) => {
     loading,
     error,
     isAuthenticated: !!user,
+    isNewUser,
     login,
+    register,
     logout,
     checkAuth,
+    clearNewUserFlag,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
