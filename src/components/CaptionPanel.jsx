@@ -156,28 +156,14 @@ function CaptionPanel({ videoId, currentTime, onSeek, onWordClick }) {
     [captions, currentTime, onWordClick],
   );
 
-  // Memoize parsed captions to prevent re-parsing on every render
+  // Memoize parsed captions - only stores data, no event handlers
+  // This now only recalculates when captions change, not when currentTime changes
   const parsedCaptions = useMemo(() => {
-    return captions.map((caption) => {
-      const words = caption.text.split(" ");
-      return {
-        ...caption,
-        parsedWords: words.map((word, index) => (
-          <span
-            key={index}
-            className="caption-word"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleWordClick(word, caption.start);
-            }}
-            title={`Get definition for "${word}"`}
-          >
-            {word}{" "}
-          </span>
-        )),
-      };
-    });
-  }, [captions, handleWordClick]);
+    return captions.map((caption) => ({
+      ...caption,
+      words: caption.text.split(" "),
+    }));
+  }, [captions]);
 
   if (loading) {
     return (
@@ -236,7 +222,21 @@ function CaptionPanel({ videoId, currentTime, onSeek, onWordClick }) {
                 ({caption.duration.toFixed(1)}s)
               </span>
             </div>
-            <div className="caption-text">{caption.parsedWords}</div>
+            <div className="caption-text">
+              {caption.words.map((word, wordIndex) => (
+                <span
+                  key={wordIndex}
+                  className="caption-word"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleWordClick(word, caption.start);
+                  }}
+                  title={`Get definition for "${word}"`}
+                >
+                  {word}{" "}
+                </span>
+              ))}
+            </div>
           </div>
         ))}
       </div>
