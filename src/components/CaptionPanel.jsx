@@ -5,6 +5,7 @@ import React, {
   useCallback,
   useMemo,
 } from "react";
+import { List } from "react-window";
 import { toast } from "sonner";
 import { getCaptions } from "../api/youtube";
 import vocabularyService from "../api/vocabulary";
@@ -165,6 +166,54 @@ function CaptionPanel({ videoId, currentTime, onSeek, onWordClick }) {
     }));
   }, [captions]);
 
+  // Memoized row renderer for virtualized list
+  const RowComponent = React.memo(function CaptionRow({
+    index,
+    style,
+    parsedCaptions,
+    currentCaptionIndex,
+    handleCaptionClick,
+    handleWordClick,
+  }) {
+    const caption = parsedCaptions[index];
+    if (!caption) return null;
+
+    const isActive = index === currentCaptionIndex;
+    const captionHtml = caption.text
+      .split(" ")
+      .map((word) => `<span class="caption-word">${word}</span>`)
+      .join(" ");
+
+    return (
+      <div
+        style={style}
+        className={`caption-item ${isActive ? "active" : ""}`}
+        data-caption-index={index}
+        onClick={() => handleCaptionClick(caption.start)}
+        title={`Seek to ${Math.floor(caption.start / 60)}:${String(Math.floor(caption.start % 60)).padStart(2, "0")}`}
+      >
+        <div className="caption-timestamp">
+          {Math.floor(caption.start / 60)}:
+          {String(Math.floor(caption.start % 60)).padStart(2, "0")}
+          <span className="caption-duration">
+            ({caption.duration.toFixed(1)}s)
+          </span>
+        </div>
+        <div
+          className="caption-text"
+          onClick={(e) => {
+            if (e.target.classList.contains("caption-word")) {
+              e.stopPropagation();
+              const word = e.target.textContent.trim();
+              handleWordClick(word, caption.start);
+            }
+          }}
+          dangerouslySetInnerHTML={{ __html: captionHtml }}
+        />
+      </div>
+    );
+  });
+
   if (loading) {
     return (
       <div className="caption-panel">
@@ -205,41 +254,19 @@ function CaptionPanel({ videoId, currentTime, onSeek, onWordClick }) {
         </p>
       </div>
 
-      <div className="caption-list">
-        {parsedCaptions.map((caption, index) => (
-          <div
-            key={index}
-            className={`caption-item ${index === currentCaptionIndex ? "active" : ""}`}
-            data-caption-index={index}
-            onClick={() => handleCaptionClick(caption.start)}
-            style={{ cursor: "pointer" }}
-            title={`Seek to ${Math.floor(caption.start / 60)}:${String(Math.floor(caption.start % 60)).padStart(2, "0")}`}
-          >
-            <div className="caption-timestamp">
-              {Math.floor(caption.start / 60)}:
-              {String(Math.floor(caption.start % 60)).padStart(2, "0")}
-              <span className="caption-duration">
-                ({caption.duration.toFixed(1)}s)
-              </span>
-            </div>
-            <div className="caption-text">
-              {caption.words.map((word, wordIndex) => (
-                <span
-                  key={wordIndex}
-                  className="caption-word"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleWordClick(word, caption.start);
-                  }}
-                  title={`Get definition for "${word}"`}
-                >
-                  {word}{" "}
-                </span>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
+      {/* Virtualized list - only renders ~15 visible captions at a time */}
+      <List
+        rowComponent={RowComponent}
+        rowCount={parsedCaptions.length}
+        rowHeight={80}
+        rowProps={{
+          parsedCaptions,
+          currentCaptionIndex,
+          handleCaptionClick,
+          handleWordClick,
+        }}
+        style={{ height: 400 }}
+      />
     </div>
   );
 }
