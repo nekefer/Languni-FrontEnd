@@ -6,7 +6,10 @@ import { getLastLikedVideo } from "../api/youtube";
 import preferencesService from "../api/preferences";
 import useTrendingStore from "../stores/trendingStore";
 import VideoCard from "./VideoCard";
+import { createLogger } from "../utils/logger";
 import "../styles/Dashboard.css";
+
+const logger = createLogger("dashboard");
 
 export const Dashboard = () => {
   const { user, logout, isNewUser, clearNewUserFlag } = useAuth();
@@ -40,7 +43,7 @@ export const Dashboard = () => {
       const video = await getLastLikedVideo();
       setLastLikedVideo(video);
     } catch (error) {
-      console.error("Error fetching last liked video:", error);
+      logger.error("Failed to fetch last liked video", error);
       setVideoError(
         error.response?.data?.detail || "Failed to fetch last liked video",
       );
@@ -67,7 +70,7 @@ export const Dashboard = () => {
         // Onboarding already completed, clear the flag
         clearNewUserFlag();
       } catch (error) {
-        console.error("Error checking onboarding status:", error);
+        logger.error("Failed to check onboarding status", error);
         clearNewUserFlag(); // Clear flag even on error
       } finally {
         setCheckingOnboarding(false);

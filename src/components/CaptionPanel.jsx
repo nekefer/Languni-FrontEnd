@@ -9,6 +9,7 @@ import { List } from "react-window";
 import { toast } from "sonner";
 import { getCaptions } from "../api/youtube";
 import vocabularyService from "../api/vocabulary";
+import { playerLogger } from "../utils/logger";
 
 function CaptionPanel({ videoId, currentTime, onSeek, onWordClick }) {
   const [captions, setCaptions] = useState([]);
@@ -29,7 +30,7 @@ function CaptionPanel({ videoId, currentTime, onSeek, onWordClick }) {
       const response = await getCaptions(videoId);
       setCaptions(response.captions || []);
     } catch (err) {
-      console.error("Failed to fetch captions:", err);
+      playerLogger.error("Failed to fetch captions", err, { videoId });
       setError(err.message || "Failed to load captions");
     } finally {
       setLoading(false);
@@ -150,7 +151,7 @@ function CaptionPanel({ videoId, currentTime, onSeek, onWordClick }) {
           onWordClick(vocabularyData);
         }
       } catch (error) {
-        console.error("Word processing error:", error);
+        playerLogger.error("Word processing failed", error);
         toast.error(`Can't find definition for "${cleanWord}"`);
       }
     },

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import vocabularyService from "../api/vocabulary.js";
+import { vocabularyLogger } from "../utils/logger";
 import styles from "../styles/VocabularyPanel.module.css";
 // Save state configuration
 const SAVE_STATE_CONFIG = {
@@ -94,7 +95,7 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
           setSaveState(isSaved ? "already-saved" : "idle");
         })
         .catch((error) => {
-          console.error("Failed to check if word is saved:", error);
+          vocabularyLogger.error("Failed to check if word is saved", error);
           setSaveState("idle"); // Default to allowing save on error
         });
     }
@@ -121,12 +122,12 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
       audioRef.current.onerror = () => {
         setAudioPlaying(false);
         setPlayingAudioIndex(null);
-        console.error("Audio playback failed");
+        vocabularyLogger.warn("Audio playback failed");
       };
 
       await audioRef.current.play();
     } catch (error) {
-      console.error("Audio playback error:", error);
+      vocabularyLogger.error("Audio playback error", error);
       setAudioPlaying(false);
       setPlayingAudioIndex(null);
     }
@@ -149,12 +150,12 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
       audioRef.current.onended = () => setAudioPlaying(false);
       audioRef.current.onerror = () => {
         setAudioPlaying(false);
-        console.error("Audio playback failed");
+        vocabularyLogger.warn("Audio playback failed");
       };
 
       await audioRef.current.play();
     } catch (error) {
-      console.error("Audio playback error:", error);
+      vocabularyLogger.error("Audio playback error", error);
       setAudioPlaying(false);
     }
   };
@@ -179,7 +180,7 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
       const wordText = vocabularyData.definition?.word || vocabularyData.word;
       toast.success(`"${wordText}" added to vocabulary! 🎉`);
     } catch (error) {
-      console.error("Failed to save word:", error);
+      vocabularyLogger.error("Failed to save word", error);
       const wordText = vocabularyData.definition?.word || vocabularyData.word;
 
       // Handle different error types
@@ -471,7 +472,6 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
                           key={index}
                           className={`${styles.wordChip} ${styles.synonym}`}
                           onClick={() => {
-                            console.log(`TODO: Look up "${synonym}"`);
                             // TODO: Implement synonym lookup
                           }}
                           title={`Look up "${synonym}"`}
@@ -494,7 +494,6 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
                           key={index}
                           className={`${styles.wordChip} ${styles.antonym}`}
                           onClick={() => {
-                            console.log(`TODO: Look up "${antonym}"`);
                             // TODO: Implement antonym lookup
                           }}
                           title={`Look up "${antonym}"`}

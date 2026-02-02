@@ -3,7 +3,10 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import vocabularyService from "../api/vocabulary.js";
 import dictionaryService from "../api/dictionary.js";
+import { createLogger } from "../utils/logger";
 import styles from "../styles/MyVocabulary.module.css";
+
+const logger = createLogger("vocabulary");
 
 const WORDS_PER_PAGE = 12;
 
@@ -60,7 +63,7 @@ const WordCard = ({ wordData, onDelete, onViewVideo, onViewDetails }) => {
       const defData = await dictionaryService.getDefinition(wordData.word);
       setDefinition(defData);
     } catch (error) {
-      console.error("Failed to load definition:", error);
+      logger.error("Failed to load definition", error);
       setDefinition({ error: "Failed to load definition" });
     } finally {
       setLoadingDefinition(false);
@@ -256,7 +259,7 @@ export const MyVocabulary = () => {
       setSavedWords(transformedWords);
       setTotalWords(response.total || 0);
     } catch (error) {
-      console.error("Failed to load vocabulary:", error);
+      logger.error("Failed to load vocabulary", error);
       setError(error.message || "Failed to load your vocabulary");
       toast.error("Failed to load vocabulary. Please try again.");
       setSavedWords([]);
@@ -285,7 +288,7 @@ export const MyVocabulary = () => {
         loadSavedWords(page);
       }
     } catch (error) {
-      console.error("Failed to delete word:", error);
+      logger.error("Failed to delete word", error);
 
       // Handle different error types
       if (!error.response) {

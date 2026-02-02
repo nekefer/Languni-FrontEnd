@@ -1,10 +1,12 @@
 import axios from "axios";
 import dictionaryService from "./dictionary.js";
 import translationService from "./translation.js";
+import config from "../config";
+import { vocabularyLogger } from "../utils/logger";
 
-const API_URL = "http://localhost:8000";
+const API_URL = config.apiUrl;
 
-// ✅ Configure axios to send cookies automatically
+// Configure axios to send cookies automatically
 axios.defaults.withCredentials = true;
 
 class VocabularyService {
@@ -122,11 +124,11 @@ class VocabularyService {
         definition: definition,
       };
 
-      console.log("Vocabulary data processed successfully:", vocabularyData);
+      vocabularyLogger.debug("Vocabulary data processed", { word: vocabularyData.word });
 
       return vocabularyData;
     } catch (error) {
-      console.error("Vocabulary processing error:", error);
+      vocabularyLogger.error("Failed to process vocabulary", error, { word });
       throw error;
     }
   }
@@ -166,17 +168,17 @@ class VocabularyService {
           saveData.translation = translation;
           saveData.native_language = options.nativeLanguage;
         } catch (translateError) {
-          console.warn("Translation failed, saving without:", translateError);
+          vocabularyLogger.warn("Translation failed, saving without translation", { word: cleanWord });
           // Continue without translation
         }
       }
 
       const response = await axios.post(`${API_URL}/vocabulary/save`, saveData);
 
-      console.log("Word saved successfully:", response.data);
+      vocabularyLogger.debug("Word saved", { word: cleanWord });
       return response.data;
     } catch (error) {
-      console.error("Save word error:", error);
+      vocabularyLogger.error("Failed to save word", error, { word });
       const errorMessage =
         error.response?.data?.detail || error.message || "Failed to save word";
       throw new Error(errorMessage);
@@ -199,7 +201,7 @@ class VocabularyService {
 
       return response.data.saved || false;
     } catch (error) {
-      console.error("Check word saved error:", error);
+      vocabularyLogger.error("Failed to check word status", error, { word });
       return false;
     }
   }
@@ -218,7 +220,7 @@ class VocabularyService {
 
       return response.data;
     } catch (error) {
-      console.error("Get saved words error:", error);
+      vocabularyLogger.error("Failed to get saved words", error);
       const errorMessage =
         error.response?.data?.detail ||
         error.message ||
@@ -241,7 +243,7 @@ class VocabularyService {
 
       return response.data;
     } catch (error) {
-      console.error("Delete word error:", error);
+      vocabularyLogger.error("Failed to delete word", error, { word });
       const errorMessage =
         error.response?.data?.detail ||
         error.message ||

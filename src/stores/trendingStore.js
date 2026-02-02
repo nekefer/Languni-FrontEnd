@@ -1,5 +1,8 @@
 import { create } from "zustand";
 import { getTrendingVideos } from "../api/youtube";
+import { createLogger } from "../utils/logger";
+
+const logger = createLogger("trending");
 
 /**
  * Trending Videos Store
@@ -58,7 +61,7 @@ const useTrendingStore = create((set, get) => ({
         loading: false,
       }));
     } catch (error) {
-      console.error("Failed to fetch trending videos:", error);
+      logger.error("Failed to fetch trending videos", error);
       set({
         error: error.response?.data?.detail || "Failed to load trending videos",
         loading: false,

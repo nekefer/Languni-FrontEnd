@@ -290,17 +290,12 @@ class DictionaryService {
    * @returns {boolean} True if word is valid for lookup
    */
   isValidWord(word) {
-    console.log("Validating word for lookup:", word);
-
     if (!word || typeof word !== "string") {
       return { valid: false, type: "Invalid" };
     }
-    // console.log("Validating word for lookup:", word);
 
-    if (/[’'‹›`´]/.test(word)) {
-      console.log("Apostrophe-like character detected:", word);
-      const out = expandContractions(word);
-      console.log("Expanded contraction:", out);
+    if (/[''‹›`´]/.test(word)) {
+      expandContractions(word);
       return { valid: true, type: "contraction", word: word };
     }
 

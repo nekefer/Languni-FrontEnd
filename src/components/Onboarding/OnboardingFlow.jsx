@@ -6,7 +6,10 @@ import { NativeLanguageStep } from "./NativeLanguageStep";
 import { LearningLanguageStep } from "./LearningLanguageStep";
 import { TopicsStep } from "./TopicsStep";
 import { LevelStep } from "./LevelStep";
+import { createLogger } from "../../utils/logger";
 import "../../styles/Onboarding.css";
+
+const logger = createLogger("onboarding");
 
 const TOTAL_STEPS = 4;
 
@@ -85,10 +88,15 @@ export const OnboardingFlow = () => {
         level: preferences.level,
       });
 
+      logger.info("Onboarding completed", {
+        learning_language: preferences.learning_language,
+        level: preferences.level,
+      });
+
       toast.success("Preferences saved! Welcome to Linguini!");
       navigate({ to: "/dashboard" });
     } catch (error) {
-      console.error("Error saving preferences:", error);
+      logger.error("Failed to save preferences", error);
       toast.error(
         error.message || "Failed to save preferences. Please try again."
       );

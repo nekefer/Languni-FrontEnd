@@ -1,8 +1,9 @@
 import axios from "axios";
+import config from "../config";
 
-const API_URL = "http://localhost:8000";
+const API_URL = config.apiUrl;
 
-// ✅ Configure axios to send cookies automatically
+// Configure axios to send cookies automatically
 axios.defaults.withCredentials = true;
 
 export const registerUser = async (form) => {

@@ -6,6 +6,9 @@
  * Docs: https://mymemory.translated.net/doc/spec.php
  */
 
+import { createLogger } from "../utils/logger";
+
+const logger = createLogger("translation");
 const MYMEMORY_API_URL = "https://api.mymemory.translated.net/get";
 
 // Simple in-memory cache to avoid redundant API calls
@@ -49,7 +52,7 @@ class TranslationService {
     // Check cache first
     const cacheKey = getCacheKey(cleanText, sourceLang, targetLang);
     if (translationCache.has(cacheKey)) {
-      console.log("Translation cache hit:", cleanText);
+      logger.debug("Cache hit", { text: cleanText });
       return translationCache.get(cacheKey);
     }
 
@@ -69,7 +72,7 @@ class TranslationService {
 
       // Check for API errors
       if (data.responseStatus !== 200) {
-        console.warn("MyMemory API warning:", data.responseDetails);
+        logger.warn("MyMemory API warning", { details: data.responseDetails });
         // Still try to use the translation if available
       }
 
@@ -84,7 +87,7 @@ class TranslationService {
 
       return translatedText;
     } catch (error) {
-      console.error("Translation error:", error);
+      logger.error("Translation failed", error, { text: cleanText, sourceLang, targetLang });
       throw new Error(`Failed to translate: ${error.message}`);
     }
   }
@@ -119,7 +122,7 @@ class TranslationService {
         // Small delay between requests to be nice to the API
         await new Promise((resolve) => setTimeout(resolve, 100));
       } catch (error) {
-        console.error(`Failed to translate "${word}":`, error);
+        logger.error("Batch translation failed for word", error, { word });
         results[word] = null; // Mark as failed
       }
     }

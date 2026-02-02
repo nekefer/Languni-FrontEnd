@@ -41,7 +41,6 @@ function VideoPlayer({ videoId }) {
   };
 
   // Early guard: missing or invalid videoId → show 404 page
-  console.log("VideoPlayer received videoId:", videoId);
   const isMissing = !videoId || videoId === "undefined" || videoId === "null";
   const isInvalidFormat = !/^[a-zA-Z0-9_-]{11}$/.test(videoId || "");
   if (isMissing || isInvalidFormat) {

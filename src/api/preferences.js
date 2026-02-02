@@ -1,8 +1,11 @@
 import axios from "axios";
+import config from "../config";
+import { createLogger } from "../utils/logger";
 
-const API_URL = "http://localhost:8000";
+const logger = createLogger("preferences");
+const API_URL = config.apiUrl;
 
-// ✅ Configure axios to send cookies automatically
+// Configure axios to send cookies automatically
 axios.defaults.withCredentials = true;
 
 /**
@@ -19,7 +22,7 @@ class PreferencesService {
       const response = await axios.get(`${API_URL}/api/user/preferences`);
       return response.data;
     } catch (error) {
-      console.error("Get preferences error:", error);
+      logger.error("Failed to get preferences", error);
       const errorMessage =
         error.response?.data?.detail ||
         error.message ||
@@ -46,7 +49,7 @@ class PreferencesService {
       );
       return response.data;
     } catch (error) {
-      console.error("Save preferences error:", error);
+      logger.error("Failed to save preferences", error);
       const errorMessage =
         error.response?.data?.detail ||
         error.message ||
@@ -68,7 +71,7 @@ class PreferencesService {
       );
       return response.data;
     } catch (error) {
-      console.error("Update preferences error:", error);
+      logger.error("Failed to update preferences", error);
       const errorMessage =
         error.response?.data?.detail ||
         error.message ||
@@ -86,7 +89,7 @@ class PreferencesService {
       const prefs = await this.getPreferences();
       return prefs.onboarding_completed || false;
     } catch (error) {
-      console.error("Check onboarding error:", error);
+      logger.error("Failed to check onboarding status", error);
       return false;
     }
   }

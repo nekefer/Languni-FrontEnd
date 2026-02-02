@@ -1,8 +1,11 @@
 import axios from "axios";
+import config from "../config";
+import { createLogger } from "../utils/logger";
 
-const API_URL = "http://localhost:8000";
+const logger = createLogger("videos");
+const API_URL = config.apiUrl;
 
-// ✅ Configure axios to send cookies automatically
+// Configure axios to send cookies automatically
 axios.defaults.withCredentials = true;
 
 /**
@@ -23,7 +26,7 @@ class VideosService {
       });
       return response.data;
     } catch (error) {
-      console.error("Get recommended videos error:", error);
+      logger.error("Failed to get recommended videos", error);
 
       // Handle specific error for incomplete onboarding
       if (error.response?.status === 400) {
@@ -56,7 +59,7 @@ class VideosService {
       const response = await axios.get(`${API_URL}/api/videos`, { params });
       return response.data;
     } catch (error) {
-      console.error("Get all videos error:", error);
+      logger.error("Failed to get videos", error);
       const errorMessage =
         error.response?.data?.detail ||
         error.message ||
@@ -77,7 +80,7 @@ class VideosService {
       );
       return response.data;
     } catch (error) {
-      console.error("Get video error:", error);
+      logger.error("Failed to get video", error);
 
       if (error.response?.status === 404) {
         return null;
@@ -107,7 +110,7 @@ class VideosService {
       });
       return response.data;
     } catch (error) {
-      console.error("Import video error:", error);
+      logger.error("Failed to import video", error);
 
       // Handle duplicate video
       if (error.response?.status === 400) {
@@ -145,7 +148,7 @@ class VideosService {
       });
       return response.data;
     } catch (error) {
-      console.error("Import video error:", error);
+      logger.error("Failed to import video", error);
 
       if (error.response?.status === 409) {
         throw new Error("Video already exists in database");

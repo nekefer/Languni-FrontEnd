@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import dictionaryService from "../api/dictionary.js";
 import vocabularyService from "../api/vocabulary.js";
+import { vocabularyLogger } from "../utils/logger";
 import styles from "../styles/WordDetail.module.css";
 import NotFound from "./NotFound.jsx";
 
@@ -37,7 +38,7 @@ export const WordDetail = ({ word }) => {
       } catch (err) {
         // Only real errors (network, API failures) reach here
         setError(err?.message || "Failed to load word");
-        console.error("Failed to load word data:", err);
+        vocabularyLogger.error("Failed to load word data", err, { word });
       } finally {
         setLoading(false);
       }

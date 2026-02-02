@@ -6,6 +6,8 @@ import React, {
   useCallback,
 } from "react";
 import { fetchUserInfo, logoutUser, refreshToken } from "../api/auth";
+import { authLogger } from "../utils/logger";
+import { setSentryUser, clearSentryUser } from "../utils/sentry";
 
 const AuthContext = createContext();
 
@@ -31,28 +33,32 @@ export const AuthProvider = ({ children }) => {
     setError(null);
 
     try {
-      console.log("🔍 Checking authentication...");
+      authLogger.debug("Checking authentication...");
       const userData = await fetchUserInfo();
-      console.log("✅ User authenticated:", userData);
+      authLogger.debug("User authenticated", { email: userData.email });
       setUser(userData);
+      setSentryUser(userData);
     } catch (error) {
-      console.log("❌ Not authenticated:", error.response?.status);
+      authLogger.debug("Not authenticated", { status: error.response?.status });
 
       // If 401, try to refresh token
       if (error.response?.status === 401) {
         try {
-          console.log("🔄 Trying to refresh token...");
+          authLogger.debug("Attempting token refresh...");
           await refreshToken();
           // Retry getting user info
           const userData = await fetchUserInfo();
           setUser(userData);
-          console.log("✅ Token refreshed, user authenticated");
+          setSentryUser(userData);
+          authLogger.debug("Token refreshed successfully");
         } catch (refreshError) {
-          console.log("❌ Token refresh failed", refreshError);
+          authLogger.debug("Token refresh failed");
           setUser(null);
+          clearSentryUser();
         }
       } else {
         setUser(null);
+        clearSentryUser();
       }
     } finally {
       setLoading(false);
@@ -62,14 +68,18 @@ export const AuthProvider = ({ children }) => {
   const login = (userData) => {
     setUser(userData);
     setError(null);
-    setIsNewUser(false); // Login = NOT a new user
+    setIsNewUser(false);
+    setSentryUser(userData);
+    authLogger.info("User logged in", { method: userData.auth_method });
   };
 
   // Called after registration to set user and mark as new
   const register = (userData) => {
     setUser(userData);
     setError(null);
-    setIsNewUser(true); // Register = IS a new user
+    setIsNewUser(true);
+    setSentryUser(userData);
+    authLogger.info("User registered", { method: userData.auth_method });
   };
 
   // Clear the new user flag after onboarding is handled
@@ -81,11 +91,12 @@ export const AuthProvider = ({ children }) => {
     try {
       await logoutUser();
     } catch (error) {
-      console.error("Logout error:", error);
+      authLogger.error("Logout failed", error);
     } finally {
       setUser(null);
       setError(null);
-      setIsNewUser(false); // Reset on logout
+      setIsNewUser(false);
+      clearSentryUser();
     }
   };
 
