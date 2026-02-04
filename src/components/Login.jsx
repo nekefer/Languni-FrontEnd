@@ -4,6 +4,7 @@ import { loginUser, googleLogin, fetchUserInfo } from "../api/auth";
 import { useNavigate, useSearch } from "@tanstack/react-router";
 import { useAuth } from "../contexts/AuthContext";
 import { GuestRoute } from "./GuestRoute";
+import { Spinner } from "../ui/Spinner";
 import "../styles/Login.css";
 
 export const Login = () => {
@@ -99,7 +100,7 @@ export const Login = () => {
             required
           />
           <button type="submit" disabled={loading}>
-            {loading ? "Logging in..." : "Login"}
+            {loading ? <><Spinner size={16} /> Logging in...</> : "Login"}
           </button>
           <button type="button" onClick={handleGoogleLogin} disabled={loading}>
             Continue with Google

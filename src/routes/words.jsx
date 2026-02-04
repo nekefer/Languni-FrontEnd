@@ -1,11 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { MyVocabulary } from "../components/MyVocabulary";
 import { ProtectedRoute } from "../components/ProtectedRoute";
+import { RequireOnboarding } from "../components/RequireOnboarding";
 
-export const Route = createFileRoute("/my-vocabulary")({
+export const Route = createFileRoute("/words")({
   component: () => (
     <ProtectedRoute>
-      <MyVocabulary />
+      <RequireOnboarding>
+        <MyVocabulary />
+      </RequireOnboarding>
     </ProtectedRoute>
   ),
 });

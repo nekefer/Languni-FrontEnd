@@ -9,6 +9,7 @@ import { List } from "react-window";
 import { toast } from "sonner";
 import { getCaptions } from "../api/youtube";
 import vocabularyService from "../api/vocabulary";
+import { Spinner } from "../ui/Spinner";
 import { playerLogger } from "../utils/logger";
 
 function CaptionPanel({ videoId, currentTime, onSeek, onWordClick }) {
@@ -218,7 +219,10 @@ function CaptionPanel({ videoId, currentTime, onSeek, onWordClick }) {
   if (loading) {
     return (
       <div className="caption-panel">
-        <div className="caption-loading">Loading captions...</div>
+        <div className="caption-loading">
+          <Spinner size={24} />
+          <span>Loading captions...</span>
+        </div>
       </div>
     );
   }

@@ -3,21 +3,20 @@ import { useNavigate, Link } from "@tanstack/react-router";
 import { useAuth } from "../contexts/AuthContext";
 import { googleLogin } from "../api/auth";
 import { getLastLikedVideo } from "../api/youtube";
-import preferencesService from "../api/preferences";
 import useTrendingStore from "../stores/trendingStore";
 import VideoCard from "./VideoCard";
+import { Spinner } from "../ui/Spinner";
 import { createLogger } from "../utils/logger";
 import "../styles/Dashboard.css";
 
 const logger = createLogger("dashboard");
 
 export const Dashboard = () => {
-  const { user, logout, isNewUser, clearNewUserFlag } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [lastLikedVideo, setLastLikedVideo] = useState(null);
   const [videoLoading, setVideoLoading] = useState(true);
   const [videoError, setVideoError] = useState(null);
-  const [checkingOnboarding, setCheckingOnboarding] = useState(isNewUser); // Only check if new user
 
   // Trending videos from Zustand store (with region persistence)
   const {
@@ -52,34 +51,6 @@ export const Dashboard = () => {
     }
   };
 
-  // Check onboarding status ONLY for new users (after registration)
-  useEffect(() => {
-    const checkOnboarding = async () => {
-      // Skip if not a new user - no check needed
-      if (!isNewUser) {
-        setCheckingOnboarding(false);
-        return;
-      }
-
-      try {
-        const completed = await preferencesService.isOnboardingCompleted();
-        if (!completed) {
-          navigate({ to: "/onboarding" });
-          return;
-        }
-        // Onboarding already completed, clear the flag
-        clearNewUserFlag();
-      } catch (error) {
-        logger.error("Failed to check onboarding status", error);
-        clearNewUserFlag(); // Clear flag even on error
-      } finally {
-        setCheckingOnboarding(false);
-      }
-    };
-
-    checkOnboarding();
-  }, [isNewUser, navigate, clearNewUserFlag]);
-
   useEffect(() => {
     // Fetch trending videos on mount only if we don't have videos
     // This preserves region and videos when navigating back
@@ -102,26 +73,13 @@ export const Dashboard = () => {
     }
   }, [user]);
 
-  // Show loading while checking onboarding for new users only
-  if (checkingOnboarding) {
-    return (
-      <div className="dashboard-container">
-        <div style={{ padding: "2rem", textAlign: "center" }}>
-          <p>Setting up your account...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // If we get here, onboarding is completed
-
   return (
     <div className="dashboard-container">
       <div className="dashboard-header">
         <div className="header-content">
           <h2>Welcome, {user.first_name}!</h2>
           <div className="header-actions">
-            <Link to="/my-vocabulary" className="vocabulary-link">
+            <Link to="/words" className="vocabulary-link">
               📚 My Vocabulary
             </Link>
             <button className="logout-button" onClick={handleLogout}>
@@ -174,7 +132,10 @@ export const Dashboard = () => {
         </div>
 
         {loading && videos.length === 0 && (
-          <div className="loading-message">Loading trending videos...</div>
+          <div className="loading-message">
+            <Spinner size={24} />
+            <span>Loading trending videos...</span>
+          </div>
         )}
 
         {error && (
@@ -197,7 +158,13 @@ export const Dashboard = () => {
                 onClick={loadMore}
                 disabled={loading}
               >
-                {loading ? "Loading..." : "Load More"}
+                {loading ? (
+                  <>
+                    <Spinner size={16} /> Loading...
+                  </>
+                ) : (
+                  "Load More"
+                )}
               </button>
             )}
           </>
@@ -211,7 +178,8 @@ export const Dashboard = () => {
 
           {videoLoading && (
             <div className="loading-message">
-              Loading your last liked video...
+              <Spinner size={24} />
+              <span>Loading your last liked video...</span>
             </div>
           )}
 

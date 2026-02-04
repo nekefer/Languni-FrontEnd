@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ProtectedRoute } from "../../components/ProtectedRoute";
+import { RequireOnboarding } from "../../components/RequireOnboarding";
 import { WordDetail } from "../../components/WordDetail";
 
 export const Route = createFileRoute("/word/$wordId")({
@@ -11,7 +12,9 @@ function WordDetailRoute() {
 
   return (
     <ProtectedRoute>
-      <WordDetail word={decodeURIComponent(wordId)} />
+      <RequireOnboarding>
+        <WordDetail word={decodeURIComponent(wordId)} />
+      </RequireOnboarding>
     </ProtectedRoute>
   );
 }

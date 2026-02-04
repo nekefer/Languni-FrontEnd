@@ -5,6 +5,7 @@ import { useNavigate, useSearch } from "@tanstack/react-router";
 import { useAuth } from "../contexts/AuthContext";
 import { GuestRoute } from "./GuestRoute";
 import { useDebounce } from "../hooks/useDebounce";
+import { Spinner } from "../ui/Spinner";
 import {
   validatePassword,
   validateName,
@@ -353,7 +354,13 @@ export const Register = () => {
           </div>
 
           <button type="submit" disabled={!isFormValid}>
-            {loading ? "Registering..." : "Register"}
+            {loading ? (
+              <>
+                <Spinner size={16} /> Registering...
+              </>
+            ) : (
+              "Register"
+            )}
           </button>
 
           <div style={{ margin: "16px 0", textAlign: "center", color: "#666" }}>

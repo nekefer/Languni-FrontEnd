@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
+import { useAuth } from "../../contexts/AuthContext";
 import preferencesService from "../../api/preferences";
 import { NativeLanguageStep } from "./NativeLanguageStep";
 import { LearningLanguageStep } from "./LearningLanguageStep";
 import { TopicsStep } from "./TopicsStep";
 import { LevelStep } from "./LevelStep";
+import { Spinner } from "../../ui/Spinner";
 import { createLogger } from "../../utils/logger";
 import "../../styles/Onboarding.css";
 
@@ -15,6 +17,7 @@ const TOTAL_STEPS = 4;
 
 export const OnboardingFlow = () => {
   const navigate = useNavigate();
+  const { markOnboardingComplete } = useAuth();
   const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [preferences, setPreferences] = useState({
@@ -93,12 +96,15 @@ export const OnboardingFlow = () => {
         level: preferences.level,
       });
 
+      // Update auth context to reflect completed onboarding
+      markOnboardingComplete();
+
       toast.success("Preferences saved! Welcome to Linguini!");
       navigate({ to: "/dashboard" });
     } catch (error) {
       logger.error("Failed to save preferences", error);
       toast.error(
-        error.message || "Failed to save preferences. Please try again."
+        error.message || "Failed to save preferences. Please try again.",
       );
     } finally {
       setLoading(false);
@@ -193,7 +199,13 @@ export const OnboardingFlow = () => {
               onClick={handleComplete}
               disabled={!canProceed() || loading}
             >
-              {loading ? "Saving..." : "Get Started"}
+              {loading ? (
+                <>
+                  <Spinner size={16} /> Saving...
+                </>
+              ) : (
+                "Get Started"
+              )}
             </button>
           )}
         </div>

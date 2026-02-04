@@ -3,6 +3,7 @@ import { useNavigate } from "@tanstack/react-router";
 import dictionaryService from "../api/dictionary.js";
 import vocabularyService from "../api/vocabulary.js";
 import { vocabularyLogger } from "../utils/logger";
+import { Spinner } from "../ui/Spinner";
 import styles from "../styles/WordDetail.module.css";
 import NotFound from "./NotFound.jsx";
 
@@ -91,7 +92,7 @@ export const WordDetail = ({ word }) => {
       <div className={styles.wordPage}>
         <div className={styles.wordContainer}>
           <div className={styles.loadingState}>
-            <div className={styles.spinner} />
+            <Spinner size={32} />
             <p>Loading...</p>
           </div>
         </div>

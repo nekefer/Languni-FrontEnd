@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import vocabularyService from "../api/vocabulary.js";
 import dictionaryService from "../api/dictionary.js";
 import { createLogger } from "../utils/logger";
+import { Spinner } from "../ui/Spinner.jsx";
 import styles from "../styles/MyVocabulary.module.css";
 
 const logger = createLogger("vocabulary");
@@ -133,7 +134,10 @@ const WordCard = ({ wordData, onDelete, onViewVideo, onViewDetails }) => {
 
       <div className={styles.wordContent}>
         {loadingDefinition ? (
-          <div className={styles.definitionLoading}>Loading definition...</div>
+          <div className={styles.definitionLoading}>
+            <Spinner size={16} />
+            <span>Loading definition...</span>
+          </div>
         ) : definition ? (
           <div className={styles.definitionPreview}>
             <p>{getDefinitionPreview()}</p>
@@ -173,7 +177,7 @@ const VocabularyGrid = ({
   if (loading) {
     return (
       <div className={styles.vocabularyLoading}>
-        <div className={styles.loadingSpinner}></div>
+        <Spinner size={32} />
         <p>Loading your vocabulary...</p>
       </div>
     );
@@ -242,7 +246,7 @@ export const MyVocabulary = () => {
       const skip = (pageNum - 1) * WORDS_PER_PAGE;
       const response = await vocabularyService.getSavedWords(
         skip,
-        WORDS_PER_PAGE
+        WORDS_PER_PAGE,
       );
 
       // Transform backend response to match frontend expectations
