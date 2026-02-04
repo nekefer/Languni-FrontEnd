@@ -4,7 +4,7 @@ import { loginUser, googleLogin, fetchUserInfo } from "../api/auth";
 import { useNavigate, useSearch } from "@tanstack/react-router";
 import { useAuth } from "../contexts/AuthContext";
 import { GuestRoute } from "./GuestRoute";
-import { Spinner } from "../ui/Spinner";
+import { Spinner, FullPageSpinner } from "../ui/Spinner";
 import "../styles/Login.css";
 
 export const Login = () => {
@@ -12,6 +12,7 @@ export const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [checkingRedirect, setCheckingRedirect] = useState(false);
   const navigate = useNavigate();
   const search = useSearch({ from: "/login" });
   const { login } = useAuth();
@@ -35,9 +36,16 @@ export const Login = () => {
     try {
       await loginUser(email, password);
       const userData = await fetchUserInfo();
-      login(userData); // Update auth context
+      setLoading(false);
+      setCheckingRedirect(true); // Show full page spinner
+      const onboardingCompleted = await login(userData);
       toast.success("Login successful! Welcome back.");
-      navigate({ to: "/dashboard" });
+      // Redirect based on onboarding status
+      if (onboardingCompleted) {
+        navigate({ to: "/dashboard" });
+      } else {
+        navigate({ to: "/onboarding" });
+      }
     } catch (err) {
       // Handle different error types
       if (!err.response) {
@@ -68,8 +76,14 @@ export const Login = () => {
       }
     } finally {
       setLoading(false);
+      setCheckingRedirect(false);
     }
   };
+
+  // Show full page spinner while checking where to redirect
+  if (checkingRedirect) {
+    return <FullPageSpinner text="Signing you in..." />;
+  }
 
   const handleGoogleLogin = async () => {
     try {

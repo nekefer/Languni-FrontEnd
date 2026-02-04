@@ -98,8 +98,9 @@ export const AuthProvider = ({ children }) => {
     setIsNewUser(false);
     setSentryUser(userData);
     authLogger.info("User logged in", { method: userData.auth_method });
-    // Check onboarding status after login
-    await checkOnboardingStatus();
+    // Check onboarding status after login and return the result
+    const onboardingCompleted = await checkOnboardingStatus();
+    return onboardingCompleted;
   };
 
   // Called after registration to set user and mark as new
