@@ -4,6 +4,7 @@ import React, {
   useRef,
   useCallback,
   useMemo,
+  memo,
 } from "react";
 import { List } from "react-window";
 import { toast } from "sonner";
@@ -12,7 +13,62 @@ import vocabularyService from "../api/vocabulary";
 import { Spinner } from "../ui/Spinner";
 import { playerLogger } from "../utils/logger";
 
-function CaptionPanel({ videoId, currentTime, onSeek, onWordClick }) {
+// Memoized row component - OUTSIDE to prevent recreation on every render
+const CaptionRow = memo(function CaptionRow({
+  index,
+  style,
+  parsedCaptions,
+  currentCaptionIndex,
+  handleCaptionClick,
+  handleWordClick,
+}) {
+  const caption = parsedCaptions[index];
+  if (!caption) return null;
+
+  const isActive = index === currentCaptionIndex;
+  const captionHtml = caption.text
+    .split(" ")
+    .map((word) => `<span class="caption-word">${word}</span>`)
+    .join(" ");
+
+  return (
+    <div
+      style={style}
+      className={`caption-item ${isActive ? "active" : ""}`}
+      data-caption-index={index}
+      onClick={() => handleCaptionClick(caption.start)}
+      title={`Seek to ${Math.floor(caption.start / 60)}:${String(Math.floor(caption.start % 60)).padStart(2, "0")}`}
+    >
+      <div className="caption-timestamp">
+        {Math.floor(caption.start / 60)}:
+        {String(Math.floor(caption.start % 60)).padStart(2, "0")}
+        <span className="caption-duration">
+          ({caption.duration.toFixed(1)}s)
+        </span>
+      </div>
+      <div
+        className="caption-text"
+        onClick={(e) => {
+          if (e.target.classList.contains("caption-word")) {
+            e.stopPropagation();
+            const word = e.target.textContent.trim();
+            handleWordClick(word, caption.start);
+          }
+        }}
+        dangerouslySetInnerHTML={{ __html: captionHtml }}
+      />
+    </div>
+  );
+});
+
+function CaptionPanel({
+  videoId,
+  currentCaptionIndex,
+  getCurrentTime,
+  onCaptionsLoaded,
+  onSeek,
+  onWordClick
+}) {
   const [captions, setCaptions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -29,40 +85,22 @@ function CaptionPanel({ videoId, currentTime, onSeek, onWordClick }) {
 
     try {
       const response = await getCaptions(videoId);
-      setCaptions(response.captions || []);
+      const fetchedCaptions = response.captions || [];
+      setCaptions(fetchedCaptions);
+      // Notify parent about captions for index calculation
+      onCaptionsLoaded?.(fetchedCaptions);
     } catch (err) {
       playerLogger.error("Failed to fetch captions", err, { videoId });
       setError(err.message || "Failed to load captions");
     } finally {
       setLoading(false);
     }
-  }, [videoId]); // Dependencies for useCallback
+  }, [videoId, onCaptionsLoaded]);
 
   // Now include fetchCaptions in the dependency array
   useEffect(() => {
     fetchCaptions();
   }, [fetchCaptions]);
-
-  // Memoize currentCaptionIndex to prevent recalculating on every render
-  const currentCaptionIndex = useMemo(() => {
-    if (!captions.length) return -1;
-
-    const bufferTime = 0.2;
-    const adjustedTime = currentTime + bufferTime;
-
-    for (let i = 0; i < captions.length; i++) {
-      const caption = captions[i];
-      const nextCaption = captions[i + 1];
-
-      if (adjustedTime >= caption.start) {
-        if (!nextCaption || adjustedTime < nextCaption.start) {
-          return i;
-        }
-      }
-    }
-
-    return -1;
-  }, [captions, currentTime]);
 
   // Optimized auto-scroll with RAF and debouncing
   useEffect(() => {
@@ -145,7 +183,7 @@ function CaptionPanel({ videoId, currentTime, onSeek, onWordClick }) {
           cleanWord,
           captions,
           captionIndex,
-          currentTime,
+          getCurrentTime(),
         );
 
         if (onWordClick) {
@@ -156,7 +194,7 @@ function CaptionPanel({ videoId, currentTime, onSeek, onWordClick }) {
         toast.error(`Can't find definition for "${cleanWord}"`);
       }
     },
-    [captions, currentTime, onWordClick],
+    [captions, getCurrentTime, onWordClick],
   );
 
   // Memoize parsed captions - only stores data, no event handlers
@@ -167,54 +205,6 @@ function CaptionPanel({ videoId, currentTime, onSeek, onWordClick }) {
       words: caption.text.split(" "),
     }));
   }, [captions]);
-
-  // Memoized row renderer for virtualized list
-  const RowComponent = React.memo(function CaptionRow({
-    index,
-    style,
-    parsedCaptions,
-    currentCaptionIndex,
-    handleCaptionClick,
-    handleWordClick,
-  }) {
-    const caption = parsedCaptions[index];
-    if (!caption) return null;
-
-    const isActive = index === currentCaptionIndex;
-    const captionHtml = caption.text
-      .split(" ")
-      .map((word) => `<span class="caption-word">${word}</span>`)
-      .join(" ");
-
-    return (
-      <div
-        style={style}
-        className={`caption-item ${isActive ? "active" : ""}`}
-        data-caption-index={index}
-        onClick={() => handleCaptionClick(caption.start)}
-        title={`Seek to ${Math.floor(caption.start / 60)}:${String(Math.floor(caption.start % 60)).padStart(2, "0")}`}
-      >
-        <div className="caption-timestamp">
-          {Math.floor(caption.start / 60)}:
-          {String(Math.floor(caption.start % 60)).padStart(2, "0")}
-          <span className="caption-duration">
-            ({caption.duration.toFixed(1)}s)
-          </span>
-        </div>
-        <div
-          className="caption-text"
-          onClick={(e) => {
-            if (e.target.classList.contains("caption-word")) {
-              e.stopPropagation();
-              const word = e.target.textContent.trim();
-              handleWordClick(word, caption.start);
-            }
-          }}
-          dangerouslySetInnerHTML={{ __html: captionHtml }}
-        />
-      </div>
-    );
-  });
 
   if (loading) {
     return (
@@ -261,7 +251,7 @@ function CaptionPanel({ videoId, currentTime, onSeek, onWordClick }) {
 
       {/* Virtualized list - only renders ~15 visible captions at a time */}
       <List
-        rowComponent={RowComponent}
+        rowComponent={CaptionRow}
         rowCount={parsedCaptions.length}
         rowHeight={80}
         rowProps={{

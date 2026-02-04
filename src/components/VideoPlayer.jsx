@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import YouTubePlayer from "./YouTubePlayer";
 import CaptionPanel from "./CaptionPanel";
@@ -8,10 +8,54 @@ import "../styles/VideoPlayer.css";
 
 function VideoPlayer({ videoId }) {
   const navigate = useNavigate();
-  const [currentTime, setCurrentTime] = useState(0);
+  // Use ref for raw time (doesn't cause re-renders)
+  const currentTimeRef = useRef(0);
+  // Only track caption index in state (causes re-render only when caption changes)
+  const [currentCaptionIndex, setCurrentCaptionIndex] = useState(-1);
   const [playerRef, setPlayerRef] = useState(null);
   const [vocabularyData, setVocabularyData] = useState(null);
   const [isVocabularyPanelOpen, setIsVocabularyPanelOpen] = useState(false);
+  // Store captions reference for index calculation
+  const captionsRef = useRef([]);
+
+  // Calculate caption index from time
+  const calculateCaptionIndex = useCallback((time, captions) => {
+    if (!captions.length) return -1;
+    const bufferTime = 0.2;
+    const adjustedTime = time + bufferTime;
+
+    for (let i = 0; i < captions.length; i++) {
+      const caption = captions[i];
+      const nextCaption = captions[i + 1];
+      if (adjustedTime >= caption.start) {
+        if (!nextCaption || adjustedTime < nextCaption.start) {
+          return i;
+        }
+      }
+    }
+    return -1;
+  }, []);
+
+  // Handle time updates - only update state when caption changes
+  const handleTimeUpdate = useCallback((time) => {
+    currentTimeRef.current = time;
+    const newIndex = calculateCaptionIndex(time, captionsRef.current);
+    // Only update state if caption index changed
+    setCurrentCaptionIndex((prevIndex) => {
+      if (prevIndex !== newIndex) {
+        return newIndex;
+      }
+      return prevIndex;
+    });
+  }, [calculateCaptionIndex]);
+
+  // Callback for CaptionPanel to register captions
+  const handleCaptionsLoaded = useCallback((captions) => {
+    captionsRef.current = captions;
+  }, []);
+
+  // Getter for current time (used by CaptionPanel for word click)
+  const getCurrentTime = useCallback(() => currentTimeRef.current, []);
 
   const handleSeek = (time) => {
     // Seek YouTube player to specific time
@@ -60,7 +104,7 @@ function VideoPlayer({ videoId }) {
         <div className="player-section">
           <YouTubePlayer
             videoId={videoId}
-            onTimeUpdate={setCurrentTime}
+            onTimeUpdate={handleTimeUpdate}
             onPlayerReady={setPlayerRef}
           />
         </div>
@@ -68,7 +112,9 @@ function VideoPlayer({ videoId }) {
         <div className="caption-section">
           <CaptionPanel
             videoId={videoId}
-            currentTime={currentTime}
+            currentCaptionIndex={currentCaptionIndex}
+            getCurrentTime={getCurrentTime}
+            onCaptionsLoaded={handleCaptionsLoaded}
             onSeek={handleSeek}
             onWordClick={handleWordClick}
           />
