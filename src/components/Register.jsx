@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import { registerUser, googleRegister, fetchUserInfo } from "../api/auth";
 import { useNavigate, useSearch } from "@tanstack/react-router";
 import { useAuth } from "../contexts/AuthContext";
+import { useOnboarding } from "../contexts/OnboardingContext";
 import { GuestRoute } from "./GuestRoute";
 import { useDebounce } from "../hooks/useDebounce";
 import { Spinner } from "../ui/Spinner";
@@ -41,6 +42,7 @@ export const Register = () => {
   const navigate = useNavigate();
   const search = useSearch({ from: "/register" });
   const { register } = useAuth();
+  const { markAsNewUser } = useOnboarding();
 
   // Debounce form values for validation
   const debouncedEmail = useDebounce(form.email, 500);
@@ -173,7 +175,8 @@ export const Register = () => {
       await registerUser(registrationData);
 
       const userData = await fetchUserInfo();
-      register(userData); // Use register() to set isNewUser flag
+      register(userData);
+      markAsNewUser(); // Mark as new user for onboarding
 
       toast.success("Account created successfully! Welcome to Linguini.");
       navigate({ to: "/dashboard" });

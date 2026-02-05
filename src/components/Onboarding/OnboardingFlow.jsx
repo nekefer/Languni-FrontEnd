@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
-import { useAuth } from "../../contexts/AuthContext";
+import { useOnboarding } from "../../contexts/OnboardingContext";
 import preferencesService from "../../api/preferences";
 import { NativeLanguageStep } from "./NativeLanguageStep";
 import { LearningLanguageStep } from "./LearningLanguageStep";
@@ -17,7 +17,7 @@ const TOTAL_STEPS = 4;
 
 export const OnboardingFlow = () => {
   const navigate = useNavigate();
-  const { markOnboardingComplete } = useAuth();
+  const { markOnboardingComplete } = useOnboarding();
   const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [preferences, setPreferences] = useState({

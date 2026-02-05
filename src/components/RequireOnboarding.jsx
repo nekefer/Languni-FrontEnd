@@ -1,5 +1,5 @@
 import { Navigate } from "@tanstack/react-router";
-import { useAuth } from "../contexts/AuthContext";
+import { useOnboarding } from "../contexts/OnboardingContext";
 import { FullPageSpinner } from "../ui/Spinner";
 
 /**
@@ -14,7 +14,7 @@ import { FullPageSpinner } from "../ui/Spinner";
  * </ProtectedRoute>
  */
 export const RequireOnboarding = ({ children }) => {
-  const { hasCompletedOnboarding, onboardingLoading } = useAuth();
+  const { hasCompletedOnboarding, onboardingLoading } = useOnboarding();
 
   // Show loading while checking onboarding status
   if (onboardingLoading) {

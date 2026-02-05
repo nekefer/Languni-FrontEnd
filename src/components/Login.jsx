@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import { loginUser, googleLogin, fetchUserInfo } from "../api/auth";
 import { useNavigate, useSearch } from "@tanstack/react-router";
 import { useAuth } from "../contexts/AuthContext";
+import { useOnboarding } from "../contexts/OnboardingContext";
 import { GuestRoute } from "./GuestRoute";
 import { Spinner, FullPageSpinner } from "../ui/Spinner";
 import "../styles/Login.css";
@@ -16,8 +17,9 @@ export const Login = () => {
   const navigate = useNavigate();
   const search = useSearch({ from: "/login" });
   const { login } = useAuth();
+  const { checkOnboardingStatus } = useOnboarding();
 
-  // ✅ Handle error messages from URL params (only OAuth failures now)
+  // Handle error messages from URL params (only OAuth failures now)
   useEffect(() => {
     if (search?.error) {
       if (search.error === "oauth_failed") {
@@ -37,9 +39,16 @@ export const Login = () => {
       await loginUser(email, password);
       const userData = await fetchUserInfo();
       setLoading(false);
-      setCheckingRedirect(true); // Show full page spinner
-      const onboardingCompleted = await login(userData);
+      setCheckingRedirect(true);
+
+      // Set user in auth context
+      login(userData);
+
+      // Check onboarding status separately
+      const onboardingCompleted = await checkOnboardingStatus();
+
       toast.success("Login successful! Welcome back.");
+
       // Redirect based on onboarding status
       if (onboardingCompleted) {
         navigate({ to: "/dashboard" });
@@ -49,7 +58,6 @@ export const Login = () => {
     } catch (err) {
       // Handle different error types
       if (!err.response) {
-        // Network error
         const errorMsg = "Network error. Please check your connection.";
         setError(errorMsg);
         toast.error(errorMsg);
@@ -58,13 +66,11 @@ export const Login = () => {
         setError(errorMsg);
         toast.error(errorMsg);
       } else if (err.response?.status === 422 || err.response?.status === 400) {
-        // Validation error
         const errorMsg =
           err.response?.data?.detail || "Please check your input.";
         setError(errorMsg);
         toast.error(errorMsg);
       } else if (err.response?.status === 429) {
-        // Rate limit
         const errorMsg = "Too many login attempts. Please try again later.";
         setError(errorMsg);
         toast.error(errorMsg);

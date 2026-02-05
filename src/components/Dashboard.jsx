@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "@tanstack/react-router";
 import { useAuth } from "../contexts/AuthContext";
+import { useOnboarding } from "../contexts/OnboardingContext";
 import { googleLogin } from "../api/auth";
 import { getLastLikedVideo } from "../api/youtube";
 import useTrendingStore from "../stores/trendingStore";
@@ -13,6 +14,7 @@ const logger = createLogger("dashboard");
 
 export const Dashboard = () => {
   const { user, logout } = useAuth();
+  const { resetOnboardingState } = useOnboarding();
   const navigate = useNavigate();
   const [lastLikedVideo, setLastLikedVideo] = useState(null);
   const [videoLoading, setVideoLoading] = useState(true);
@@ -32,6 +34,7 @@ export const Dashboard = () => {
 
   const handleLogout = async () => {
     await logout();
+    resetOnboardingState();
     navigate({ to: "/" });
   };
 
