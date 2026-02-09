@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { getCaptions } from "../api/youtube";
 import vocabularyService from "../api/vocabulary";
 import { Spinner } from "../ui/Spinner";
+import expandContractions from "@stdlib/nlp-expand-contractions";
 import { playerLogger } from "../utils/logger";
 
 // Memoized row component - OUTSIDE to prevent recreation on every render
@@ -149,12 +150,20 @@ function CaptionPanel({
       if (!cleanWord) return;
 
       try {
+        const expanded = expandContractions(cleanWord);
+        const isContraction = expanded !== cleanWord;
+
         const vocabularyData = await vocabularyService.processWordClick(
-          cleanWord,
+          isContraction ? expanded.split(" ")[0] : cleanWord,
           captions,
           captionIndex,
           getCurrentTime(),
         );
+
+        if (isContraction) {
+          vocabularyData.expandedForm = expanded;
+          vocabularyData.originalWord = cleanWord;
+        }
 
         if (onWordClick) {
           onWordClick(vocabularyData);

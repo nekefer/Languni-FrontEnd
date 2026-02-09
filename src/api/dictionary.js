@@ -296,6 +296,8 @@ class DictionaryService {
 
     if (/[''‹›`´]/.test(word)) {
       expandContractions(word);
+
+      console.log(expandContractions(word))
       return { valid: true, type: "contraction", word: word };
     }
 

@@ -219,6 +219,17 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
             <h2 className={styles.vocabularyWord}>
               {vocabularyData.definition?.word || vocabularyData.word}
             </h2>
+            {vocabularyData.expandedForm && (
+              <div className={styles.contractionExpansion}>
+                <span className={styles.originalWord}>
+                  {vocabularyData.originalWord}
+                </span>
+                {" → "}
+                <span className={styles.expandedWord}>
+                  {vocabularyData.expandedForm}
+                </span>
+              </div>
+            )}
             {vocabularyData.definition?.phonetic && (
               <div className={styles.vocabularyPronunciation}>
                 <span className={styles.phoneticText}>
