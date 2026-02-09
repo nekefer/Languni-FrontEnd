@@ -13,7 +13,6 @@ export const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [checkingRedirect, setCheckingRedirect] = useState(false);
   const navigate = useNavigate();
   const search = useSearch({ from: "/login" });
   const { login } = useAuth();
@@ -39,22 +38,13 @@ export const Login = () => {
       await loginUser(email, password);
       const userData = await fetchUserInfo();
       setLoading(false);
-      setCheckingRedirect(true);
-
       // Set user in auth context
       login(userData);
 
-      // Check onboarding status separately
-      const onboardingCompleted = await checkOnboardingStatus();
+      navigate({to: "/dashboard"})
 
       toast.success("Login successful! Welcome back.");
 
-      // Redirect based on onboarding status
-      if (onboardingCompleted) {
-        navigate({ to: "/dashboard" });
-      } else {
-        navigate({ to: "/onboarding" });
-      }
     } catch (err) {
       // Handle different error types
       if (!err.response) {
@@ -82,14 +72,10 @@ export const Login = () => {
       }
     } finally {
       setLoading(false);
-      setCheckingRedirect(false);
     }
   };
 
-  // Show full page spinner while checking where to redirect
-  if (checkingRedirect) {
-    return <FullPageSpinner text="Signing you in..." />;
-  }
+
 
   const handleGoogleLogin = async () => {
     try {

@@ -6,7 +6,7 @@ import React, {
   useMemo,
   memo,
 } from "react";
-import { List } from "react-window";
+import { List, useListRef } from "react-window";
 import { toast } from "sonner";
 import { getCaptions } from "../api/youtube";
 import vocabularyService from "../api/vocabulary";
@@ -26,10 +26,6 @@ const CaptionRow = memo(function CaptionRow({
   if (!caption) return null;
 
   const isActive = index === currentCaptionIndex;
-  const captionHtml = caption.text
-    .split(" ")
-    .map((word) => `<span class="caption-word">${word}</span>`)
-    .join(" ");
 
   return (
     <div
@@ -46,17 +42,20 @@ const CaptionRow = memo(function CaptionRow({
           ({caption.duration.toFixed(1)}s)
         </span>
       </div>
-      <div
-        className="caption-text"
-        onClick={(e) => {
-          if (e.target.classList.contains("caption-word")) {
-            e.stopPropagation();
-            const word = e.target.textContent.trim();
-            handleWordClick(word, caption.start);
-          }
-        }}
-        dangerouslySetInnerHTML={{ __html: captionHtml }}
-      />
+      <div className="caption-text">
+        {caption.text.split(" ").map((word, i) => (
+          <span
+            key={i}
+            className="caption-word"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleWordClick(word, index);
+            }}
+          >
+            {word}{" "}
+          </span>
+        ))}
+      </div>
     </div>
   );
 });
@@ -72,7 +71,7 @@ function CaptionPanel({
   const [captions, setCaptions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const captionPanelRef = useRef(null);
+  const listRef = useListRef();
   const scrollTimeoutRef = useRef(null);
   const lastScrolledIndexRef = useRef(-1);
 
@@ -102,9 +101,8 @@ function CaptionPanel({
     fetchCaptions();
   }, [fetchCaptions]);
 
-  // Optimized auto-scroll with RAF and debouncing
+  // Auto-scroll to active caption using virtualized list API
   useEffect(() => {
-    // Skip if no change or invalid index
     if (
       currentCaptionIndex === -1 ||
       currentCaptionIndex === lastScrolledIndexRef.current
@@ -112,49 +110,27 @@ function CaptionPanel({
       return;
     }
 
-    // Clear any pending scroll timeout
     if (scrollTimeoutRef.current) {
       clearTimeout(scrollTimeoutRef.current);
     }
 
-    // Debounce scroll to prevent rapid consecutive scrolls
     scrollTimeoutRef.current = setTimeout(() => {
-      if (!captionPanelRef.current) return;
+      if (!listRef.current) return;
 
-      const captionElement = captionPanelRef.current.querySelector(
-        `[data-caption-index="${currentCaptionIndex}"]`,
-      );
-
-      if (captionElement) {
-        const container = captionPanelRef.current;
-        const containerRect = container.getBoundingClientRect();
-        const elementRect = captionElement.getBoundingClientRect();
-
-        const isInView =
-          elementRect.top >= containerRect.top &&
-          elementRect.bottom <= containerRect.bottom;
-
-        if (!isInView) {
-          // Use RAF to ensure DOM has updated before scrolling
-          requestAnimationFrame(() => {
-            captionElement.scrollIntoView({
-              behavior: "smooth",
-              block: "center",
-            });
-            lastScrolledIndexRef.current = currentCaptionIndex;
-          });
-        } else {
-          lastScrolledIndexRef.current = currentCaptionIndex;
-        }
-      }
-    }, 50); // 50ms debounce
+      listRef.current.scrollToRow({
+        index: currentCaptionIndex,
+        align: "center",
+        behavior: "smooth",
+      });
+      lastScrolledIndexRef.current = currentCaptionIndex;
+    }, 50);
 
     return () => {
       if (scrollTimeoutRef.current) {
         clearTimeout(scrollTimeoutRef.current);
       }
     };
-  }, [currentCaptionIndex]);
+  }, [currentCaptionIndex, listRef]);
 
   // Handle caption card click (seek to beginning of caption)
   const handleCaptionClick = useCallback(
@@ -167,18 +143,12 @@ function CaptionPanel({
 
   // Handle word click for vocabulary learning
   const handleWordClick = useCallback(
-    async (word, captionStartTime) => {
-      const cleanWord = word.replace(/[^\w'']/g, "").toLowerCase();
+    async (word, captionIndex) => {
+      const cleanWord = word.replace(/[^\w''-]/g, "").toLowerCase();
 
       if (!cleanWord) return;
 
       try {
-        const captionIndex = captions.findIndex(
-          (caption) => caption.start === captionStartTime,
-        );
-
-        if (captionIndex === -1) return;
-
         const vocabularyData = await vocabularyService.processWordClick(
           cleanWord,
           captions,
@@ -197,14 +167,7 @@ function CaptionPanel({
     [captions, getCurrentTime, onWordClick],
   );
 
-  // Memoize parsed captions - only stores data, no event handlers
-  // This now only recalculates when captions change, not when currentTime changes
-  const parsedCaptions = useMemo(() => {
-    return captions.map((caption) => ({
-      ...caption,
-      words: caption.text.split(" "),
-    }));
-  }, [captions]);
+  const parsedCaptions = useMemo(() => captions, [captions]);
 
   if (loading) {
     return (
@@ -241,7 +204,7 @@ function CaptionPanel({
   }
 
   return (
-    <div className="caption-panel" ref={captionPanelRef}>
+    <div className="caption-panel">
       <div className="caption-header">
         <h3>Captions</h3>
         <p className="caption-info">
@@ -251,6 +214,7 @@ function CaptionPanel({
 
       {/* Virtualized list - only renders ~15 visible captions at a time */}
       <List
+        listRef={listRef}
         rowComponent={CaptionRow}
         rowCount={parsedCaptions.length}
         rowHeight={80}
