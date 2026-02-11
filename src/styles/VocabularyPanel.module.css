@@ -994,6 +994,119 @@
     border-radius: 4px;
 }
 
+/* Translation Content */
+.translationContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    padding: 1rem 0;
+}
+
+.translationResult {
+    width: 100%;
+    background: #222;
+    border-radius: 8px;
+    padding: 1.5rem;
+    border-left: 4px solid #60a5fa;
+}
+
+.translationPair {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 1.5rem;
+}
+
+.languageBadge {
+    background: #60a5fa;
+    color: white;
+    padding: 4px 14px;
+    border-radius: 16px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.translationArrow {
+    color: #999;
+    font-size: 1.2rem;
+}
+
+.translationWords {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.translationWord {
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #fff;
+    text-align: center;
+}
+
+.translationDivider {
+    color: #60a5fa;
+    font-size: 1.4rem;
+}
+
+.translationLoading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 2rem;
+    color: #999;
+}
+
+.translationSpinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid #333;
+    border-top: 3px solid #60a5fa;
+    border-radius: 50%;
+    animation: translationSpin 0.8s linear infinite;
+}
+
+@keyframes translationSpin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.translationError {
+    text-align: center;
+    padding: 2rem;
+    color: #ef4444;
+}
+
+.translationError p {
+    margin: 0 0 1rem 0;
+}
+
+.retryBtn {
+    background: #60a5fa;
+    border: none;
+    color: white;
+    padding: 8px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.retryBtn:hover {
+    background: #3b82f6;
+    transform: translateY(-1px);
+}
+
 /* Mobile adjustments for enhanced features */
 @media (max-width: 768px) {
     .tabLabel {

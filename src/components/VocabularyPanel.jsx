@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import vocabularyService from "../api/vocabulary.js";
+import translationService from "../api/translation.js";
 import { vocabularyLogger } from "../utils/logger";
 import styles from "../styles/VocabularyPanel.module.css";
 // Save state configuration
@@ -48,6 +49,11 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
   const [saveState, setSaveState] = useState("idle"); // 'idle', 'checking', 'already-saved', 'saving', 'saved', 'error'
   const [saveError, setSaveError] = useState(null);
 
+  // Translation state
+  const [translationData, setTranslationData] = useState(null);
+  const [translationLoading, setTranslationLoading] = useState(false);
+  const [translationError, setTranslationError] = useState(null);
+
   // Handle escape key and outside clicks
   useEffect(() => {
     const handleKeydown = (event) => {
@@ -83,6 +89,9 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
       setPlayingAudioIndex(null);
       setSaveState("checking");
       setSaveError(null);
+      setTranslationData(null);
+      setTranslationLoading(false);
+      setTranslationError(null);
     }
   }, [isOpen, vocabularyData?.word]);
 
@@ -206,6 +215,26 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
     }
   };
 
+  // Lazy-fetch translation only when Translation tab is clicked
+  const fetchTranslation = async () => {
+    if (translationData || translationLoading) return;
+
+    const word = vocabularyData?.definition?.word || vocabularyData?.word;
+    if (!word) return;
+
+    setTranslationLoading(true);
+    setTranslationError(null);
+    try {
+      const result = await translationService.translate(word);
+      setTranslationData(result);
+    } catch (error) {
+      vocabularyLogger.error("Translation fetch failed", error);
+      setTranslationError(error.message || "Translation failed");
+    } finally {
+      setTranslationLoading(false);
+    }
+  };
+
   if (!isOpen || !vocabularyData) {
     return null;
   }
@@ -270,12 +299,23 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
             <span className={styles.tabLabel}>Pronunciation</span>
           </button>
           <button
+            className={`${styles.tab} ${activeTab === "translation" ? styles.active : ""}`}
+            onClick={() => {
+              setActiveTab("translation");
+              fetchTranslation();
+            }}
+          >
+            <span className={styles.tabIcon}>🌐</span>
+            <span className={styles.tabLabel}>Translation</span>
+          </button>
+          <button
             className={`${styles.tab} ${activeTab === "related" ? styles.active : ""}`}
             onClick={() => setActiveTab("related")}
           >
             <span className={styles.tabIcon}>🔗</span>
             <span className={styles.tabLabel}>Related</span>
           </button>
+          {/* Usage tab commented out — replaced by Translation
           <button
             className={`${styles.tab} ${activeTab === "usage" ? styles.active : ""}`}
             onClick={() => setActiveTab("usage")}
@@ -283,6 +323,7 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
             <span className={styles.tabIcon}>📝</span>
             <span className={styles.tabLabel}>Usage</span>
           </button>
+          */}
         </div>
 
         {/* Content */}
@@ -470,6 +511,57 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
             </div>
           )}
 
+          {/* Translation Tab */}
+          {activeTab === "translation" && (
+            <div className={styles.translationContent}>
+              {translationLoading && (
+                <div className={styles.translationLoading}>
+                  <div className={styles.translationSpinner} />
+                  <p>Translating...</p>
+                </div>
+              )}
+
+              {translationError && (
+                <div className={styles.translationError}>
+                  <p>{translationError}</p>
+                  <button
+                    className={styles.retryBtn}
+                    onClick={() => {
+                      setTranslationData(null);
+                      setTranslationError(null);
+                      fetchTranslation();
+                    }}
+                  >
+                    Retry
+                  </button>
+                </div>
+              )}
+
+              {translationData && (
+                <div className={styles.translationResult}>
+                  <div className={styles.translationPair}>
+                    <span className={styles.languageBadge}>
+                      {translationData.sourceLanguage?.toUpperCase()}
+                    </span>
+                    <span className={styles.translationArrow}>→</span>
+                    <span className={styles.languageBadge}>
+                      {translationData.targetLanguage?.toUpperCase()}
+                    </span>
+                  </div>
+                  <div className={styles.translationWords}>
+                    <div className={styles.translationWord}>
+                      {vocabularyData.definition?.word || vocabularyData.word}
+                    </div>
+                    <div className={styles.translationDivider}>⟶</div>
+                    <div className={styles.translationWord}>
+                      {translationData.translatedWord}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
           {/*  Related Words Tab */}
           {activeTab === "related" && (
             <div className={styles.relatedContent}>
@@ -535,16 +627,14 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
             </div>
           )}
 
-          {/*  Usage Tab */}
+          {/* Usage Tab — commented out, replaced by Translation
           {activeTab === "usage" && (
             <div className={styles.usageContent}>
-              {/* Context timeline - show surrounding captions */}
               {(vocabularyData.context?.previous?.length > 0 ||
                 vocabularyData.context?.next?.length > 0) && (
                 <div className={styles.usageSection}>
                   <h4>🕐 Context Timeline</h4>
                   <div className={styles.contextTimeline}>
-                    {/* Previous context */}
                     {vocabularyData.context.previous?.map((caption, index) => (
                       <div
                         key={`prev-${index}`}
@@ -556,8 +646,6 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
                         </span>
                       </div>
                     ))}
-
-                    {/* Current (highlighted) */}
                     {vocabularyData.context.current && (
                       <div
                         className={`${styles.contextItem} ${styles.current}`}
@@ -570,8 +658,6 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
                         </span>
                       </div>
                     )}
-
-                    {/* Next context */}
                     {vocabularyData.context.next?.map((caption, index) => (
                       <div
                         key={`next-${index}`}
@@ -588,6 +674,7 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
               )}
             </div>
           )}
+          */}
         </div>
 
         {/* Footer */}

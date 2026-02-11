@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, useRouter  } from "@tanstack/react-router";
 import dictionaryService from "../api/dictionary.js";
 import vocabularyService from "../api/vocabulary.js";
 import { vocabularyLogger } from "../utils/logger";
@@ -9,6 +9,7 @@ import NotFound from "./NotFound.jsx";
 
 export const WordDetail = ({ word }) => {
   const navigate = useNavigate();
+  const router = useRouter()
   const [definition, setDefinition] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -78,7 +79,7 @@ export const WordDetail = ({ word }) => {
   const handleRemove = async () => {
     if (!confirm(`Remove "${word}" from vocabulary?`)) return;
     await vocabularyService.deleteSavedWord(word);
-    navigate({ to: "/my-vocabulary" });
+    navigate({ to: "/" });
   };
 
   const lookupWord = (w) =>
@@ -108,7 +109,7 @@ export const WordDetail = ({ word }) => {
             <span className={styles.errorIcon}>⚠️</span>
             <h2>Error loading word</h2>
             <p>{error}</p>
-            <button onClick={() => navigate({ to: "/my-vocabulary" })}>
+            <button onClick={() => router.history.back()}>
               ← Back to vocabulary
             </button>
           </div>
@@ -128,8 +129,9 @@ export const WordDetail = ({ word }) => {
         <nav className={styles.wordNav}>
           <button
             className={styles.navBack}
-            onClick={() => navigate({ to: "/my-vocabulary" })}
+            onClick={() => router.history.back()}
           >
+            
             <span>←</span> Back
           </button>
           {isSaved && (

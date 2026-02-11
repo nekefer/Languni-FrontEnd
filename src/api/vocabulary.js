@@ -1,6 +1,5 @@
 import axios from "axios";
 import dictionaryService from "./dictionary.js";
-import translationService from "./translation.js";
 import config from "../config";
 import { vocabularyLogger } from "../utils/logger";
 
@@ -137,13 +136,9 @@ class VocabularyService {
    * Save a word to user's vocabulary collection
    * @param {string} word - The word to save (already validated when modal opened)
    * @param {string} videoId - ID of the video where the word was encountered
-   * @param {Object} options - Additional options
-   * @param {string} options.translation - Pre-computed translation (optional)
-   * @param {string} options.nativeLanguage - User's native language code (optional)
-   * @param {string} options.learningLanguage - Language being learned (optional)
    * @returns {Promise<Object>} Save result
    */
-  async saveWord(word, videoId, options = {}) {
+  async saveWord(word, videoId) {
     try {
       const cleanWord = word.toLowerCase().trim();
 
@@ -153,25 +148,6 @@ class VocabularyService {
         video_id: videoId,
       };
 
-      // Add translation if provided or if we have language info to compute it
-      if (options.translation) {
-        saveData.translation = options.translation;
-        saveData.native_language = options.nativeLanguage;
-      } else if (options.nativeLanguage && options.learningLanguage) {
-        // Auto-translate if languages are provided
-        try {
-          const translation = await translationService.translateWord(
-            cleanWord,
-            options.learningLanguage,
-            options.nativeLanguage,
-          );
-          saveData.translation = translation;
-          saveData.native_language = options.nativeLanguage;
-        } catch (translateError) {
-          vocabularyLogger.warn("Translation failed, saving without translation", { word: cleanWord });
-          // Continue without translation
-        }
-      }
 
       const response = await axios.post(`${API_URL}/vocabulary/save`, saveData);
 
