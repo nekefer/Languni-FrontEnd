@@ -7,7 +7,6 @@ import React, {
 } from "react";
 import { fetchUserInfo, logoutUser, refreshToken } from "../api/auth";
 import { authLogger } from "../utils/logger";
-import { setSentryUser, clearSentryUser } from "../utils/sentry";
 
 const AuthContext = createContext();
 
@@ -36,7 +35,7 @@ export const AuthProvider = ({ children }) => {
       const userData = await fetchUserInfo();
       authLogger.debug("User authenticated", { email: userData.email });
       setUser(userData);
-      setSentryUser(userData);
+
       return userData;
     } catch (error) {
       authLogger.debug("Not authenticated", { status: error.response?.status });
@@ -49,18 +48,18 @@ export const AuthProvider = ({ children }) => {
           // Retry getting user info
           const userData = await fetchUserInfo();
           setUser(userData);
-          setSentryUser(userData);
+    
           authLogger.debug("Token refreshed successfully");
           return userData;
         } catch (refreshError) {
           authLogger.debug("Token refresh failed");
           setUser(null);
-          clearSentryUser();
+
           return null;
         }
       } else {
         setUser(null);
-        clearSentryUser();
+  
         return null;
       }
     } finally {
@@ -71,14 +70,14 @@ export const AuthProvider = ({ children }) => {
   const login = (userData) => {
     setUser(userData);
     setError(null);
-    setSentryUser(userData);
+
     authLogger.info("User logged in", { method: userData.auth_method });
   };
 
   const register = (userData) => {
     setUser(userData);
     setError(null);
-    setSentryUser(userData);
+
     authLogger.info("User registered", { method: userData.auth_method });
   };
 
@@ -90,7 +89,7 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setUser(null);
       setError(null);
-      clearSentryUser();
+
     }
   };
 

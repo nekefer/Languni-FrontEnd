@@ -7,8 +7,7 @@ export const config = {
   // API
   apiUrl: import.meta.env.VITE_API_URL || "http://localhost:8000",
 
-  // Sentry
-  sentryDsn: import.meta.env.VITE_SENTRY_DSN || "",
+  // Environment
   environment: import.meta.env.VITE_ENVIRONMENT || "development",
 
   // Helpers
