@@ -1,9 +1,11 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import { useNavigate } from "@tanstack/react-router";
+import { toast } from "sonner";
 import YouTubePlayer from "./YouTubePlayer";
 import CaptionPanel from "./CaptionPanel";
 import VocabularyPanel from "./VocabularyPanel";
 import NotFound from "./NotFound";
+import savedVideosService from "../api/savedVideos.js";
 import "../styles/VideoPlayer.css";
 
 function VideoPlayer({ videoId }) {
@@ -15,6 +17,8 @@ function VideoPlayer({ videoId }) {
   const [playerRef, setPlayerRef] = useState(null);
   const [vocabularyData, setVocabularyData] = useState(null);
   const [isVocabularyPanelOpen, setIsVocabularyPanelOpen] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
+  const [savingVideo, setSavingVideo] = useState(false);
   // Store captions reference for index calculation
   const captionsRef = useRef([]);
 
@@ -84,6 +88,36 @@ function VideoPlayer({ videoId }) {
     navigate({ to: "/dashboard" });
   };
 
+  useEffect(() => {
+    if (videoId) {
+      savedVideosService.isVideoSaved(videoId).then(setIsSaved);
+    }
+  }, [videoId]);
+
+  const handleSaveToggle = async () => {
+    if (savingVideo) return;
+    setSavingVideo(true);
+    try {
+      if (isSaved) {
+        await savedVideosService.deleteSavedVideo(videoId);
+        setIsSaved(false);
+        toast.success("Video removed from library");
+      } else {
+        await savedVideosService.saveVideo(videoId);
+        setIsSaved(true);
+        toast.success("Video saved to library");
+      }
+    } catch (error) {
+      if (error.message?.includes("already saved")) {
+        setIsSaved(true);
+      } else {
+        toast.error(error.message || "Failed to update library");
+      }
+    } finally {
+      setSavingVideo(false);
+    }
+  };
+
   // Early guard: missing or invalid videoId → show 404 page
   const isMissing = !videoId || videoId === "undefined" || videoId === "null";
   const isInvalidFormat = !/^[a-zA-Z0-9_-]{11}$/.test(videoId || "");
@@ -98,6 +132,13 @@ function VideoPlayer({ videoId }) {
           ← Back to Dashboard
         </button>
         <h2 className="video-title">Video Player</h2>
+        <button
+          className={`player-save-btn${isSaved ? " saved" : ""}`}
+          onClick={handleSaveToggle}
+          disabled={savingVideo}
+        >
+          {savingVideo ? "..." : isSaved ? "\u2605 Saved" : "\u2606 Save"}
+        </button>
       </nav>
 
       <div className="video-player-layout">

@@ -82,6 +82,9 @@ export const Dashboard = () => {
         <div className="header-content">
           <h2>Welcome, {user.first_name}!</h2>
           <div className="header-actions">
+            <Link to="/library" className="vocabulary-link">
+              🎬 My Library
+            </Link>
             <Link to="/words" className="vocabulary-link">
               📚 My Vocabulary
             </Link>

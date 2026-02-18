@@ -13,6 +13,7 @@ import { Route as WordsRouteImport } from './routes/words'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as LibraryRouteImport } from './routes/library'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as R3RouteImport } from './routes/3'
 import { Route as R1RouteImport } from './routes/1'
@@ -38,6 +39,11 @@ const OnboardingRoute = OnboardingRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LibraryRoute = LibraryRouteImport.update({
+  id: '/library',
+  path: '/library',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -76,6 +82,7 @@ export interface FileRoutesByFullPath {
   '/1': typeof R1Route
   '/3': typeof R3Route
   '/dashboard': typeof DashboardRoute
+  '/library': typeof LibraryRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
   '/register': typeof RegisterRoute
@@ -88,6 +95,7 @@ export interface FileRoutesByTo {
   '/1': typeof R1Route
   '/3': typeof R3Route
   '/dashboard': typeof DashboardRoute
+  '/library': typeof LibraryRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
   '/register': typeof RegisterRoute
@@ -101,6 +109,7 @@ export interface FileRoutesById {
   '/1': typeof R1Route
   '/3': typeof R3Route
   '/dashboard': typeof DashboardRoute
+  '/library': typeof LibraryRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
   '/register': typeof RegisterRoute
@@ -115,6 +124,7 @@ export interface FileRouteTypes {
     | '/1'
     | '/3'
     | '/dashboard'
+    | '/library'
     | '/login'
     | '/onboarding'
     | '/register'
@@ -127,6 +137,7 @@ export interface FileRouteTypes {
     | '/1'
     | '/3'
     | '/dashboard'
+    | '/library'
     | '/login'
     | '/onboarding'
     | '/register'
@@ -139,6 +150,7 @@ export interface FileRouteTypes {
     | '/1'
     | '/3'
     | '/dashboard'
+    | '/library'
     | '/login'
     | '/onboarding'
     | '/register'
@@ -152,6 +164,7 @@ export interface RootRouteChildren {
   R1Route: typeof R1Route
   R3Route: typeof R3Route
   DashboardRoute: typeof DashboardRoute
+  LibraryRoute: typeof LibraryRoute
   LoginRoute: typeof LoginRoute
   OnboardingRoute: typeof OnboardingRoute
   RegisterRoute: typeof RegisterRoute
@@ -188,6 +201,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/library': {
+      id: '/library'
+      path: '/library'
+      fullPath: '/library'
+      preLoaderRoute: typeof LibraryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -240,6 +260,7 @@ const rootRouteChildren: RootRouteChildren = {
   R1Route: R1Route,
   R3Route: R3Route,
   DashboardRoute: DashboardRoute,
+  LibraryRoute: LibraryRoute,
   LoginRoute: LoginRoute,
   OnboardingRoute: OnboardingRoute,
   RegisterRoute: RegisterRoute,
