@@ -219,172 +219,256 @@ export const Register = () => {
     }
   };
 
+  const checkIcon = (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <polyline points="2,7 5.5,10.5 12,4" />
+    </svg>
+  );
+
   return (
     <GuestRoute>
-      <div className="register-container">
-        <form className="register-form" onSubmit={handleSubmit}>
-          <h2>Register</h2>
-          {error && <div className="error">{error}</div>}
-
-          {/* Email Field */}
-          <div className="form-group">
-            <input
-              name="email"
-              type="email"
-              placeholder="Email"
-              value={form.email}
-              onChange={handleChange}
-              required
-            />
-            {form.email && validation.email.isValid !== null && (
-              <div
-                className={`validation-feedback ${
-                  validation.email.isValid ? "valid" : "invalid"
-                }`}
-              >
-                {validation.email.isValid ? "✓" : "✗"}{" "}
-                {validation.email.errors[0] || "Valid email"}
-              </div>
-            )}
+      <div className="register-page">
+        {/* Left panel — branding */}
+        <div className="register-brand">
+          <div className="register-brand-inner">
+            <a href="/" className="register-logo">
+              Lingu<span>ini</span>
+            </a>
+            <h1>
+              Start your <em>fluency</em> journey.
+            </h1>
+            <p>
+              Join thousands learning languages through real YouTube content.
+              Interactive subtitles, instant definitions, and a vocabulary that
+              actually sticks.
+            </p>
+            <ul className="register-brand-features">
+              <li>
+                {checkIcon}
+                3 languages — English, Spanish, French
+              </li>
+              <li>
+                {checkIcon}
+                Click any word for instant definitions
+              </li>
+              <li>
+                {checkIcon}
+                Build your personal vocabulary
+              </li>
+              <li>
+                {checkIcon}
+                Free forever — no credit card needed
+              </li>
+            </ul>
           </div>
+        </div>
 
-          {/* First Name Field */}
-          <div className="form-group">
-            <input
-              name="first_name"
-              placeholder="First Name"
-              value={form.first_name}
-              onChange={handleChange}
-              required
-            />
-            {form.first_name && validation.first_name.isValid !== null && (
-              <div
-                className={`validation-feedback ${
-                  validation.first_name.isValid ? "valid" : "invalid"
-                }`}
-              >
-                {validation.first_name.isValid ? "✓" : "✗"}{" "}
-                {validation.first_name.errors[0] || "Valid name"}
-              </div>
-            )}
-          </div>
+        {/* Right panel — form */}
+        <div className="register-container">
+          <form className="register-form" onSubmit={handleSubmit}>
+            <h2 className="register-form-title">Create your account</h2>
+            <p className="register-form-sub">
+              It only takes a minute to get started.
+            </p>
 
-          {/* Last Name Field */}
-          <div className="form-group">
-            <input
-              name="last_name"
-              placeholder="Last Name"
-              value={form.last_name}
-              onChange={handleChange}
-              required
-            />
-            {form.last_name && validation.last_name.isValid !== null && (
-              <div
-                className={`validation-feedback ${
-                  validation.last_name.isValid ? "valid" : "invalid"
-                }`}
-              >
-                {validation.last_name.isValid ? "✓" : "✗"}{" "}
-                {validation.last_name.errors[0] || "Valid name"}
-              </div>
-            )}
-          </div>
+            {error && <div className="error">{error}</div>}
 
-          {/* Password Field */}
-          <div className="form-group">
-            <input
-              name="password"
-              type="password"
-              placeholder="Password (min 8 characters)"
-              value={form.password}
-              onChange={handleChange}
-              required
-              minLength={8}
-            />
-            {form.password && (
-              <div className="password-strength-container">
-                <div className="password-strength-background">
-                  <div
-                    className="password-strength-bar"
-                    style={{
-                      width: `${getPasswordStrengthWidth(validation.password.strength)}%`,
-                      backgroundColor: getPasswordStrengthColor(
-                        validation.password.strength,
-                      ),
-                    }}
-                  />
-                </div>
-                <span className="password-strength-label">
-                  {getPasswordStrengthLabel(validation.password.strength)}
-                </span>
-              </div>
-            )}
-            {form.password && validation.password.errors.length > 0 && (
-              <div className="validation-feedback invalid">
-                {validation.password.errors.map((error, idx) => (
-                  <div key={idx}>✗ {error}</div>
-                ))}
-              </div>
-            )}
-            {form.password && validation.password.isValid === true && (
-              <div className="validation-feedback valid">
-                ✓ Password meets requirements
-              </div>
-            )}
-          </div>
-
-          {/* Confirm Password Field */}
-          <div className="form-group">
-            <input
-              name="confirmPassword"
-              type="password"
-              placeholder="Confirm Password"
-              value={form.confirmPassword}
-              onChange={handleChange}
-              required
-            />
-            {form.confirmPassword &&
-              validation.confirmPassword.isValid !== null && (
+            {/* Email */}
+            <div className="register-field">
+              <label className="register-label">Email</label>
+              <input
+                className="register-input"
+                name="email"
+                type="email"
+                placeholder="you@example.com"
+                value={form.email}
+                onChange={handleChange}
+                required
+              />
+              {form.email && validation.email.isValid !== null && (
                 <div
-                  className={`validation-feedback ${
-                    validation.confirmPassword.isValid ? "valid" : "invalid"
+                  className={`register-feedback ${
+                    validation.email.isValid ? "valid" : "invalid"
                   }`}
                 >
-                  {validation.confirmPassword.isValid ? "✓" : "✗"}{" "}
-                  {validation.confirmPassword.errors[0] || "Passwords match"}
+                  {validation.email.isValid ? "\u2713" : "\u2717"}{" "}
+                  {validation.email.errors[0] || "Valid email"}
                 </div>
               )}
-          </div>
+            </div>
 
-          <button type="submit" disabled={!isFormValid}>
-            {loading ? (
-              <>
-                <Spinner size={16} /> Registering...
-              </>
-            ) : (
-              "Register"
-            )}
-          </button>
+            {/* First & Last Name — side by side */}
+            <div className="register-row">
+              <div className="register-field">
+                <label className="register-label">First name</label>
+                <input
+                  className="register-input"
+                  name="first_name"
+                  placeholder="Jane"
+                  value={form.first_name}
+                  onChange={handleChange}
+                  required
+                />
+                {form.first_name && validation.first_name.isValid !== null && (
+                  <div
+                    className={`register-feedback ${
+                      validation.first_name.isValid ? "valid" : "invalid"
+                    }`}
+                  >
+                    {validation.first_name.isValid ? "\u2713" : "\u2717"}{" "}
+                    {validation.first_name.errors[0] || "Valid name"}
+                  </div>
+                )}
+              </div>
 
-          <div style={{ margin: "16px 0", textAlign: "center", color: "#666" }}>
-            or
-          </div>
+              <div className="register-field">
+                <label className="register-label">Last name</label>
+                <input
+                  className="register-input"
+                  name="last_name"
+                  placeholder="Doe"
+                  value={form.last_name}
+                  onChange={handleChange}
+                  required
+                />
+                {form.last_name && validation.last_name.isValid !== null && (
+                  <div
+                    className={`register-feedback ${
+                      validation.last_name.isValid ? "valid" : "invalid"
+                    }`}
+                  >
+                    {validation.last_name.isValid ? "\u2713" : "\u2717"}{" "}
+                    {validation.last_name.errors[0] || "Valid name"}
+                  </div>
+                )}
+              </div>
+            </div>
 
-          <button
-            type="button"
-            onClick={handleGoogleRegister}
-            disabled={loading}
-          >
-            Register with Google
-          </button>
+            {/* Password */}
+            <div className="register-field">
+              <label className="register-label">Password</label>
+              <input
+                className="register-input"
+                name="password"
+                type="password"
+                placeholder="Min 8 characters"
+                value={form.password}
+                onChange={handleChange}
+                required
+                minLength={8}
+              />
+              {form.password && (
+                <div className="register-strength">
+                  <div className="register-strength-track">
+                    <div
+                      className="register-strength-fill"
+                      style={{
+                        width: `${getPasswordStrengthWidth(validation.password.strength)}%`,
+                        backgroundColor: getPasswordStrengthColor(
+                          validation.password.strength,
+                        ),
+                      }}
+                    />
+                  </div>
+                  <span className="register-strength-label">
+                    {getPasswordStrengthLabel(validation.password.strength)}
+                  </span>
+                </div>
+              )}
+              {form.password && validation.password.errors.length > 0 && (
+                <div className="register-feedback invalid">
+                  {validation.password.errors.map((error, idx) => (
+                    <div key={idx}>{"\u2717"} {error}</div>
+                  ))}
+                </div>
+              )}
+              {form.password && validation.password.isValid === true && (
+                <div className="register-feedback valid">
+                  {"\u2713"} Password meets requirements
+                </div>
+              )}
+            </div>
 
-          <div>
-            <span>Already have an account? </span>
-            <button type="button" onClick={() => navigate({ to: "/login" })}>
-              Login here
+            {/* Confirm Password */}
+            <div className="register-field">
+              <label className="register-label">Confirm password</label>
+              <input
+                className="register-input"
+                name="confirmPassword"
+                type="password"
+                placeholder="Re-enter your password"
+                value={form.confirmPassword}
+                onChange={handleChange}
+                required
+              />
+              {form.confirmPassword &&
+                validation.confirmPassword.isValid !== null && (
+                  <div
+                    className={`register-feedback ${
+                      validation.confirmPassword.isValid ? "valid" : "invalid"
+                    }`}
+                  >
+                    {validation.confirmPassword.isValid ? "\u2713" : "\u2717"}{" "}
+                    {validation.confirmPassword.errors[0] || "Passwords match"}
+                  </div>
+                )}
+            </div>
+
+            <button
+              className="register-submit"
+              type="submit"
+              disabled={!isFormValid}
+            >
+              {loading ? (
+                <>
+                  <Spinner size={16} /> Creating account...
+                </>
+              ) : (
+                "Create account"
+              )}
             </button>
-          </div>
-        </form>
+
+            <div className="register-divider">or</div>
+
+            <button
+              className="register-google"
+              type="button"
+              onClick={handleGoogleRegister}
+              disabled={loading}
+            >
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <path
+                  d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 01-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"
+                  fill="#4285F4"
+                />
+                <path
+                  d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.26c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z"
+                  fill="#34A853"
+                />
+                <path
+                  d="M3.964 10.71A5.41 5.41 0 013.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.997 8.997 0 000 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"
+                  fill="#FBBC05"
+                />
+                <path
+                  d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"
+                  fill="#EA4335"
+                />
+              </svg>
+              Continue with Google
+            </button>
+
+            <div className="register-footer">
+              Already have an account?{" "}
+              <button
+                className="register-footer-link"
+                type="button"
+                onClick={() => navigate({ to: "/login" })}
+              >
+                Log in
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </GuestRoute>
   );

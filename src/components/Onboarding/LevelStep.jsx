@@ -19,7 +19,6 @@ export const LevelStep = ({ value, onChange }) => {
             <div className="level-header">
               <span className="level-icon">{level.icon}</span>
               <span className="level-name">{level.name}</span>
-              {value === level.id && <span className="checkmark">✓</span>}
             </div>
             <p className="level-description">{level.description}</p>
           </button>

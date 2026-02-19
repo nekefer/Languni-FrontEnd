@@ -31,9 +31,6 @@ export const TopicsStep = ({ value = [], onChange }) => {
           >
             <span className="topic-icon">{topic.icon}</span>
             <span className="topic-label">{topic.name}</span>
-            {value.includes(topic.id) && (
-              <span className="checkmark">✓</span>
-            )}
           </button>
         ))}
       </div>

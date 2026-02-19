@@ -13,7 +13,7 @@ export const LearningLanguageStep = ({ value, onChange, nativeLanguage }) => {
       <p className="step-description">
         Choose the language you'd like to improve
       </p>
-      <div className="options-grid">
+      <div className={`options-grid${availableLanguages.length === 2 ? " options-grid--two" : ""}`}>
         {availableLanguages.map((language) => (
           <button
             key={language.code}

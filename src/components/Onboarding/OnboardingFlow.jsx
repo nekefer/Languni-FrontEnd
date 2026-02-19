@@ -157,6 +157,11 @@ export const OnboardingFlow = () => {
   return (
     <div className="onboarding-container">
       <div className="onboarding-card">
+        {/* Logo */}
+        <div className="onboarding-logo">
+          Lingu<span>ini</span>
+        </div>
+
         {/* Progress Bar */}
         <div className="progress-section">
           <div className="progress-bar-container">
