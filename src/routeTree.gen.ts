@@ -16,7 +16,6 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as LibraryRouteImport } from './routes/library'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as R5RouteImport } from './routes/5'
-import { Route as R4RouteImport } from './routes/4'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as WordWordIdRouteImport } from './routes/word/$wordId'
 import { Route as PlayerVideoIdRouteImport } from './routes/player/$videoId'
@@ -56,11 +55,6 @@ const R5Route = R5RouteImport.update({
   path: '/5',
   getParentRoute: () => rootRouteImport,
 } as any)
-const R4Route = R4RouteImport.update({
-  id: '/4',
-  path: '/4',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -79,7 +73,6 @@ const PlayerVideoIdRoute = PlayerVideoIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/4': typeof R4Route
   '/5': typeof R5Route
   '/dashboard': typeof DashboardRoute
   '/library': typeof LibraryRoute
@@ -92,7 +85,6 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/4': typeof R4Route
   '/5': typeof R5Route
   '/dashboard': typeof DashboardRoute
   '/library': typeof LibraryRoute
@@ -106,7 +98,6 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/4': typeof R4Route
   '/5': typeof R5Route
   '/dashboard': typeof DashboardRoute
   '/library': typeof LibraryRoute
@@ -121,7 +112,6 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/4'
     | '/5'
     | '/dashboard'
     | '/library'
@@ -134,7 +124,6 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/4'
     | '/5'
     | '/dashboard'
     | '/library'
@@ -147,7 +136,6 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/4'
     | '/5'
     | '/dashboard'
     | '/library'
@@ -161,7 +149,6 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  R4Route: typeof R4Route
   R5Route: typeof R5Route
   DashboardRoute: typeof DashboardRoute
   LibraryRoute: typeof LibraryRoute
@@ -224,13 +211,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof R5RouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/4': {
-      id: '/4'
-      path: '/4'
-      fullPath: '/4'
-      preLoaderRoute: typeof R4RouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -257,7 +237,6 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  R4Route: R4Route,
   R5Route: R5Route,
   DashboardRoute: DashboardRoute,
   LibraryRoute: LibraryRoute,

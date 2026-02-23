@@ -1,36 +1,24 @@
 /**
- * Logger utility — logs to console in all environments.
- * Vercel captures stdout automatically.
+ * Logger utility — dev only.
+ * In production all methods are no-ops so nothing leaks to the browser console.
  */
 
 import config from "../config";
 
-/**
- * Create a logger instance for a specific module
- * @param {string} moduleName - Name of the module (e.g., "auth", "vocabulary")
- * @returns {Object} Logger instance with debug, info, warn, error methods
- */
+const noop = () => {};
+
 export function createLogger(moduleName) {
-  const formatMessage = (message) => `[${moduleName}] ${message}`;
+  if (config.isProduction) {
+    return { debug: noop, info: noop, warn: noop, error: noop };
+  }
+
+  const fmt = (msg) => `[${moduleName}] ${msg}`;
 
   return {
-    debug: (message, data = {}) => {
-      if (config.isDevelopment) {
-        console.debug(formatMessage(message), data);
-      }
-    },
-
-    info: (message, data = {}) => {
-      console.info(formatMessage(message), data);
-    },
-
-    warn: (message, data = {}) => {
-      console.warn(formatMessage(message), data);
-    },
-
-    error: (message, error = null, data = {}) => {
-      console.error(formatMessage(message), error, data);
-    },
+    debug: (message, data = {})        => console.debug(fmt(message), data),
+    info:  (message, data = {})        => console.info(fmt(message), data),
+    warn:  (message, data = {})        => console.warn(fmt(message), data),
+    error: (message, error = null, data = {}) => console.error(fmt(message), error, data),
   };
 }
 
