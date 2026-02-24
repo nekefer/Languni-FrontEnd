@@ -103,6 +103,7 @@ export const AuthProvider = ({ children }) => {
     loading,
     error,
     isAuthenticated: !!user,
+    isVerified: !!user?.is_verified,
     login,
     register,
     logout,

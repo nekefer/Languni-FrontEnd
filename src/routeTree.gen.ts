@@ -10,10 +10,14 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WordsRouteImport } from './routes/words'
+import { Route as VerifyEmailPendingRouteImport } from './routes/verify-email-pending'
+import { Route as VerifyEmailRouteImport } from './routes/verify-email'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LibraryRouteImport } from './routes/library'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as R5RouteImport } from './routes/5'
 import { Route as IndexRouteImport } from './routes/index'
@@ -23,6 +27,21 @@ import { Route as PlayerVideoIdRouteImport } from './routes/player/$videoId'
 const WordsRoute = WordsRouteImport.update({
   id: '/words',
   path: '/words',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VerifyEmailPendingRoute = VerifyEmailPendingRouteImport.update({
+  id: '/verify-email-pending',
+  path: '/verify-email-pending',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VerifyEmailRoute = VerifyEmailRouteImport.update({
+  id: '/verify-email',
+  path: '/verify-email',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RegisterRoute = RegisterRouteImport.update({
@@ -43,6 +62,11 @@ const LoginRoute = LoginRouteImport.update({
 const LibraryRoute = LibraryRouteImport.update({
   id: '/library',
   path: '/library',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -75,10 +99,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/5': typeof R5Route
   '/dashboard': typeof DashboardRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/library': typeof LibraryRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
   '/register': typeof RegisterRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/verify-email': typeof VerifyEmailRoute
+  '/verify-email-pending': typeof VerifyEmailPendingRoute
   '/words': typeof WordsRoute
   '/player/$videoId': typeof PlayerVideoIdRoute
   '/word/$wordId': typeof WordWordIdRoute
@@ -87,10 +115,14 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/5': typeof R5Route
   '/dashboard': typeof DashboardRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/library': typeof LibraryRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
   '/register': typeof RegisterRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/verify-email': typeof VerifyEmailRoute
+  '/verify-email-pending': typeof VerifyEmailPendingRoute
   '/words': typeof WordsRoute
   '/player/$videoId': typeof PlayerVideoIdRoute
   '/word/$wordId': typeof WordWordIdRoute
@@ -100,10 +132,14 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/5': typeof R5Route
   '/dashboard': typeof DashboardRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/library': typeof LibraryRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
   '/register': typeof RegisterRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/verify-email': typeof VerifyEmailRoute
+  '/verify-email-pending': typeof VerifyEmailPendingRoute
   '/words': typeof WordsRoute
   '/player/$videoId': typeof PlayerVideoIdRoute
   '/word/$wordId': typeof WordWordIdRoute
@@ -114,10 +150,14 @@ export interface FileRouteTypes {
     | '/'
     | '/5'
     | '/dashboard'
+    | '/forgot-password'
     | '/library'
     | '/login'
     | '/onboarding'
     | '/register'
+    | '/reset-password'
+    | '/verify-email'
+    | '/verify-email-pending'
     | '/words'
     | '/player/$videoId'
     | '/word/$wordId'
@@ -126,10 +166,14 @@ export interface FileRouteTypes {
     | '/'
     | '/5'
     | '/dashboard'
+    | '/forgot-password'
     | '/library'
     | '/login'
     | '/onboarding'
     | '/register'
+    | '/reset-password'
+    | '/verify-email'
+    | '/verify-email-pending'
     | '/words'
     | '/player/$videoId'
     | '/word/$wordId'
@@ -138,10 +182,14 @@ export interface FileRouteTypes {
     | '/'
     | '/5'
     | '/dashboard'
+    | '/forgot-password'
     | '/library'
     | '/login'
     | '/onboarding'
     | '/register'
+    | '/reset-password'
+    | '/verify-email'
+    | '/verify-email-pending'
     | '/words'
     | '/player/$videoId'
     | '/word/$wordId'
@@ -151,10 +199,14 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   R5Route: typeof R5Route
   DashboardRoute: typeof DashboardRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
   LibraryRoute: typeof LibraryRoute
   LoginRoute: typeof LoginRoute
   OnboardingRoute: typeof OnboardingRoute
   RegisterRoute: typeof RegisterRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
+  VerifyEmailRoute: typeof VerifyEmailRoute
+  VerifyEmailPendingRoute: typeof VerifyEmailPendingRoute
   WordsRoute: typeof WordsRoute
   PlayerVideoIdRoute: typeof PlayerVideoIdRoute
   WordWordIdRoute: typeof WordWordIdRoute
@@ -167,6 +219,27 @@ declare module '@tanstack/react-router' {
       path: '/words'
       fullPath: '/words'
       preLoaderRoute: typeof WordsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/verify-email-pending': {
+      id: '/verify-email-pending'
+      path: '/verify-email-pending'
+      fullPath: '/verify-email-pending'
+      preLoaderRoute: typeof VerifyEmailPendingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/verify-email': {
+      id: '/verify-email'
+      path: '/verify-email'
+      fullPath: '/verify-email'
+      preLoaderRoute: typeof VerifyEmailRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/register': {
@@ -195,6 +268,13 @@ declare module '@tanstack/react-router' {
       path: '/library'
       fullPath: '/library'
       preLoaderRoute: typeof LibraryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -239,10 +319,14 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   R5Route: R5Route,
   DashboardRoute: DashboardRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
   LibraryRoute: LibraryRoute,
   LoginRoute: LoginRoute,
   OnboardingRoute: OnboardingRoute,
   RegisterRoute: RegisterRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
+  VerifyEmailRoute: VerifyEmailRoute,
+  VerifyEmailPendingRoute: VerifyEmailPendingRoute,
   WordsRoute: WordsRoute,
   PlayerVideoIdRoute: PlayerVideoIdRoute,
   WordWordIdRoute: WordWordIdRoute,

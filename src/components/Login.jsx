@@ -123,7 +123,16 @@ export const Login = () => {
             </div>
 
             <div className="login-field">
-              <label className="login-label">Password</label>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <label className="login-label">Password</label>
+                <button
+                  type="button"
+                  style={{ background: "none", border: "none", fontSize: "13px", color: "#4f46e5", cursor: "pointer", padding: 0 }}
+                  onClick={() => navigate({ to: "/forgot-password" })}
+                >
+                  Forgot password?
+                </button>
+              </div>
               <input
                 className="login-input"
                 type="password"
