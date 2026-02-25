@@ -1,12 +1,15 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { LEVELS } from "../../utils/onboarding";
 
 export const LevelStep = ({ value, onChange }) => {
+  const { t } = useTranslation();
+
   return (
     <div className="onboarding-step">
-      <h2>What's your current level?</h2>
+      <h2>{t('onboarding.level.title')}</h2>
       <p className="step-description">
-        Help us personalize your learning experience
+        {t('onboarding.level.subtitle')}
       </p>
       <div className="levels-grid">
         {LEVELS.map((level) => (
@@ -18,9 +21,9 @@ export const LevelStep = ({ value, onChange }) => {
           >
             <div className="level-header">
               <span className="level-icon">{level.icon}</span>
-              <span className="level-name">{level.name}</span>
+              <span className="level-name">{t(`onboarding.levels.${level.id}.name`)}</span>
             </div>
-            <p className="level-description">{level.description}</p>
+            <p className="level-description">{t(`onboarding.levels.${level.id}.description`)}</p>
           </button>
         ))}
       </div>

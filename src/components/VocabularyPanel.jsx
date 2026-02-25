@@ -1,45 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import vocabularyService from "../api/vocabulary.js";
 import translationService from "../api/translation.js";
 import { useAuth } from "../contexts/AuthContext";
 import { vocabularyLogger } from "../utils/logger";
 import styles from "../styles/VocabularyPanel.module.css";
-// Save state configuration
-const SAVE_STATE_CONFIG = {
-  checking: {
-    label: "🔍 Checking...",
-    className: "primary",
-    disabled: true,
-  },
-  saving: {
-    label: "⏳ Saving...",
-    className: "primary",
-    disabled: true,
-  },
-  saved: {
-    label: "✅ Saved!",
-    className: "success",
-    disabled: true,
-  },
-  "already-saved": {
-    label: "✅ Already Saved",
-    className: "success",
-    disabled: true,
-  },
-  error: {
-    label: "❌ Try Again",
-    className: "error",
-    disabled: false,
-  },
-  idle: {
-    label: "💾 Save Word",
-    className: "primary",
-    disabled: false,
-  },
-};
 
 const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("definition");
   const [audioPlaying, setAudioPlaying] = useState(false);
@@ -55,6 +24,16 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
   const [translationData, setTranslationData] = useState(null);
   const [translationLoading, setTranslationLoading] = useState(false);
   const [translationError, setTranslationError] = useState(null);
+
+  // Save state config — built from t() at render time
+  const getSaveStateConfig = () => ({
+    checking: { label: `🔍 ${t('vocPanel.stateChecking')}`, className: "primary", disabled: true },
+    saving: { label: `⏳ ${t('vocPanel.stateSaving')}`, className: "primary", disabled: true },
+    saved: { label: `✅ ${t('vocPanel.stateSaved')}`, className: "success", disabled: true },
+    "already-saved": { label: `✅ ${t('vocPanel.stateAlreadySaved')}`, className: "success", disabled: true },
+    error: { label: `❌ ${t('vocPanel.stateTryAgain')}`, className: "error", disabled: false },
+    idle: { label: `💾 ${t('vocPanel.stateSaveWord')}`, className: "primary", disabled: false },
+  });
 
   // Handle escape key and outside clicks
   useEffect(() => {
@@ -213,7 +192,7 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
 
       setSaveState("saved");
       const wordText = vocabularyData.definition?.word || vocabularyData.word;
-      toast.success(`"${wordText}" added to vocabulary! 🎉`);
+      toast.success(t('vocPanel.saveSuccess', { word: wordText }));
     } catch (error) {
       vocabularyLogger.error("Failed to save word", error);
       const wordText = vocabularyData.definition?.word || vocabularyData.word;
@@ -224,19 +203,19 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
         error.message?.includes("already saved")
       ) {
         setSaveState("already-saved");
-        toast.info(`"${wordText}" is already in your vocabulary`);
+        toast.info(t('vocPanel.alreadySaved', { word: wordText }));
       } else if (error.response?.status === 401) {
         setSaveState("error");
-        setSaveError("Please log in to save words");
-        toast.error("Please log in to save words");
+        setSaveError(t('vocPanel.loginToSave'));
+        toast.error(t('vocPanel.loginToSave'));
       } else if (!error.response) {
         setSaveState("error");
-        setSaveError("Network error. Please check your connection.");
-        toast.error("Network error. Please check your connection.");
+        setSaveError(t('common.networkError'));
+        toast.error(t('common.networkError'));
       } else {
         setSaveState("error");
-        setSaveError(error.message || "Failed to save word");
-        toast.error("Failed to save word. Please try again.");
+        setSaveError(error.message || t('vocPanel.saveFailed'));
+        toast.error(t('vocPanel.saveFailed'));
       }
     }
   };
@@ -264,6 +243,8 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
   if (!isOpen || !vocabularyData) {
     return null;
   }
+
+  const saveStateConfig = getSaveStateConfig();
 
   return (
     <div className={styles.vocabularyPanelOverlay}>
@@ -303,7 +284,7 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
               </div>
             )}
           </div>
-          <button className={styles.closeBtn} onClick={onClose} title="Close">
+          <button className={styles.closeBtn} onClick={onClose} title={t('vocPanel.close')}>
             ✕
           </button>
         </div>
@@ -315,38 +296,29 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
             onClick={() => setActiveTab("definition")}
           >
             <span className={styles.tabIcon}>📖</span>
-            <span className={styles.tabLabel}>Definition</span>
+            <span className={styles.tabLabel}>{t('vocPanel.tabDefinition')}</span>
           </button>
           <button
             className={`${styles.tab} ${activeTab === "pronunciation" ? styles.active : ""}`}
             onClick={() => setActiveTab("pronunciation")}
           >
             <span className={styles.tabIcon}>🔊</span>
-            <span className={styles.tabLabel}>Pronunciation</span>
+            <span className={styles.tabLabel}>{t('vocPanel.tabPronunciation')}</span>
           </button>
           <button
             className={`${styles.tab} ${activeTab === "translation" ? styles.active : ""}`}
             onClick={() => setActiveTab("translation")}
           >
             <span className={styles.tabIcon}>🌐</span>
-            <span className={styles.tabLabel}>Translation</span>
+            <span className={styles.tabLabel}>{t('vocPanel.tabTranslation')}</span>
           </button>
           <button
             className={`${styles.tab} ${activeTab === "related" ? styles.active : ""}`}
             onClick={() => setActiveTab("related")}
           >
             <span className={styles.tabIcon}>🔗</span>
-            <span className={styles.tabLabel}>Related</span>
+            <span className={styles.tabLabel}>{t('vocPanel.tabRelated')}</span>
           </button>
-          {/* Usage tab commented out — replaced by Translation
-          <button
-            className={`${styles.tab} ${activeTab === "usage" ? styles.active : ""}`}
-            onClick={() => setActiveTab("usage")}
-          >
-            <span className={styles.tabIcon}>📝</span>
-            <span className={styles.tabLabel}>Usage</span>
-          </button>
-          */}
         </div>
 
         {/* Content */}
@@ -366,7 +338,7 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
                           {/* Part-specific synonyms */}
                           {meaning.synonyms?.length > 0 && (
                             <div className={styles.miniSynonyms}>
-                              Synonyms:{" "}
+                              {t('vocPanel.synonyms')}{" "}
                               {meaning.synonyms.slice(0, 3).join(", ")}
                               {meaning.synonyms.length > 3 && "..."}
                             </div>
@@ -390,7 +362,7 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
 
                                 {def.example && (
                                   <div className={styles.exampleText}>
-                                    <strong>Example:</strong>{" "}
+                                    <strong>{t('vocPanel.example')}</strong>{" "}
                                     <em>"{def.example}"</em>
                                   </div>
                                 )}
@@ -401,12 +373,12 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
                                   <div className={styles.defWordRelations}>
                                     {def.synonyms?.length > 0 && (
                                       <span className={styles.defSynonyms}>
-                                        Similar: {def.synonyms.join(", ")}
+                                        {t('vocPanel.similar')} {def.synonyms.join(", ")}
                                       </span>
                                     )}
                                     {def.antonyms?.length > 0 && (
                                       <span className={styles.defAntonyms}>
-                                        Opposite: {def.antonyms.join(", ")}
+                                        {t('vocPanel.opposite')} {def.antonyms.join(", ")}
                                       </span>
                                     )}
                                   </div>
@@ -420,7 +392,7 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
                         {meaning.antonyms?.length > 0 && (
                           <div className={styles.partAntonyms}>
                             <strong>
-                              Antonyms for {meaning.partOfSpeech}:
+                              {t('vocPanel.antonymsFor', { pos: meaning.partOfSpeech })}
                             </strong>{" "}
                             {meaning.antonyms.join(", ")}
                           </div>
@@ -439,14 +411,14 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
                       <p className={styles.definitionText}>{def.definition}</p>
                       {def.example && (
                         <div className={styles.definitionExample}>
-                          <span className={styles.exampleLabel}>Example:</span>
+                          <span className={styles.exampleLabel}>{t('vocPanel.example')}</span>
                           <em>"{def.example}"</em>
                         </div>
                       )}
                       {def.synonyms?.length > 0 && (
                         <div className={styles.definitionSynonyms}>
                           <span className={styles.synonymsLabel}>
-                            Synonyms:
+                            {t('vocPanel.synonyms')}
                           </span>
                           <span className={styles.synonymsList}>
                             {def.synonyms.join(", ")}
@@ -462,8 +434,7 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
           {activeTab === "pronunciation" && (
             <div className={styles.pronunciationContent}>
               <h4>
-                How to pronounce "
-                {vocabularyData.definition?.word || vocabularyData.word}"
+                {t('vocPanel.howToPronounce', { word: vocabularyData.definition?.word || vocabularyData.word })}
               </h4>
 
               {vocabularyData.definition?.phonetics?.length > 0 ? (
@@ -491,7 +462,7 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
                             disabled={playingAudioIndex === index}
                           >
                             {playingAudioIndex === index ? "⏹️" : "▶️"}
-                            Play {phonetic.region || "Audio"}
+                            {t('vocPanel.playRegion', { region: phonetic.region || t('vocPanel.playAudio') })}
                           </button>
                         )}
                       </div>
@@ -500,7 +471,7 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
                 </div>
               ) : (
                 <div className={styles.noPronunciation}>
-                  <p>Limited pronunciation data available</p>
+                  <p>{t('vocPanel.limitedPronunciation')}</p>
                   {vocabularyData.definition?.phonetic && (
                     <div className={styles.fallbackPronunciation}>
                       <span className={styles.phoneticSymbols}>
@@ -512,7 +483,7 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
                           onClick={playPronunciation}
                           disabled={audioPlaying}
                         >
-                          {audioPlaying ? "⏹️" : "▶️"} Play Audio
+                          {audioPlaying ? "⏹️" : "▶️"} {t('vocPanel.playAudio')}
                         </button>
                       )}
                     </div>
@@ -521,14 +492,12 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
               )}
 
               <div className={styles.pronunciationTips}>
-                <h5>Pronunciation Tips</h5>
+                <h5>{t('vocPanel.pronunciationTipsTitle')}</h5>
                 <ul>
-                  <li>
-                    Listen to different regional pronunciations when available
-                  </li>
-                  <li>Practice with the phonetic symbols</li>
-                  <li>Try saying it along with the audio</li>
-                  <li>Notice differences between regions (UK, US, AU)</li>
+                  <li>{t('vocPanel.tip1')}</li>
+                  <li>{t('vocPanel.tip2')}</li>
+                  <li>{t('vocPanel.tip3')}</li>
+                  <li>{t('vocPanel.tip4')}</li>
                 </ul>
               </div>
             </div>
@@ -540,7 +509,7 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
               {translationLoading && (
                 <div className={styles.translationLoading}>
                   <div className={styles.translationSpinner} />
-                  <p>Translating...</p>
+                  <p>{t('vocPanel.translating')}</p>
                 </div>
               )}
 
@@ -555,7 +524,7 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
                       fetchTranslation();
                     }}
                   >
-                    Retry
+                    {t('vocPanel.translationRetry')}
                   </button>
                 </div>
               )}
@@ -590,7 +559,7 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
             <div className={styles.relatedContent}>
               {vocabularyData.definition?.globalSynonyms?.length > 0 && (
                 <div className={styles.synonymsSection}>
-                  <h4>📗 Synonyms (Similar Words)</h4>
+                  <h4>📗 {t('vocPanel.synonymsTitle')}</h4>
                   <div className={styles.wordChips}>
                     {vocabularyData.definition.globalSynonyms.map(
                       (synonym, index) => (
@@ -612,7 +581,7 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
 
               {vocabularyData.definition?.globalAntonyms?.length > 0 && (
                 <div className={styles.antonymsSection}>
-                  <h4>📕 Antonyms (Opposite Words)</h4>
+                  <h4>📕 {t('vocPanel.antonymsTitle')}</h4>
                   <div className={styles.wordChips}>
                     {vocabularyData.definition.globalAntonyms.map(
                       (antonym, index) => (
@@ -636,68 +605,17 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
                 !vocabularyData.definition?.globalAntonyms?.length && (
                   <div className={styles.noRelatedWords}>
                     <p>
-                      No synonyms or antonyms found for "
-                      {vocabularyData.definition?.word || vocabularyData.word}"
+                      {t('vocPanel.noRelated', { word: vocabularyData.definition?.word || vocabularyData.word })}
                     </p>
                     <div className={styles.suggestion}>
                       <p>
-                        💡 Try exploring the definition and usage tabs for
-                        related concepts!
+                        💡 {t('vocPanel.noRelatedTip')}
                       </p>
                     </div>
                   </div>
                 )}
             </div>
           )}
-
-          {/* Usage Tab — commented out, replaced by Translation
-          {activeTab === "usage" && (
-            <div className={styles.usageContent}>
-              {(vocabularyData.context?.previous?.length > 0 ||
-                vocabularyData.context?.next?.length > 0) && (
-                <div className={styles.usageSection}>
-                  <h4>🕐 Context Timeline</h4>
-                  <div className={styles.contextTimeline}>
-                    {vocabularyData.context.previous?.map((caption, index) => (
-                      <div
-                        key={`prev-${index}`}
-                        className={`${styles.contextItem} ${styles.previous}`}
-                      >
-                        <span className={styles.contextTiming}>Before:</span>
-                        <span className={styles.contextText}>
-                          "{caption.text}"
-                        </span>
-                      </div>
-                    ))}
-                    {vocabularyData.context.current && (
-                      <div
-                        className={`${styles.contextItem} ${styles.current}`}
-                      >
-                        <span className={styles.contextTiming}>Current:</span>
-                        <span
-                          className={`${styles.contextText} ${styles.highlighted}`}
-                        >
-                          "{vocabularyData.context.current.text}"
-                        </span>
-                      </div>
-                    )}
-                    {vocabularyData.context.next?.map((caption, index) => (
-                      <div
-                        key={`next-${index}`}
-                        className={`${styles.contextItem} ${styles.next}`}
-                      >
-                        <span className={styles.contextTiming}>After:</span>
-                        <span className={styles.contextText}>
-                          "{caption.text}"
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-          */}
         </div>
 
         {/* Footer */}
@@ -706,14 +624,14 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
             className={`${styles.actionBtn} ${styles.secondary}`}
             onClick={onClose}
           >
-            Close
+            {t('vocPanel.close')}
           </button>
 
           {saveError && <div className={styles.errorMessage}>{saveError}</div>}
 
           {(() => {
             const { label, className, disabled } =
-              SAVE_STATE_CONFIG[saveState ?? "idle"];
+              saveStateConfig[saveState ?? "idle"];
             return (
               <button
                 className={`${styles.actionBtn} ${styles[className]}`}

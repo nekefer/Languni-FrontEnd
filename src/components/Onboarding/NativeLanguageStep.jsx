@@ -1,12 +1,15 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { LANGUAGES } from "../../utils/onboarding";
 
 export const NativeLanguageStep = ({ value, onChange }) => {
+  const { t } = useTranslation();
+
   return (
     <div className="onboarding-step">
-      <h2>What's your native language?</h2>
+      <h2>{t('onboarding.nativeLanguage.title')}</h2>
       <p className="step-description">
-        Select the language you're most comfortable speaking
+        {t('onboarding.nativeLanguage.subtitle')}
       </p>
       <div className="options-grid">
         {LANGUAGES.map((language) => (
@@ -17,7 +20,7 @@ export const NativeLanguageStep = ({ value, onChange }) => {
             onClick={() => onChange(language.code)}
           >
             <span className="option-icon">{language.flag}</span>
-            <span className="option-label">{language.name}</span>
+            <span className="option-label">{t(`onboarding.language.${language.code}`)}</span>
           </button>
         ))}
       </div>

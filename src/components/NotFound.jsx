@@ -1,7 +1,9 @@
 import { useNavigate, useLocation } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 import "../styles/NotFound.css";
 
 function NotFound() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -9,9 +11,9 @@ function NotFound() {
     <div className="error-page">
       <div className="error-content">
         <h1 className="error-code">404</h1>
-        <h2>Page Not Found</h2>
+        <h2>{t('notFound.title')}</h2>
         <p className="error-description">
-          The page you're looking for doesn't exist or has been moved.
+          {t('notFound.desc')}
         </p>
 
         {location.pathname && (
@@ -25,19 +27,19 @@ function NotFound() {
             className="btn btn-primary"
             onClick={() => navigate({ to: "/dashboard" })}
           >
-            Back to Dashboard
+            {t('notFound.backToDashboard')}
           </button>
           <button
             className="btn btn-secondary"
             onClick={() => window.history.back()}
           >
-            Go Back
+            {t('notFound.goBack')}
           </button>
         </div>
 
         <div className="error-info">
           <p className="text-muted">
-            Need help? <a href="mailto:support@linguini.com">Contact Support</a>
+            {t('notFound.needHelp')} <a href="mailto:support@linguini.com">{t('notFound.contactSupport')}</a>
           </p>
         </div>
       </div>

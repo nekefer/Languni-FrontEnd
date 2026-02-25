@@ -2,10 +2,13 @@ import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { resendVerification } from "../api/auth";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
+import { Trans } from "react-i18next";
 
 const RESEND_COOLDOWN = 60; // seconds
 
 export const VerifyEmailPending = () => {
+  const { t } = useTranslation();
   const { user, logout } = useAuth();
   const [cooldown, setCooldown] = useState(0);
   const [sending, setSending] = useState(false);
@@ -15,7 +18,7 @@ export const VerifyEmailPending = () => {
     setSending(true);
     try {
       await resendVerification(user?.email);
-      toast.success("Verification email sent! Check your inbox.");
+      toast.success(t('auth.verifyPending.resendSuccess'));
       setCooldown(RESEND_COOLDOWN);
       const interval = setInterval(() => {
         setCooldown((prev) => {
@@ -24,7 +27,7 @@ export const VerifyEmailPending = () => {
         });
       }, 1000);
     } catch {
-      toast.error("Failed to send email. Please try again.");
+      toast.error(t('auth.verifyPending.resendFailed'));
     } finally {
       setSending(false);
     }
@@ -35,12 +38,15 @@ export const VerifyEmailPending = () => {
       <div style={styles.card}>
         <div style={styles.logo}>Linguini</div>
         <div style={styles.icon}>✉️</div>
-        <h1 style={styles.title}>Check your email</h1>
+        <h1 style={styles.title}>{t('auth.verifyPending.title')}</h1>
         <p style={styles.subtitle}>
-          We sent a verification link to <strong>{user?.email}</strong>.
-          Click the link in the email to activate your account.
+          <Trans
+            i18nKey="auth.verifyPending.desc"
+            values={{ email: user?.email }}
+            components={{ strong: <strong /> }}
+          />
         </p>
-        <p style={styles.hint}>Don't see it? Check your spam folder.</p>
+        <p style={styles.hint}>{t('auth.verifyPending.hint')}</p>
 
         <button
           style={{
@@ -51,14 +57,14 @@ export const VerifyEmailPending = () => {
           disabled={cooldown > 0 || sending}
         >
           {sending
-            ? "Sending..."
+            ? t('auth.verifyPending.sending')
             : cooldown > 0
-            ? `Resend in ${cooldown}s`
-            : "Resend verification email"}
+            ? t('auth.verifyPending.resendCountdown', { cooldown })
+            : t('auth.verifyPending.resend')}
         </button>
 
         <button style={styles.link} onClick={logout}>
-          Sign out
+          {t('auth.verifyPending.signOut')}
         </button>
       </div>
     </div>

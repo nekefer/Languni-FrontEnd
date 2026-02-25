@@ -38,9 +38,7 @@ export const AuthProvider = ({ children }) => {
 
       return userData;
     } catch (error) {
-      authLogger.debug("Not authenticated", { status: error.response?.status });
-
-      // If 401, try to refresh token
+      // 401 is expected for unauthenticated users — try to refresh silently
       if (error.response?.status === 401) {
         try {
           authLogger.debug("Attempting token refresh...");
@@ -48,18 +46,16 @@ export const AuthProvider = ({ children }) => {
           // Retry getting user info
           const userData = await fetchUserInfo();
           setUser(userData);
-    
           authLogger.debug("Token refreshed successfully");
           return userData;
-        } catch (refreshError) {
-          authLogger.debug("Token refresh failed");
+        } catch {
+          // Refresh also failed — user is simply not logged in
           setUser(null);
-
           return null;
         }
       } else {
+        authLogger.debug("Auth check failed", { status: error.response?.status });
         setUser(null);
-  
         return null;
       }
     } finally {

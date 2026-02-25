@@ -8,6 +8,7 @@ import React, {
 } from "react";
 import { List, useListRef } from "react-window";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import { getCaptions } from "../api/youtube";
 import vocabularyService from "../api/vocabulary";
 import { Spinner } from "../ui/Spinner";
@@ -69,6 +70,7 @@ function CaptionPanel({
   onSeek,
   onWordClick
 }) {
+  const { t } = useTranslation();
   const [captions, setCaptions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -170,10 +172,10 @@ function CaptionPanel({
         }
       } catch (error) {
         playerLogger.error("Word processing failed", error);
-        toast.error(`Can't find definition for "${cleanWord}"`);
+        toast.error(t('player.noDefinition', { word: cleanWord }));
       }
     },
-    [captions, getCurrentTime, onWordClick],
+    [captions, getCurrentTime, onWordClick, t],
   );
 
   const parsedCaptions = useMemo(() => captions, [captions]);
@@ -183,7 +185,7 @@ function CaptionPanel({
       <div className="caption-panel">
         <div className="caption-loading">
           <Spinner size={24} />
-          <span>Loading captions...</span>
+          <span>{t('player.loadingCaptions')}</span>
         </div>
       </div>
     );
@@ -193,9 +195,9 @@ function CaptionPanel({
     return (
       <div className="caption-panel">
         <div className="caption-error">
-          <p>Failed to load captions</p>
+          <p>{t('player.captionsFailed')}</p>
           <button onClick={fetchCaptions} className="retry-button">
-            Retry
+            {t('common.retry')}
           </button>
         </div>
       </div>
@@ -206,7 +208,7 @@ function CaptionPanel({
     return (
       <div className="caption-panel">
         <div className="caption-empty">
-          No captions available for this video
+          {t('player.noCaptions')}
         </div>
       </div>
     );
@@ -215,9 +217,9 @@ function CaptionPanel({
   return (
     <div className="caption-panel">
       <div className="caption-header">
-        <h3>Captions</h3>
+        <h3>{t('player.captions')}</h3>
         <p className="caption-info">
-          Click caption to seek • Click words for definitions
+          {t('player.captionHint')}
         </p>
       </div>
 

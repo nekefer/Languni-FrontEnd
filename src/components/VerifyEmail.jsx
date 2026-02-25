@@ -3,10 +3,12 @@ import { Link } from "@tanstack/react-router";
 import { verifyEmail, resendVerification } from "../api/auth";
 import { useAuth } from "../contexts/AuthContext";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 const RESEND_COOLDOWN = 60;
 
 export const VerifyEmail = ({ token }) => {
+  const { t } = useTranslation();
   const { user, checkAuth } = useAuth();
   const [status, setStatus] = useState("loading"); // loading | success | expired | invalid
   const [cooldown, setCooldown] = useState(0);
@@ -40,7 +42,7 @@ export const VerifyEmail = ({ token }) => {
     setSending(true);
     try {
       await resendVerification(email);
-      toast.success("Verification email sent! Check your inbox.");
+      toast.success(t('auth.verifyEmail.resendSuccess'));
       setCooldown(RESEND_COOLDOWN);
       const interval = setInterval(() => {
         setCooldown((prev) => {
@@ -49,7 +51,7 @@ export const VerifyEmail = ({ token }) => {
         });
       }, 1000);
     } catch {
-      toast.error("Failed to resend. Please try again.");
+      toast.error(t('auth.verifyEmail.resendFailed'));
     } finally {
       setSending(false);
     }
@@ -60,7 +62,7 @@ export const VerifyEmail = ({ token }) => {
       <div style={styles.page}>
         <div style={styles.card}>
           <div style={styles.logo}>Linguini</div>
-          <p style={styles.subtitle}>Verifying your email…</p>
+          <p style={styles.subtitle}>{t('auth.verifyEmail.verifying')}</p>
         </div>
       </div>
     );
@@ -72,9 +74,9 @@ export const VerifyEmail = ({ token }) => {
         <div style={styles.card}>
           <div style={styles.logo}>Linguini</div>
           <div style={styles.icon}>✅</div>
-          <h1 style={styles.title}>Email verified!</h1>
-          <p style={styles.subtitle}>Your account is now active. You're ready to start learning.</p>
-          <Link to="/dashboard" style={styles.btn}>Go to Dashboard</Link>
+          <h1 style={styles.title}>{t('auth.verifyEmail.successTitle')}</h1>
+          <p style={styles.subtitle}>{t('auth.verifyEmail.successDesc')}</p>
+          <Link to="/dashboard" style={styles.btn}>{t('auth.verifyEmail.goToDashboard')}</Link>
         </div>
       </div>
     );
@@ -86,13 +88,13 @@ export const VerifyEmail = ({ token }) => {
         <div style={styles.card}>
           <div style={styles.logo}>Linguini</div>
           <div style={styles.icon}>⏰</div>
-          <h1 style={styles.title}>Link expired</h1>
-          <p style={styles.subtitle}>Your verification link has expired. Request a new one below.</p>
+          <h1 style={styles.title}>{t('auth.verifyEmail.expiredTitle')}</h1>
+          <p style={styles.subtitle}>{t('auth.verifyEmail.expiredDesc')}</p>
           {!user?.email && (
             <input
               style={styles.input}
               type="email"
-              placeholder="Enter your email"
+              placeholder={t('auth.verifyEmail.emailPlaceholder')}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -102,7 +104,11 @@ export const VerifyEmail = ({ token }) => {
             onClick={handleResend}
             disabled={cooldown > 0 || sending}
           >
-            {sending ? "Sending..." : cooldown > 0 ? `Resend in ${cooldown}s` : "Resend verification email"}
+            {sending
+              ? t('auth.verifyEmail.sending')
+              : cooldown > 0
+              ? t('auth.verifyEmail.resendCountdown', { cooldown })
+              : t('auth.verifyEmail.resend')}
           </button>
         </div>
       </div>
@@ -114,9 +120,9 @@ export const VerifyEmail = ({ token }) => {
       <div style={styles.card}>
         <div style={styles.logo}>Linguini</div>
         <div style={styles.icon}>❌</div>
-        <h1 style={styles.title}>Invalid link</h1>
-        <p style={styles.subtitle}>This verification link is invalid or has already been used.</p>
-        <Link to="/verify-email-pending" style={styles.btn}>Back to verification</Link>
+        <h1 style={styles.title}>{t('auth.verifyEmail.invalidTitle')}</h1>
+        <p style={styles.subtitle}>{t('auth.verifyEmail.invalidDesc')}</p>
+        <Link to="/verify-email-pending" style={styles.btn}>{t('auth.verifyEmail.backToVerification')}</Link>
       </div>
     </div>
   );

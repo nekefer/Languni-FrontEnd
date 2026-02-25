@@ -1,7 +1,10 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { TOPICS } from "../../utils/onboarding";
 
 export const TopicsStep = ({ value = [], onChange }) => {
+  const { t } = useTranslation();
+
   const toggleTopic = (topicId) => {
     if (value.includes(topicId)) {
       onChange(value.filter((id) => id !== topicId));
@@ -12,13 +15,13 @@ export const TopicsStep = ({ value = [], onChange }) => {
 
   return (
     <div className="onboarding-step">
-      <h2>What topics interest you?</h2>
+      <h2>{t('onboarding.topics.title')}</h2>
       <p className="step-description">
-        Select all topics you'd like to explore (you can choose multiple)
+        {t('onboarding.topics.subtitle')}
       </p>
       {value.length > 0 && (
         <div className="selection-count">
-          {value.length} topic{value.length !== 1 ? "s" : ""} selected
+          {t('onboarding.topics.selected', { count: value.length })}
         </div>
       )}
       <div className="topics-grid">
@@ -30,7 +33,7 @@ export const TopicsStep = ({ value = [], onChange }) => {
             onClick={() => toggleTopic(topic.id)}
           >
             <span className="topic-icon">{topic.icon}</span>
-            <span className="topic-label">{topic.name}</span>
+            <span className="topic-label">{t(`onboarding.topicNames.${topic.id}`)}</span>
           </button>
         ))}
       </div>

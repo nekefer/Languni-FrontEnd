@@ -2,8 +2,11 @@ import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { forgotPassword } from "../api/auth";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
+import { Trans } from "react-i18next";
 
 export const ForgotPassword = () => {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -16,7 +19,7 @@ export const ForgotPassword = () => {
       await forgotPassword(email);
       setSubmitted(true);
     } catch {
-      toast.error("Something went wrong. Please try again.");
+      toast.error(t('auth.forgotPassword.error'));
     } finally {
       setLoading(false);
     }
@@ -28,11 +31,15 @@ export const ForgotPassword = () => {
         <div style={styles.card}>
           <div style={styles.logo}>Linguini</div>
           <div style={styles.icon}>✉️</div>
-          <h1 style={styles.title}>Check your email</h1>
+          <h1 style={styles.title}>{t('auth.forgotPassword.checkEmailTitle')}</h1>
           <p style={styles.subtitle}>
-            If <strong>{email}</strong> is linked to a password account, you'll receive a reset link shortly.
+            <Trans
+              i18nKey="auth.forgotPassword.checkEmailDesc"
+              values={{ email }}
+              components={{ strong: <strong /> }}
+            />
           </p>
-          <Link to="/login" style={styles.backLink}>Back to login</Link>
+          <Link to="/login" style={styles.backLink}>{t('auth.forgotPassword.backToLogin')}</Link>
         </div>
       </div>
     );
@@ -42,27 +49,27 @@ export const ForgotPassword = () => {
     <div style={styles.page}>
       <div style={styles.card}>
         <div style={styles.logo}>Linguini</div>
-        <h1 style={styles.title}>Forgot password?</h1>
-        <p style={styles.subtitle}>Enter your email and we'll send you a reset link.</p>
+        <h1 style={styles.title}>{t('auth.forgotPassword.title')}</h1>
+        <p style={styles.subtitle}>{t('auth.forgotPassword.subtitle')}</p>
 
         <form onSubmit={handleSubmit} style={styles.form}>
-          <label style={styles.label} htmlFor="email">Email</label>
+          <label style={styles.label} htmlFor="email">{t('auth.forgotPassword.email')}</label>
           <input
             id="email"
             style={styles.input}
             type="email"
-            placeholder="you@example.com"
+            placeholder={t('auth.forgotPassword.emailPlaceholder')}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
             autoFocus
           />
           <button style={{ ...styles.btn, ...(loading ? styles.btnDisabled : {}) }} type="submit" disabled={loading}>
-            {loading ? "Sending..." : "Send reset link"}
+            {loading ? t('auth.forgotPassword.submitting') : t('auth.forgotPassword.submit')}
           </button>
         </form>
 
-        <Link to="/login" style={styles.backLink}>Back to login</Link>
+        <Link to="/login" style={styles.backLink}>{t('auth.forgotPassword.backToLogin')}</Link>
       </div>
     </div>
   );

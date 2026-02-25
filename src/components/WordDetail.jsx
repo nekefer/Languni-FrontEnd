@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useRouter  } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 import dictionaryService from "../api/dictionary.js";
 import vocabularyService from "../api/vocabulary.js";
 import { vocabularyLogger } from "../utils/logger";
@@ -8,6 +9,7 @@ import styles from "../styles/WordDetail.module.css";
 import NotFound from "./NotFound.jsx";
 
 export const WordDetail = ({ word }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const router = useRouter();
   const [definition, setDefinition] = useState(null);
@@ -101,7 +103,7 @@ export const WordDetail = ({ word }) => {
         <div className={styles.wordContainer}>
           <div className={styles.loadingState}>
             <Spinner size={32} />
-            <p>Loading...</p>
+            <p>{t('word.loading')}</p>
           </div>
         </div>
       </div>
@@ -114,10 +116,10 @@ export const WordDetail = ({ word }) => {
         <div className={styles.wordContainer}>
           <div className={styles.errorState}>
             <span className={styles.errorIcon}>⚠️</span>
-            <h2>Error loading word</h2>
+            <h2>{t('word.errorTitle')}</h2>
             <p>{error}</p>
             <button onClick={() => router.history.back()}>
-              ← Back to vocabulary
+              {t('word.backToVocabulary')}
             </button>
           </div>
         </div>
@@ -138,12 +140,12 @@ export const WordDetail = ({ word }) => {
             className={styles.navBack}
             onClick={() => router.history.back()}
           >
-            
-            <span>←</span> Back
+
+            <span>←</span> {t('word.back')}
           </button>
           {isSaved && (
             <button className={styles.navRemove} onClick={handleRemove}>
-              Remove
+              {t('word.remove')}
             </button>
           )}
         </nav>
@@ -187,7 +189,7 @@ export const WordDetail = ({ word }) => {
 
             {meaning.synonyms?.length > 0 && (
               <div className={styles.wordLinksSection}>
-                <span className={styles.linksLabel}>Synonyms</span>
+                <span className={styles.linksLabel}>{t('word.synonyms')}</span>
                 <div className={styles.wordLinks}>
                   {meaning.synonyms.slice(0, 6).map((s, k) => (
                     <button key={k} onClick={() => lookupWord(s)}>
@@ -200,7 +202,7 @@ export const WordDetail = ({ word }) => {
 
             {meaning.antonyms?.length > 0 && (
               <div className={styles.wordLinksSection}>
-                <span className={styles.linksLabel}>Antonyms</span>
+                <span className={styles.linksLabel}>{t('word.antonyms')}</span>
                 <div className={`${styles.wordLinks} ${styles.antonyms}`}>
                   {meaning.antonyms.slice(0, 6).map((a, k) => (
                     <button key={k} onClick={() => lookupWord(a)}>
@@ -217,11 +219,11 @@ export const WordDetail = ({ word }) => {
         {(definition?.globalSynonyms?.length > 0 ||
           definition?.globalAntonyms?.length > 0) && (
           <div className={`${styles.wordCard} ${styles.relatedCard}`}>
-            <h3>Related Words</h3>
+            <h3>{t('word.relatedWords')}</h3>
 
             {definition.globalSynonyms?.length > 0 && (
               <div className={styles.relatedGroup}>
-                <span className={styles.relatedLabel}>Similar</span>
+                <span className={styles.relatedLabel}>{t('word.similar')}</span>
                 <div className={styles.relatedChips}>
                   {definition.globalSynonyms.map((s, i) => (
                     <button key={i} onClick={() => lookupWord(s)}>
@@ -234,7 +236,7 @@ export const WordDetail = ({ word }) => {
 
             {definition.globalAntonyms?.length > 0 && (
               <div className={styles.relatedGroup}>
-                <span className={styles.relatedLabel}>Opposite</span>
+                <span className={styles.relatedLabel}>{t('word.opposite')}</span>
                 <div className={`${styles.relatedChips} ${styles.opposite}`}>
                   {definition.globalAntonyms.map((a, i) => (
                     <button key={i} onClick={() => lookupWord(a)}>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import savedVideosService from "../api/savedVideos.js";
 import "../styles/VideoCard.css";
 
@@ -9,6 +10,7 @@ import "../styles/VideoCard.css";
  * Displays a single trending video with thumbnail, title, channel, and metadata.
  */
 const VideoCard = ({ video, onClick }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { video_id, title, thumbnails, channel_title, published_at } = video;
   const [isSaved, setIsSaved] = useState(false);
@@ -28,17 +30,17 @@ const VideoCard = ({ video, onClick }) => {
       if (isSaved) {
         await savedVideosService.deleteSavedVideo(video_id);
         setIsSaved(false);
-        toast.success("Video removed from library");
+        toast.success(t('videoCard.videoRemoved'));
       } else {
         await savedVideosService.saveVideo(video_id);
         setIsSaved(true);
-        toast.success("Video saved to library");
+        toast.success(t('videoCard.videoSaved'));
       }
     } catch (error) {
       if (error.message?.includes("already saved")) {
         setIsSaved(true);
       } else {
-        toast.error(error.message || "Failed to update library");
+        toast.error(error.message || t('videoCard.saveFailed'));
       }
     } finally {
       setSaving(false);
@@ -51,19 +53,19 @@ const VideoCard = ({ video, onClick }) => {
     thumbnails?.medium?.url ||
     thumbnails?.default?.url;
 
-  // Format published date
+  // Format published date using i18n pluralization
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const now = new Date();
     const diffMs = now - date;
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-    if (diffDays === 0) return "Today";
-    if (diffDays === 1) return "Yesterday";
-    if (diffDays < 7) return `${diffDays} days ago`;
-    if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
-    if (diffDays < 365) return `${Math.floor(diffDays / 30)} months ago`;
-    return `${Math.floor(diffDays / 365)} years ago`;
+    if (diffDays === 0) return t('videoCard.today');
+    if (diffDays === 1) return t('videoCard.yesterday');
+    if (diffDays < 7) return t('videoCard.daysAgo', { count: diffDays });
+    if (diffDays < 30) return t('videoCard.weeksAgo', { count: Math.floor(diffDays / 7) });
+    if (diffDays < 365) return t('videoCard.monthsAgo', { count: Math.floor(diffDays / 30) });
+    return t('videoCard.yearsAgo', { count: Math.floor(diffDays / 365) });
   };
 
   const handleClick = () => {
@@ -97,7 +99,7 @@ const VideoCard = ({ video, onClick }) => {
             className={`save-btn${isSaved ? " saved" : ""}`}
             onClick={handleSaveToggle}
             disabled={saving}
-            title={isSaved ? "Remove from library" : "Save to library"}
+            title={isSaved ? t('videoCard.removeFromLibrary') : t('videoCard.saveToLibrary')}
           >
             {saving ? "..." : isSaved ? "\u2605" : "\u2606"}
           </button>

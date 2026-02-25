@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import vocabularyService from "../api/vocabulary.js";
 import dictionaryService from "../api/dictionary.js";
 import { createLogger } from "../utils/logger";
@@ -11,48 +12,9 @@ const logger = createLogger("vocabulary");
 
 const WORDS_PER_PAGE = 12;
 
-// Search and sort controls component
-const VocabularyControls = ({
-  searchTerm,
-  onSearchChange,
-  sortBy,
-  onSortChange,
-  totalWords,
-}) => (
-  <div className={styles.vocabularyControls}>
-    <div className={styles.vocabularyStats}>
-      <h3>📚 My Vocabulary</h3>
-      <p className={styles.statsText}>{totalWords} words saved</p>
-    </div>
-
-    <div className={styles.controlsSection}>
-      <div className={styles.searchSection}>
-        <input
-          type="text"
-          placeholder="Search your vocabulary..."
-          value={searchTerm}
-          onChange={(e) => onSearchChange(e.target.value)}
-          className={styles.searchInput}
-        />
-        <span className={styles.searchIcon}>🔍</span>
-      </div>
-
-      <select
-        value={sortBy}
-        onChange={(e) => onSortChange(e.target.value)}
-        className={styles.sortSelect}
-      >
-        <option value="date_desc">Newest First</option>
-        <option value="date_asc">Oldest First</option>
-        <option value="word_asc">A to Z</option>
-        <option value="word_desc">Z to A</option>
-      </select>
-    </div>
-  </div>
-);
-
 // Individual word card component
 const WordCard = ({ wordData, onDelete, onViewVideo, onViewDetails }) => {
+  const { t, i18n } = useTranslation();
   const [definition, setDefinition] = useState(null);
   const [loadingDefinition, setLoadingDefinition] = useState(false);
 
@@ -92,7 +54,7 @@ const WordCard = ({ wordData, onDelete, onViewVideo, onViewDetails }) => {
   };
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
+    return new Date(dateString).toLocaleDateString(i18n.language, {
       month: "short",
       day: "numeric",
       year: "numeric",
@@ -108,7 +70,7 @@ const WordCard = ({ wordData, onDelete, onViewVideo, onViewDetails }) => {
             <button
               className={`${styles.btnIcon} ${styles.videoBtn}`}
               onClick={handleViewVideo}
-              title="View in video"
+              title={t('vocabulary.viewInVideo')}
             >
               📹
             </button>
@@ -116,7 +78,7 @@ const WordCard = ({ wordData, onDelete, onViewVideo, onViewDetails }) => {
           <button
             className={`${styles.btnIcon} ${styles.deleteBtn}`}
             onClick={handleDelete}
-            title="Delete word"
+            title={t('vocabulary.deleteWord')}
           >
             🗑️
           </button>
@@ -125,10 +87,10 @@ const WordCard = ({ wordData, onDelete, onViewVideo, onViewDetails }) => {
 
       <div className={styles.wordMeta}>
         <span className={styles.saveDate}>
-          Saved {formatDate(wordData.saved_at)}
+          {t('vocabulary.savedOn', { date: formatDate(wordData.saved_at) })}
         </span>
         {wordData.video_id && (
-          <span className={styles.videoBadge}>📺 From video</span>
+          <span className={styles.videoBadge}>📺 {t('vocabulary.fromVideo')}</span>
         )}
       </div>
 
@@ -136,7 +98,7 @@ const WordCard = ({ wordData, onDelete, onViewVideo, onViewDetails }) => {
         {loadingDefinition ? (
           <div className={styles.definitionLoading}>
             <Spinner size={16} />
-            <span>Loading definition...</span>
+            <span>{t('vocabulary.loadingDefinition')}</span>
           </div>
         ) : definition ? (
           <div className={styles.definitionPreview}>
@@ -152,12 +114,12 @@ const WordCard = ({ wordData, onDelete, onViewVideo, onViewDetails }) => {
               className={styles.detailsToggle}
               onClick={() => onViewDetails(wordData.word)}
             >
-              View Details →
+              {t('vocabulary.viewDetails')}
             </button>
           </div>
         ) : (
           <button className={styles.loadDefinitionBtn} onClick={loadDefinition}>
-            Show Definition
+            {t('vocabulary.showDefinition')}
           </button>
         )}
       </div>
@@ -174,11 +136,13 @@ const VocabularyGrid = ({
   loading,
   error,
 }) => {
+  const { t } = useTranslation();
+
   if (loading) {
     return (
       <div className={styles.vocabularyLoading}>
         <Spinner size={32} />
-        <p>Loading your vocabulary...</p>
+        <p>{t('vocabulary.loading')}</p>
       </div>
     );
   }
@@ -186,13 +150,13 @@ const VocabularyGrid = ({
   if (error) {
     return (
       <div className={styles.vocabularyError}>
-        <h3>❌ Error Loading Vocabulary</h3>
+        <h3>❌ {t('vocabulary.errorTitle')}</h3>
         <p>{error}</p>
         <button
           className={styles.btnPrimary}
           onClick={() => window.location.reload()}
         >
-          Try Again
+          {t('common.tryAgain')}
         </button>
       </div>
     );
@@ -202,10 +166,10 @@ const VocabularyGrid = ({
     return (
       <div className={styles.vocabularyEmpty}>
         <div className={styles.emptyIcon}>📚</div>
-        <h3>No saved words yet</h3>
-        <p>Start watching videos and saving words to build your vocabulary!</p>
+        <h3>{t('vocabulary.emptyTitle')}</h3>
+        <p>{t('vocabulary.emptyDesc')}</p>
         <Link to="/dashboard" className={styles.btnPrimary}>
-          Browse Videos
+          {t('common.browseVideos')}
         </Link>
       </div>
     );
@@ -228,6 +192,7 @@ const VocabularyGrid = ({
 
 // Main MyVocabulary component
 export const MyVocabulary = () => {
+  const { t } = useTranslation();
   const [savedWords, setSavedWords] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -265,7 +230,7 @@ export const MyVocabulary = () => {
     } catch (error) {
       logger.error("Failed to load vocabulary", error);
       setError(error.message || "Failed to load your vocabulary");
-      toast.error("Failed to load vocabulary. Please try again.");
+      toast.error(t('vocabulary.loadFailed'));
       setSavedWords([]);
     } finally {
       setLoading(false);
@@ -282,7 +247,7 @@ export const MyVocabulary = () => {
       setSavedWords(newWords);
       setTotalWords((prev) => prev - 1);
 
-      toast.success(`"${word}" removed from vocabulary`);
+      toast.success(t('vocabulary.removed', { word }));
 
       // If deleting last word on page and not on first page, go to previous page
       if (newWords.length === 0 && page > 1) {
@@ -296,15 +261,15 @@ export const MyVocabulary = () => {
 
       // Handle different error types
       if (!error.response) {
-        toast.error("Network error. Please check your connection.");
+        toast.error(t('common.networkError'));
       } else if (error.response?.status === 401) {
-        toast.error("Please log in to delete words");
+        toast.error(t('vocabulary.loginToDelete'));
       } else if (error.response?.status === 404) {
-        toast.error("Word not found in vocabulary");
+        toast.error(t('vocabulary.notFound'));
         // Reload to sync state
         loadSavedWords(page);
       } else {
-        toast.error("Failed to delete word. Please try again.");
+        toast.error(t('vocabulary.deleteFailed'));
       }
     }
   };
@@ -344,8 +309,10 @@ export const MyVocabulary = () => {
     <div className={styles.vocabularyPage}>
       <div className={styles.vocabularyControls}>
         <div className={styles.vocabularyStats}>
-          <h3>📚 My Vocabulary</h3>
-          <p className={styles.statsText}>{totalWords} words saved</p>
+          <h3>📚 {t('vocabulary.title')}</h3>
+          <p className={styles.statsText}>
+            {t('vocabulary.wordsSaved', { count: totalWords })}
+          </p>
         </div>
       </div>
 
@@ -366,17 +333,17 @@ export const MyVocabulary = () => {
             disabled={page === 1 || loading}
             className={styles.paginationButton}
           >
-            ← Previous
+            {t('vocabulary.prevPage')}
           </button>
           <span className={styles.pageInfo}>
-            Page {page} of {totalPages || 1} ({totalWords} words total)
+            {t('vocabulary.pageInfo', { page, total: totalPages || 1, count: totalWords })}
           </span>
           <button
             onClick={handleNextPage}
             disabled={page >= totalPages || loading}
             className={styles.paginationButton}
           >
-            Next →
+            {t('vocabulary.nextPage')}
           </button>
         </div>
       )}

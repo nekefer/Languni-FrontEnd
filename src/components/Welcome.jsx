@@ -1,9 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 import s from "../styles/Welcome.module.css";
+
+const LANG_OPTIONS = [
+  { code: "en", label: "EN" },
+  { code: "fr", label: "FR" },
+  { code: "es", label: "ES" },
+];
 
 export default function Welcome() {
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -21,17 +29,17 @@ export default function Welcome() {
             Lingu<span className={s.logoAcc}>ini</span>
           </a>
           <nav className={s.nav}>
-            <a href="#hero" className={s.navLink}>Home</a>
-            <a href="#problem" className={s.navLink}>Why Linguini</a>
-            <a href="#benefits" className={s.navLink}>Features</a>
-            <a href="#pricing" className={s.navLink}>Pricing</a>
+            <a href="#hero" className={s.navLink}>{t('nav.home')}</a>
+            <a href="#problem" className={s.navLink}>{t('nav.whyLinguini')}</a>
+            <a href="#benefits" className={s.navLink}>{t('nav.features')}</a>
+            <a href="#pricing" className={s.navLink}>{t('nav.pricing')}</a>
           </nav>
           <div className={s.headerRight}>
             <button onClick={() => navigate({ to: "/login" })} className={s.loginBtn}>
-              Log in
+              {t('nav.login')}
             </button>
             <button onClick={() => navigate({ to: "/register" })} className={s.startBtn}>
-              Get started
+              {t('nav.getStarted')}
             </button>
           </div>
         </div>
@@ -43,41 +51,39 @@ export default function Welcome() {
           <div className={s.heroLeft}>
             <div className={s.heroLabel}>
               <span className={s.heroDot} />
-              Language learning, reimagined
+              {t('landing.heroLabel')}
             </div>
             <h1 className={s.heroH1}>
-              Stop studying.
+              {t('landing.heroH1Line1')}
               <br />
-              <span className={s.heroEm}>Start watching.</span>
+              <span className={s.heroEm}>{t('landing.heroH1Line2')}</span>
             </h1>
             <p className={s.heroP}>
-              Pick a YouTube video in Spanish, French, or English. We add
-              clickable subtitles. Don't know a word? Tap it. Definition,
-              translation, context — instantly. That's how Linguini works.
+              {t('landing.heroDesc')}
             </p>
             <div className={s.heroCtas}>
               <button onClick={() => navigate({ to: "/register" })} className={s.ctaPrimary}>
-                Start learning free
+                {t('landing.ctaPrimary')}
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                   <path d="M4 9h10M10 5l4 4-4 4" />
                 </svg>
               </button>
-              <span className={s.ctaNote}>Free forever. No credit card.</span>
+              <span className={s.ctaNote}>{t('landing.ctaNote')}</span>
             </div>
             <div className={s.heroStats}>
               <div className={s.stat}>
                 <span className={s.statNum}>3</span>
-                <span className={s.statLabel}>Languages</span>
+                <span className={s.statLabel}>{t('landing.statLanguages')}</span>
               </div>
               <div className={s.statDivider} />
               <div className={s.stat}>
                 <span className={s.statNum}>&#8734;</span>
-                <span className={s.statLabel}>YouTube videos</span>
+                <span className={s.statLabel}>{t('landing.statVideos')}</span>
               </div>
               <div className={s.statDivider} />
               <div className={s.stat}>
                 <span className={s.statNum}>1-click</span>
-                <span className={s.statLabel}>Word lookup</span>
+                <span className={s.statLabel}>{t('landing.statLookup')}</span>
               </div>
             </div>
           </div>
@@ -113,7 +119,7 @@ export default function Welcome() {
                   <div className={s.hcPopupWord}>idioma</div>
                   <div className={s.hcPopupDef}>language (noun)</div>
                   <div className={s.hcPopupCtx}>"Cada idioma abre una nueva puerta"</div>
-                  <div className={s.hcPopupBtn}>+ Save to vocabulary</div>
+                  <div className={s.hcPopupBtn}>{t('landing.heroCardSave')}</div>
                 </div>
               </div>
             </div>
@@ -126,56 +132,40 @@ export default function Welcome() {
       <section className={s.problem} id="problem">
         <div className={s.sectionInner}>
           <div className={s.problemHeader}>
-            <span className={s.tag}>The problem</span>
+            <span className={s.tag}>{t('landing.problemTag')}</span>
             <h2 className={s.sectionH2}>
-              Why most language apps<br />leave you stuck.
+              {t('landing.problemH2')}
             </h2>
           </div>
 
           <div className={s.problemGrid}>
             <div className={s.problemItem}>
               <span className={s.problemNum}>01</span>
-              <h3>No real context</h3>
-              <p>
-                Flashcard apps drill vocabulary without context. You memorize
-                words in isolation and forget them within days because your brain
-                has nothing to anchor them to.
-              </p>
+              <h3>{t('landing.problem1Title')}</h3>
+              <p>{t('landing.problem1Desc')}</p>
             </div>
             <div className={s.problemItem}>
               <span className={s.problemNum}>02</span>
-              <h3>Artificial content</h3>
-              <p>
-                Textbook dialogues feel scripted because they are. Nobody talks
-                like that. Real conversations use slang, idioms, and natural
-                pacing that scripted lessons ignore.
-              </p>
+              <h3>{t('landing.problem2Title')}</h3>
+              <p>{t('landing.problem2Desc')}</p>
             </div>
             <div className={s.problemItem}>
               <span className={s.problemNum}>03</span>
-              <h3>Wrong difficulty</h3>
-              <p>
-                Content is either too basic to be useful or too advanced to
-                follow. Without proper level matching, you're stuck in a cycle
-                of frustration or boredom.
-              </p>
+              <h3>{t('landing.problem3Title')}</h3>
+              <p>{t('landing.problem3Desc')}</p>
             </div>
             <div className={s.problemItem}>
               <span className={s.problemNum}>04</span>
-              <h3>Passive subtitles</h3>
-              <p>
-                Regular subtitles are read-only. You see unknown words fly by
-                and can't pause to look them up without breaking your flow
-                and losing the moment.
-              </p>
+              <h3>{t('landing.problem4Title')}</h3>
+              <p>{t('landing.problem4Desc')}</p>
             </div>
           </div>
 
           <div className={s.problemSolution}>
             <div className={s.solLine} />
             <p className={s.solText}>
-              Linguini solves every one of these problems with one simple idea:
-              <strong> learn from the videos people actually watch.</strong>
+              {t('landing.solutionText')}
+              <strong>{t('landing.solutionHighlight')}</strong>
             </p>
           </div>
         </div>
@@ -184,9 +174,9 @@ export default function Welcome() {
       {/* ===== BENEFITS — Tall Cards ===== */}
       <section className={s.benefits} id="benefits">
         <div className={s.sectionInner}>
-          <span className={s.tag}>Features</span>
+          <span className={s.tag}>{t('landing.featuresTag')}</span>
           <h2 className={s.sectionH2}>
-            Everything you need.<br />Nothing you don't.
+            {t('landing.featuresH2Line1')}<br />{t('landing.featuresH2Line2')}
           </h2>
 
           <div className={s.featGrid}>
@@ -198,11 +188,8 @@ export default function Welcome() {
                   <line x1="3" y1="23" x2="25" y2="23" strokeLinecap="round" />
                 </svg>
               </div>
-              <h3>Interactive Video Player</h3>
-              <p>
-                Watch real YouTube videos with synchronized, clickable subtitles.
-                The video pauses when you click a word so you never miss a beat.
-              </p>
+              <h3>{t('landing.feat1Title')}</h3>
+              <p>{t('landing.feat1Desc')}</p>
               <div className={s.featAccent} />
             </div>
 
@@ -213,11 +200,8 @@ export default function Welcome() {
                   <path d="M7 24c0-4 3-7 7-7s7 3 7 7" strokeLinecap="round" />
                 </svg>
               </div>
-              <h3>Instant Word Lookup</h3>
-              <p>
-                Click any word for definitions, pronunciation, translations, and
-                real example sentences — all without leaving the video.
-              </p>
+              <h3>{t('landing.feat2Title')}</h3>
+              <p>{t('landing.feat2Desc')}</p>
               <div className={s.featAccent} />
             </div>
 
@@ -227,11 +211,8 @@ export default function Welcome() {
                   <path d="M14 3l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z" />
                 </svg>
               </div>
-              <h3>Level Matching</h3>
-              <p>
-                Tell us your proficiency during onboarding. We surface trending
-                videos calibrated to challenge you without overwhelming.
-              </p>
+              <h3>{t('landing.feat3Title')}</h3>
+              <p>{t('landing.feat3Desc')}</p>
               <div className={s.featAccent} />
             </div>
 
@@ -242,11 +223,8 @@ export default function Welcome() {
                   <path d="M10 14h8M14 10v8" strokeLinecap="round" />
                 </svg>
               </div>
-              <h3>Personal Vocabulary</h3>
-              <p>
-                Save words with the context you found them in. Review your
-                collection anytime with full definitions and video references.
-              </p>
+              <h3>{t('landing.feat4Title')}</h3>
+              <p>{t('landing.feat4Desc')}</p>
               <div className={s.featAccent} />
             </div>
           </div>
@@ -256,77 +234,77 @@ export default function Welcome() {
       {/* ===== PRICING — Table Style ===== */}
       <section className={s.pricing} id="pricing">
         <div className={s.sectionInner}>
-          <span className={s.tag}>Pricing</span>
+          <span className={s.tag}>{t('landing.pricingTag')}</span>
           <h2 className={s.sectionH2}>
-            Start free. Scale when ready.
+            {t('landing.pricingH2')}
           </h2>
           <p className={s.sectionP}>
-            No surprises. No hidden fees. Cancel anytime.
+            {t('landing.pricingSubtitle')}
           </p>
 
           <div className={s.priceGrid}>
             {/* Free */}
             <div className={s.priceCard}>
               <div className={s.priceTop}>
-                <h3 className={s.pName}>Free</h3>
-                <div className={s.pAmount}>$0</div>
-                <p className={s.pSub}>Forever free</p>
+                <h3 className={s.pName}>{t('landing.freePlan')}</h3>
+                <div className={s.pAmount}>{t('landing.freeAmount')}</div>
+                <p className={s.pSub}>{t('landing.freeForever')}</p>
               </div>
               <ul className={s.pList}>
-                <li className={s.pYes}>5 videos per day</li>
-                <li className={s.pYes}>Basic subtitles</li>
-                <li className={s.pYes}>10 word saves / day</li>
-                <li className={s.pYes}>Community support</li>
-                <li className={s.pNo}>Translations</li>
-                <li className={s.pNo}>Vocabulary export</li>
+                <li className={s.pYes}>{t('landing.freeFeat1')}</li>
+                <li className={s.pYes}>{t('landing.freeFeat2')}</li>
+                <li className={s.pYes}>{t('landing.freeFeat3')}</li>
+                <li className={s.pYes}>{t('landing.freeFeat4')}</li>
+                <li className={s.pNo}>{t('landing.freeNoFeat1')}</li>
+                <li className={s.pNo}>{t('landing.freeNoFeat2')}</li>
               </ul>
               <button onClick={() => navigate({ to: "/register" })} className={s.pBtnLight}>
-                Get started
+                {t('nav.getStarted')}
               </button>
             </div>
 
             {/* Pro */}
             <div className={`${s.priceCard} ${s.priceCardPop}`}>
-              <div className={s.popTag}>Popular</div>
+              <div className={s.popTag}>{t('landing.popular')}</div>
               <div className={s.priceTop}>
-                <h3 className={s.pName}>Pro</h3>
+                <h3 className={s.pName}>{t('landing.proPlan')}</h3>
                 <div className={s.pAmount}>
                   $6<span className={s.pMo}>/mo</span>
                 </div>
-                <p className={s.pSub}>or $48 billed yearly</p>
+                <p className={s.pSub}>{t('landing.proYearly')}</p>
               </div>
               <ul className={s.pList}>
-                <li className={s.pYes}>Unlimited videos</li>
-                <li className={s.pYes}>Interactive subtitles</li>
-                <li className={s.pYes}>Unlimited word saves</li>
-                <li className={s.pYes}>Context translations</li>
-                <li className={s.pYes}>Vocabulary export</li>
-                <li className={s.pYes}>2 language pairs</li>
+                <li className={s.pYes}>{t('landing.proFeat1')}</li>
+                <li className={s.pYes}>{t('landing.proFeat2')}</li>
+                <li className={s.pYes}>{t('landing.proFeat3')}</li>
+                <li className={s.pYes}>{t('landing.proFeat4')}</li>
+                <li className={s.pYes}>{t('landing.proFeat5')}</li>
+                <li className={s.pYes}>{t('landing.proFeat6')}</li>
               </ul>
               <button onClick={() => navigate({ to: "/register" })} className={s.pBtnSolid}>
-                Start Pro
+                {t('landing.startPro')}
               </button>
             </div>
 
             {/* Premium */}
             <div className={s.priceCard}>
               <div className={s.priceTop}>
-                <h3 className={s.pName}>Premium</h3>
+                <h3 className={s.pName}>{t('landing.premiumPlan')}</h3>
                 <div className={s.pAmount}>
                   $15<span className={s.pMo}>/mo</span>
                 </div>
-                <p className={s.pSub}>or $120 billed yearly</p>
+                <p className={s.pSub}>{t('landing.premiumYearly')}</p>
               </div>
               <ul className={s.pList}>
-                <li className={s.pYes}>Everything in Pro</li>
-                <li className={s.pYes}>AI-powered explanations</li>
-                <li className={s.pYes}>Vocabulary analytics</li>
-                <li className={s.pYes}>All 3 languages</li>
-                <li className={s.pYes}>Priority support</li>
-                <li className={s.pYes}>Early access</li>
+                <li className={s.pYes}>{t('landing.premiumFeat1')}</li>
+                <li className={s.pYes}>{t('landing.premiumFeat2')}</li>
+                <li className={s.pYes}>{t('landing.premiumFeat3')}</li>
+                <li className={s.pYes}>{t('landing.premiumFeat4')}</li>
+                <li className={s.pYes}>{t('landing.premiumFeat5')}</li>
+                <li className={s.pYes}>{t('landing.premiumFeat6')}</li>
               </ul>
               <button onClick={() => navigate({ to: "/register" })} className={s.pBtnLight}>
-                Start Premium
+                {t('landing.startPremium')}
               </button>
             </div>
           </div>
@@ -338,9 +316,9 @@ export default function Welcome() {
         <div className={s.footerInner}>
           <div className={s.footerTop}>
             <div className={s.footerCta}>
-              <h2 className={s.footerH2}>Ready to learn from real content?</h2>
+              <h2 className={s.footerH2}>{t('landing.footerCta')}</h2>
               <button onClick={() => navigate({ to: "/register" })} className={s.ctaPrimary}>
-                Start learning free
+                {t('landing.ctaPrimary')}
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                   <path d="M4 9h10M10 5l4 4-4 4" />
                 </svg>
@@ -355,12 +333,23 @@ export default function Welcome() {
               Lingu<span className={s.logoAcc}>ini</span>
             </a>
             <div className={s.footerLinks}>
-              <a href="#benefits">Features</a>
-              <a href="#pricing">Pricing</a>
-              <a href="#">Privacy</a>
-              <a href="#">Terms</a>
+              <a href="#benefits">{t('landing.footerFeatLink')}</a>
+              <a href="#pricing">{t('landing.footerPricingLink')}</a>
+              <a href="#">{t('landing.footerPrivacy')}</a>
+              <a href="#">{t('landing.footerTerms')}</a>
             </div>
-            <p className={s.footerCopy}>&copy; 2026 Linguini</p>
+            <div className={s.langSwitcher}>
+              {LANG_OPTIONS.map(({ code, label }) => (
+                <button
+                  key={code}
+                  className={`${s.langBtn} ${i18n.language === code ? s.langBtnActive : ""}`}
+                  onClick={() => i18n.changeLanguage(code)}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+            <p className={s.footerCopy}>{t('landing.footerCopy')}</p>
           </div>
         </div>
       </footer>

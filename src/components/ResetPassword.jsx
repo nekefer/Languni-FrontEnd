@@ -2,8 +2,10 @@ import { useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { resetPassword } from "../api/auth";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 export const ResetPassword = ({ token }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [form, setForm] = useState({ new_password: "", new_password_confirm: "" });
   const [loading, setLoading] = useState(false);
@@ -15,9 +17,9 @@ export const ResetPassword = ({ token }) => {
         <div style={styles.card}>
           <div style={styles.logo}>Linguini</div>
           <div style={styles.icon}>❌</div>
-          <h1 style={styles.title}>Invalid link</h1>
-          <p style={styles.subtitle}>This reset link is invalid or has already been used.</p>
-          <Link to="/forgot-password" style={styles.btn}>Request a new link</Link>
+          <h1 style={styles.title}>{t('auth.resetPassword.invalidTitle')}</h1>
+          <p style={styles.subtitle}>{t('auth.resetPassword.invalidDesc')}</p>
+          <Link to="/forgot-password" style={styles.btn}>{t('auth.resetPassword.requestNewLink')}</Link>
         </div>
       </div>
     );
@@ -31,26 +33,26 @@ export const ResetPassword = ({ token }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (form.new_password !== form.new_password_confirm) {
-      setError("Passwords don't match.");
+      setError(t('auth.resetPassword.passwordsMismatch'));
       return;
     }
     setLoading(true);
     try {
       await resetPassword(token, form.new_password, form.new_password_confirm);
-      toast.success("Password reset successfully!");
+      toast.success(t('auth.resetPassword.success'));
       navigate({ to: "/login" });
     } catch (err) {
       const code = err.response?.data?.code;
       if (code === "TOKEN_EXPIRED") {
-        setError("This reset link has expired. Please request a new one.");
+        setError(t('auth.resetPassword.expiredError'));
       } else if (code === "INVALID_TOKEN") {
-        setError("Invalid reset link.");
+        setError(t('auth.resetPassword.invalidError'));
       } else {
         const detail = err.response?.data?.detail;
         if (typeof detail === "string") {
           setError(detail);
         } else {
-          setError("Something went wrong. Please try again.");
+          setError(t('auth.resetPassword.genericError'));
         }
       }
     } finally {
@@ -62,30 +64,30 @@ export const ResetPassword = ({ token }) => {
     <div style={styles.page}>
       <div style={styles.card}>
         <div style={styles.logo}>Linguini</div>
-        <h1 style={styles.title}>Reset your password</h1>
-        <p style={styles.subtitle}>Choose a new password for your account.</p>
+        <h1 style={styles.title}>{t('auth.resetPassword.title')}</h1>
+        <p style={styles.subtitle}>{t('auth.resetPassword.subtitle')}</p>
 
         <form onSubmit={handleSubmit} style={styles.form}>
-          <label style={styles.label} htmlFor="new_password">New password</label>
+          <label style={styles.label} htmlFor="new_password">{t('auth.resetPassword.newPassword')}</label>
           <input
             id="new_password"
             name="new_password"
             style={styles.input}
             type="password"
-            placeholder="At least 8 characters"
+            placeholder={t('auth.resetPassword.newPasswordPlaceholder')}
             value={form.new_password}
             onChange={handleChange}
             required
             autoFocus
           />
 
-          <label style={styles.label} htmlFor="new_password_confirm">Confirm new password</label>
+          <label style={styles.label} htmlFor="new_password_confirm">{t('auth.resetPassword.confirmPassword')}</label>
           <input
             id="new_password_confirm"
             name="new_password_confirm"
             style={styles.input}
             type="password"
-            placeholder="Repeat your new password"
+            placeholder={t('auth.resetPassword.confirmPasswordPlaceholder')}
             value={form.new_password_confirm}
             onChange={handleChange}
             required
@@ -98,11 +100,11 @@ export const ResetPassword = ({ token }) => {
             type="submit"
             disabled={loading}
           >
-            {loading ? "Resetting..." : "Reset password"}
+            {loading ? t('auth.resetPassword.submitting') : t('auth.resetPassword.submit')}
           </button>
         </form>
 
-        <Link to="/forgot-password" style={styles.backLink}>Request a new link</Link>
+        <Link to="/forgot-password" style={styles.backLink}>{t('auth.resetPassword.requestNewLink')}</Link>
       </div>
     </div>
   );

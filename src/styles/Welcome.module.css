@@ -837,6 +837,36 @@
   color: var(--txt3);
 }
 
+/* ───── LANGUAGE SWITCHER ───── */
+
+.langSwitcher {
+  display: flex;
+  gap: 4px;
+}
+
+.langBtn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--txt2);
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+
+.langBtn:hover {
+  color: var(--txt);
+  border-color: var(--txt3);
+}
+
+.langBtnActive {
+  background: var(--pri-light);
+  border-color: var(--pri);
+  color: var(--pri-dark);
+}
+
 /* ───── ANIMATIONS ───── */
 
 @keyframes fadeUp {

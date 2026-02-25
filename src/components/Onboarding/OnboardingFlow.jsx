@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import { useOnboarding } from "../../contexts/OnboardingContext";
 import preferencesService from "../../api/preferences";
 import { NativeLanguageStep } from "./NativeLanguageStep";
@@ -16,6 +17,7 @@ const logger = createLogger("onboarding");
 const TOTAL_STEPS = 4;
 
 export const OnboardingFlow = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { markOnboardingComplete } = useOnboarding();
   const [currentStep, setCurrentStep] = useState(1);
@@ -51,7 +53,7 @@ export const OnboardingFlow = () => {
 
   const handleNext = () => {
     if (!canProceed()) {
-      toast.error("Please complete this step before continuing");
+      toast.error(t('onboarding.completeStep'));
       return;
     }
     if (currentStep < TOTAL_STEPS) {
@@ -67,7 +69,7 @@ export const OnboardingFlow = () => {
 
   const handleComplete = async () => {
     if (!canProceed()) {
-      toast.error("Please complete all steps before continuing");
+      toast.error(t('onboarding.completeAll'));
       return;
     }
 
@@ -78,7 +80,7 @@ export const OnboardingFlow = () => {
       preferences.topics.length === 0 ||
       !preferences.level
     ) {
-      toast.error("Please complete all steps");
+      toast.error(t('onboarding.completeAll'));
       return;
     }
 
@@ -99,12 +101,12 @@ export const OnboardingFlow = () => {
       // Update auth context to reflect completed onboarding
       markOnboardingComplete();
 
-      toast.success("Preferences saved! Welcome to Linguini!");
+      toast.success(t('onboarding.success'));
       navigate({ to: "/dashboard" });
     } catch (error) {
       logger.error("Failed to save preferences", error);
       toast.error(
-        error.message || "Failed to save preferences. Please try again.",
+        error.message || t('onboarding.saveFailed'),
       );
     } finally {
       setLoading(false);
@@ -171,7 +173,7 @@ export const OnboardingFlow = () => {
             ></div>
           </div>
           <div className="progress-text">
-            Step {currentStep} of {TOTAL_STEPS}
+            {t('onboarding.stepOf', { current: currentStep, total: TOTAL_STEPS })}
           </div>
         </div>
 
@@ -186,7 +188,7 @@ export const OnboardingFlow = () => {
             onClick={handleBack}
             disabled={currentStep === 1 || loading}
           >
-            Back
+            {t('onboarding.back')}
           </button>
           {currentStep < TOTAL_STEPS ? (
             <button
@@ -195,7 +197,7 @@ export const OnboardingFlow = () => {
               onClick={handleNext}
               disabled={!canProceed() || loading}
             >
-              Continue
+              {t('onboarding.continue')}
             </button>
           ) : (
             <button
@@ -206,10 +208,10 @@ export const OnboardingFlow = () => {
             >
               {loading ? (
                 <>
-                  <Spinner size={16} /> Saving...
+                  <Spinner size={16} /> {t('onboarding.saving')}
                 </>
               ) : (
-                "Get Started"
+                t('onboarding.getStarted')
               )}
             </button>
           )}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import savedVideosService from "../api/savedVideos.js";
 import { createLogger } from "../utils/logger";
 import { Spinner } from "../ui/Spinner.jsx";
@@ -11,8 +12,10 @@ const logger = createLogger("library");
 const VIDEOS_PER_PAGE = 12;
 
 const VideoCard = ({ videoData, onDelete, onWatch }) => {
+  const { t, i18n } = useTranslation();
+
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
+    return new Date(dateString).toLocaleDateString(i18n.language, {
       month: "short",
       day: "numeric",
       year: "numeric",
@@ -41,7 +44,7 @@ const VideoCard = ({ videoData, onDelete, onWatch }) => {
             loading="lazy"
           />
         ) : (
-          <div className={styles.thumbnailPlaceholder}>No Thumbnail</div>
+          <div className={styles.thumbnailPlaceholder}>{t('library.noThumbnail')}</div>
         )}
       </div>
       <div className={styles.cardInfo}>
@@ -50,7 +53,7 @@ const VideoCard = ({ videoData, onDelete, onWatch }) => {
         </h3>
         <div className={styles.cardMeta}>
           <span className={styles.saveDate}>
-            Saved {formatDate(videoData.saved_at)}
+            {t('library.savedOn', { date: formatDate(videoData.saved_at) })}
           </span>
           {videoData.video.language && (
             <span className={styles.languageBadge}>
@@ -61,9 +64,9 @@ const VideoCard = ({ videoData, onDelete, onWatch }) => {
         <button
           className={styles.deleteBtn}
           onClick={handleDelete}
-          title="Remove from library"
+          title={t('library.removeFromLibrary')}
         >
-          Remove
+          {t('library.remove')}
         </button>
       </div>
     </div>
@@ -71,11 +74,13 @@ const VideoCard = ({ videoData, onDelete, onWatch }) => {
 };
 
 const VideoGrid = ({ videos, onDelete, onWatch, loading, error }) => {
+  const { t } = useTranslation();
+
   if (loading) {
     return (
       <div className={styles.loadingState}>
         <Spinner size={32} />
-        <p>Loading your library...</p>
+        <p>{t('library.loading')}</p>
       </div>
     );
   }
@@ -83,13 +88,13 @@ const VideoGrid = ({ videos, onDelete, onWatch, loading, error }) => {
   if (error) {
     return (
       <div className={styles.errorState}>
-        <h3>Error Loading Library</h3>
+        <h3>{t('library.errorTitle')}</h3>
         <p>{error}</p>
         <button
           className={styles.btnPrimary}
           onClick={() => window.location.reload()}
         >
-          Try Again
+          {t('common.tryAgain')}
         </button>
       </div>
     );
@@ -99,10 +104,10 @@ const VideoGrid = ({ videos, onDelete, onWatch, loading, error }) => {
     return (
       <div className={styles.emptyState}>
         <div className={styles.emptyIcon}>🎬</div>
-        <h3>No saved videos yet</h3>
-        <p>Start saving videos from the dashboard to build your library!</p>
+        <h3>{t('library.emptyTitle')}</h3>
+        <p>{t('library.emptyDesc')}</p>
         <Link to="/dashboard" className={styles.btnPrimary}>
-          Browse Videos
+          {t('common.browseVideos')}
         </Link>
       </div>
     );
@@ -123,6 +128,7 @@ const VideoGrid = ({ videos, onDelete, onWatch, loading, error }) => {
 };
 
 export const MyLibrary = () => {
+  const { t } = useTranslation();
   const [savedVideos, setSavedVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -148,7 +154,7 @@ export const MyLibrary = () => {
     } catch (error) {
       logger.error("Failed to load library", error);
       setError(error.message || "Failed to load your library");
-      toast.error("Failed to load library. Please try again.");
+      toast.error(t('library.loadFailed'));
       setSavedVideos([]);
     } finally {
       setLoading(false);
@@ -165,7 +171,7 @@ export const MyLibrary = () => {
       setSavedVideos(newVideos);
       setTotalVideos((prev) => prev - 1);
 
-      toast.success("Video removed from library");
+      toast.success(t('library.removed'));
 
       if (newVideos.length === 0 && page > 1) {
         setPage(page - 1);
@@ -174,7 +180,7 @@ export const MyLibrary = () => {
       }
     } catch (error) {
       logger.error("Failed to delete video", error);
-      toast.error("Failed to remove video. Please try again.");
+      toast.error(t('library.removeFailed'));
     }
   };
 
@@ -197,8 +203,10 @@ export const MyLibrary = () => {
   return (
     <div className={styles.libraryPage}>
       <div className={styles.libraryHeader}>
-        <h3>My Library</h3>
-        <p className={styles.statsText}>{totalVideos} videos saved</p>
+        <h3>{t('library.title')}</h3>
+        <p className={styles.statsText}>
+          {t('library.videosSaved', { count: totalVideos })}
+        </p>
       </div>
 
       <VideoGrid
@@ -216,17 +224,17 @@ export const MyLibrary = () => {
             disabled={page === 1 || loading}
             className={styles.paginationButton}
           >
-            Previous
+            {t('library.previous')}
           </button>
           <span className={styles.pageInfo}>
-            Page {page} of {totalPages || 1} ({totalVideos} videos total)
+            {t('library.pageInfo', { page, total: totalPages || 1, count: totalVideos })}
           </span>
           <button
             onClick={handleNextPage}
             disabled={page >= totalPages || loading}
             className={styles.paginationButton}
           >
-            Next
+            {t('library.next')}
           </button>
         </div>
       )}

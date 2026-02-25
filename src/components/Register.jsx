@@ -7,18 +7,26 @@ import { useOnboarding } from "../contexts/OnboardingContext";
 import { GuestRoute } from "./GuestRoute";
 import { useDebounce } from "../hooks/useDebounce";
 import { Spinner } from "../ui/Spinner";
+import { useTranslation } from "react-i18next";
+import { Trans } from "react-i18next";
 import {
   validatePassword,
   validateName,
   validateEmail,
   validatePasswordMatch,
   getPasswordStrengthColor,
-  getPasswordStrengthLabel,
   getPasswordStrengthWidth,
 } from "../utils/validators";
 import "../styles/Register.css";
 
+const STRENGTH_KEYS = {
+  weak: "auth.register.strengthWeak",
+  medium: "auth.register.strengthMedium",
+  strong: "auth.register.strengthStrong",
+};
+
 export const Register = () => {
+  const { t } = useTranslation();
   const [form, setForm] = useState({
     email: "",
     first_name: "",
@@ -55,9 +63,9 @@ export const Register = () => {
   useEffect(() => {
     if (search?.error) {
       if (search.error === "oauth_failed") {
-        setError("Google authentication failed. Please try again.");
+        setError(t('auth.login.oauthFailed'));
       } else {
-        setError("Authentication failed. Please try again.");
+        setError(t('auth.login.authFailed'));
       }
     }
   }, [search]);
@@ -178,31 +186,30 @@ export const Register = () => {
       register(userData);
       markAsNewUser(); // Mark as new user for onboarding
 
-      toast.success("Account created successfully! Welcome to Linguini.");
+      toast.success(t('auth.register.success'));
       navigate({ to: "/dashboard" });
     } catch (err) {
       if (!err.response) {
-        const errorMsg = "Network error. Please check your connection.";
+        const errorMsg = t('common.networkError');
         setError(errorMsg);
         toast.error(errorMsg);
       } else if (err.response?.status === 409) {
-        const errorMsg = "Email already registered. Please log in instead.";
+        const errorMsg = t('auth.register.emailTaken');
         setError(errorMsg);
         toast.error(errorMsg);
       } else if (err.response?.status === 422 || err.response?.status === 400) {
         const errorMsg =
-          err.response?.data?.detail || "Please check your input.";
+          err.response?.data?.detail || t('auth.register.checkInput');
         setError(errorMsg);
         toast.error(errorMsg);
       } else if (err.response?.status === 429) {
-        const errorMsg =
-          "Too many registration attempts. Please try again later.";
+        const errorMsg = t('auth.register.tooManyAttempts');
         setError(errorMsg);
         toast.error(errorMsg);
       } else {
         const errorMsg =
           err.response?.data?.detail ||
-          "Registration failed. Please try again.";
+          t('auth.register.failed');
         setError(errorMsg);
         toast.error(errorMsg);
       }
@@ -215,7 +222,7 @@ export const Register = () => {
     try {
       await googleRegister();
     } catch (err) {
-      toast.error("Google registration failed. Please try again.");
+      toast.error(t('auth.register.googleFailed'));
     }
   };
 
@@ -235,29 +242,25 @@ export const Register = () => {
               Lingu<span>ini</span>
             </a>
             <h1>
-              Start your <em>fluency</em> journey.
+              <Trans i18nKey="auth.register.brandHeading" components={{ em: <em /> }} />
             </h1>
-            <p>
-              Join thousands learning languages through real YouTube content.
-              Interactive subtitles, instant definitions, and a vocabulary that
-              actually sticks.
-            </p>
+            <p>{t('auth.register.brandDesc')}</p>
             <ul className="register-brand-features">
               <li>
                 {checkIcon}
-                3 languages — English, Spanish, French
+                {t('auth.register.brandFeat1')}
               </li>
               <li>
                 {checkIcon}
-                Click any word for instant definitions
+                {t('auth.register.brandFeat2')}
               </li>
               <li>
                 {checkIcon}
-                Build your personal vocabulary
+                {t('auth.register.brandFeat3')}
               </li>
               <li>
                 {checkIcon}
-                Free forever — no credit card needed
+                {t('auth.register.brandFeat4')}
               </li>
             </ul>
           </div>
@@ -266,21 +269,21 @@ export const Register = () => {
         {/* Right panel — form */}
         <div className="register-container">
           <form className="register-form" onSubmit={handleSubmit}>
-            <h2 className="register-form-title">Create your account</h2>
+            <h2 className="register-form-title">{t('auth.register.title')}</h2>
             <p className="register-form-sub">
-              It only takes a minute to get started.
+              {t('auth.register.subtitle')}
             </p>
 
             {error && <div className="error">{error}</div>}
 
             {/* Email */}
             <div className="register-field">
-              <label className="register-label">Email</label>
+              <label className="register-label">{t('auth.register.email')}</label>
               <input
                 className="register-input"
                 name="email"
                 type="email"
-                placeholder="you@example.com"
+                placeholder={t('auth.register.emailPlaceholder')}
                 value={form.email}
                 onChange={handleChange}
                 required
@@ -292,7 +295,7 @@ export const Register = () => {
                   }`}
                 >
                   {validation.email.isValid ? "\u2713" : "\u2717"}{" "}
-                  {validation.email.errors[0] || "Valid email"}
+                  {validation.email.errors[0] || t('auth.register.validEmail')}
                 </div>
               )}
             </div>
@@ -300,11 +303,11 @@ export const Register = () => {
             {/* First & Last Name — side by side */}
             <div className="register-row">
               <div className="register-field">
-                <label className="register-label">First name</label>
+                <label className="register-label">{t('auth.register.firstName')}</label>
                 <input
                   className="register-input"
                   name="first_name"
-                  placeholder="Jane"
+                  placeholder={t('auth.register.firstNamePlaceholder')}
                   value={form.first_name}
                   onChange={handleChange}
                   required
@@ -316,17 +319,17 @@ export const Register = () => {
                     }`}
                   >
                     {validation.first_name.isValid ? "\u2713" : "\u2717"}{" "}
-                    {validation.first_name.errors[0] || "Valid name"}
+                    {validation.first_name.errors[0] || t('auth.register.validName')}
                   </div>
                 )}
               </div>
 
               <div className="register-field">
-                <label className="register-label">Last name</label>
+                <label className="register-label">{t('auth.register.lastName')}</label>
                 <input
                   className="register-input"
                   name="last_name"
-                  placeholder="Doe"
+                  placeholder={t('auth.register.lastNamePlaceholder')}
                   value={form.last_name}
                   onChange={handleChange}
                   required
@@ -338,7 +341,7 @@ export const Register = () => {
                     }`}
                   >
                     {validation.last_name.isValid ? "\u2713" : "\u2717"}{" "}
-                    {validation.last_name.errors[0] || "Valid name"}
+                    {validation.last_name.errors[0] || t('auth.register.validName')}
                   </div>
                 )}
               </div>
@@ -346,12 +349,12 @@ export const Register = () => {
 
             {/* Password */}
             <div className="register-field">
-              <label className="register-label">Password</label>
+              <label className="register-label">{t('auth.register.password')}</label>
               <input
                 className="register-input"
                 name="password"
                 type="password"
-                placeholder="Min 8 characters"
+                placeholder={t('auth.register.passwordPlaceholder')}
                 value={form.password}
                 onChange={handleChange}
                 required
@@ -371,7 +374,7 @@ export const Register = () => {
                     />
                   </div>
                   <span className="register-strength-label">
-                    {getPasswordStrengthLabel(validation.password.strength)}
+                    {t(STRENGTH_KEYS[validation.password.strength] || '')}
                   </span>
                 </div>
               )}
@@ -384,19 +387,19 @@ export const Register = () => {
               )}
               {form.password && validation.password.isValid === true && (
                 <div className="register-feedback valid">
-                  {"\u2713"} Password meets requirements
+                  {"\u2713"} {t('auth.register.passwordValid')}
                 </div>
               )}
             </div>
 
             {/* Confirm Password */}
             <div className="register-field">
-              <label className="register-label">Confirm password</label>
+              <label className="register-label">{t('auth.register.confirmPassword')}</label>
               <input
                 className="register-input"
                 name="confirmPassword"
                 type="password"
-                placeholder="Re-enter your password"
+                placeholder={t('auth.register.confirmPasswordPlaceholder')}
                 value={form.confirmPassword}
                 onChange={handleChange}
                 required
@@ -409,7 +412,7 @@ export const Register = () => {
                     }`}
                   >
                     {validation.confirmPassword.isValid ? "\u2713" : "\u2717"}{" "}
-                    {validation.confirmPassword.errors[0] || "Passwords match"}
+                    {validation.confirmPassword.errors[0] || t('auth.register.passwordsMatch')}
                   </div>
                 )}
             </div>
@@ -421,14 +424,14 @@ export const Register = () => {
             >
               {loading ? (
                 <>
-                  <Spinner size={16} /> Creating account...
+                  <Spinner size={16} /> {t('auth.register.submitting')}
                 </>
               ) : (
-                "Create account"
+                t('auth.register.submit')
               )}
             </button>
 
-            <div className="register-divider">or</div>
+            <div className="register-divider">{t('common.or')}</div>
 
             <button
               className="register-google"
@@ -454,17 +457,17 @@ export const Register = () => {
                   fill="#EA4335"
                 />
               </svg>
-              Continue with Google
+              {t('auth.register.google')}
             </button>
 
             <div className="register-footer">
-              Already have an account?{" "}
+              {t('auth.register.hasAccount')}{" "}
               <button
                 className="register-footer-link"
                 type="button"
                 onClick={() => navigate({ to: "/login" })}
               >
-                Log in
+                {t('auth.register.logIn')}
               </button>
             </div>
           </form>

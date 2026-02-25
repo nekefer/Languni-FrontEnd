@@ -6,9 +6,12 @@ import { useAuth } from "../contexts/AuthContext";
 import { useOnboarding } from "../contexts/OnboardingContext";
 import { GuestRoute } from "./GuestRoute";
 import { Spinner } from "../ui/Spinner";
+import { useTranslation } from "react-i18next";
+import { Trans } from "react-i18next";
 import "../styles/Login.css";
 
 export const Login = () => {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -22,9 +25,9 @@ export const Login = () => {
   useEffect(() => {
     if (search?.error) {
       if (search.error === "oauth_failed") {
-        setError("Google authentication failed. Please try again.");
+        setError(t('auth.login.oauthFailed'));
       } else {
-        setError("Authentication failed. Please try again.");
+        setError(t('auth.login.authFailed'));
       }
     }
   }, [search]);
@@ -42,28 +45,28 @@ export const Login = () => {
 
       navigate({ to: "/dashboard" });
 
-      toast.success("Login successful! Welcome back.");
+      toast.success(t('auth.login.success'));
     } catch (err) {
       if (!err.response) {
-        const errorMsg = "Network error. Please check your connection.";
+        const errorMsg = t('common.networkError');
         setError(errorMsg);
         toast.error(errorMsg);
       } else if (err.response?.status === 401) {
-        const errorMsg = "Invalid email or password.";
+        const errorMsg = t('auth.login.invalidCredentials');
         setError(errorMsg);
         toast.error(errorMsg);
       } else if (err.response?.status === 422 || err.response?.status === 400) {
         const errorMsg =
-          err.response?.data?.detail || "Please check your input.";
+          err.response?.data?.detail || t('auth.login.checkInput');
         setError(errorMsg);
         toast.error(errorMsg);
       } else if (err.response?.status === 429) {
-        const errorMsg = "Too many login attempts. Please try again later.";
+        const errorMsg = t('auth.login.tooManyAttempts');
         setError(errorMsg);
         toast.error(errorMsg);
       } else {
         const errorMsg =
-          err.response?.data?.detail || "Login failed. Please try again.";
+          err.response?.data?.detail || t('auth.login.failed');
         setError(errorMsg);
         toast.error(errorMsg);
       }
@@ -76,7 +79,7 @@ export const Login = () => {
     try {
       await googleLogin();
     } catch (err) {
-      toast.error("Google login failed. Please try again.");
+      toast.error(t('auth.login.googleFailed'));
     }
   };
 
@@ -90,32 +93,28 @@ export const Login = () => {
               Lingu<span>ini</span>
             </a>
             <h1>
-              Learn languages from <em>real</em> content.
+              <Trans i18nKey="auth.brandHeading" components={{ em: <em /> }} />
             </h1>
-            <p>
-              Pick any YouTube video in Spanish, French, or English. We add
-              interactive subtitles — click a word to get instant definitions,
-              translations, and context. That's Linguini.
-            </p>
+            <p>{t('auth.brandDesc')}</p>
           </div>
         </div>
 
         {/* Right panel — form */}
         <div className="login-container">
           <form className="login-form" onSubmit={handleSubmit}>
-            <h2 className="login-form-title">Welcome back</h2>
+            <h2 className="login-form-title">{t('auth.login.title')}</h2>
             <p className="login-form-sub">
-              Log in to continue learning.
+              {t('auth.login.subtitle')}
             </p>
 
             {error && <div className="error">{error}</div>}
 
             <div className="login-field">
-              <label className="login-label">Email</label>
+              <label className="login-label">{t('auth.login.email')}</label>
               <input
                 className="login-input"
                 type="email"
-                placeholder="you@example.com"
+                placeholder={t('auth.login.emailPlaceholder')}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -124,19 +123,19 @@ export const Login = () => {
 
             <div className="login-field">
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <label className="login-label">Password</label>
+                <label className="login-label">{t('auth.login.password')}</label>
                 <button
                   type="button"
                   style={{ background: "none", border: "none", fontSize: "13px", color: "#4f46e5", cursor: "pointer", padding: 0 }}
                   onClick={() => navigate({ to: "/forgot-password" })}
                 >
-                  Forgot password?
+                  {t('auth.login.forgotPassword')}
                 </button>
               </div>
               <input
                 className="login-input"
                 type="password"
-                placeholder="Enter your password"
+                placeholder={t('auth.login.passwordPlaceholder')}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -146,14 +145,14 @@ export const Login = () => {
             <button className="login-submit" type="submit" disabled={loading}>
               {loading ? (
                 <>
-                  <Spinner size={16} /> Logging in...
+                  <Spinner size={16} /> {t('auth.login.submitting')}
                 </>
               ) : (
-                "Log in"
+                t('auth.login.submit')
               )}
             </button>
 
-            <div className="login-divider">or</div>
+            <div className="login-divider">{t('common.or')}</div>
 
             <button
               className="login-google"
@@ -179,17 +178,17 @@ export const Login = () => {
                   fill="#EA4335"
                 />
               </svg>
-              Continue with Google
+              {t('auth.login.google')}
             </button>
 
             <div className="login-footer">
-              Don't have an account?{" "}
+              {t('auth.login.noAccount')}{" "}
               <button
                 className="login-footer-link"
                 type="button"
                 onClick={() => navigate({ to: "/register" })}
               >
-                Sign up
+                {t('auth.login.signUp')}
               </button>
             </div>
           </form>

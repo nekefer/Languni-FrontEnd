@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../contexts/AuthContext";
 import { useOnboarding } from "../contexts/OnboardingContext";
 import { googleLogin } from "../api/auth";
@@ -13,6 +14,7 @@ import "../styles/Dashboard.css";
 const logger = createLogger("dashboard");
 
 export const Dashboard = () => {
+  const { t } = useTranslation();
   const { user, logout } = useAuth();
   const { resetOnboardingState } = useOnboarding();
   const navigate = useNavigate();
@@ -72,7 +74,7 @@ export const Dashboard = () => {
       fetchLastLikedVideo();
     } else {
       setVideoLoading(false);
-      setVideoError("Please sign in with Google to view your last liked video");
+      setVideoError(t('dashboard.googleOnly'));
     }
   }, [user]);
 
@@ -80,16 +82,16 @@ export const Dashboard = () => {
     <div className="dashboard-container">
       <div className="dashboard-header">
         <div className="header-content">
-          <h2>Welcome, {user.first_name}!</h2>
+          <h2>{t('dashboard.welcome', { name: user.first_name })}</h2>
           <div className="header-actions">
             <Link to="/library" className="vocabulary-link">
-              🎬 My Library
+              🎬 {t('dashboard.myLibrary')}
             </Link>
             <Link to="/words" className="vocabulary-link">
-              📚 My Vocabulary
+              📚 {t('dashboard.myVocabulary')}
             </Link>
             <button className="logout-button" onClick={handleLogout}>
-              Logout
+              {t('dashboard.logout')}
             </button>
           </div>
         </div>
@@ -97,14 +99,14 @@ export const Dashboard = () => {
 
       <div className="user-info">
         <p>
-          <strong>Email:</strong> {user.email}
+          <strong>{t('dashboard.emailLabel')}:</strong> {user.email}
         </p>
         <p>
-          <strong>Name:</strong> {user.first_name} {user.last_name}
+          <strong>{t('dashboard.nameLabel')}:</strong> {user.first_name} {user.last_name}
         </p>
         {user.auth_method && (
           <p>
-            <strong>Auth Method:</strong> {user.auth_method}
+            <strong>{t('dashboard.authMethodLabel')}:</strong> {user.auth_method}
           </p>
         )}
       </div>
@@ -112,26 +114,26 @@ export const Dashboard = () => {
       {/* Trending Videos Section */}
       <div className="trending-section">
         <div className="trending-header">
-          <h3>🔥 Trending Videos</h3>
+          <h3>🔥 {t('dashboard.trendingVideos')}</h3>
 
           <div className="filters">
             <label>
-              Region:
+              {t('dashboard.regionLabel')}:
               <select
                 value={region}
                 onChange={(e) => changeRegion(e.target.value)}
                 className="region-select"
               >
-                <option value="US">🇺🇸 United States</option>
-                <option value="GB">🇬🇧 United Kingdom</option>
-                <option value="CA">🇨🇦 Canada</option>
-                <option value="AU">🇦🇺 Australia</option>
-                <option value="DE">🇩🇪 Germany</option>
-                <option value="FR">🇫🇷 France</option>
-                <option value="JP">🇯🇵 Japan</option>
-                <option value="KR">🇰🇷 South Korea</option>
-                <option value="IN">🇮🇳 India</option>
-                <option value="BR">🇧🇷 Brazil</option>
+                <option value="US">🇺🇸 {t('dashboard.regionUS')}</option>
+                <option value="GB">🇬🇧 {t('dashboard.regionGB')}</option>
+                <option value="CA">🇨🇦 {t('dashboard.regionCA')}</option>
+                <option value="AU">🇦🇺 {t('dashboard.regionAU')}</option>
+                <option value="DE">🇩🇪 {t('dashboard.regionDE')}</option>
+                <option value="FR">🇫🇷 {t('dashboard.regionFR')}</option>
+                <option value="JP">🇯🇵 {t('dashboard.regionJP')}</option>
+                <option value="KR">🇰🇷 {t('dashboard.regionKR')}</option>
+                <option value="IN">🇮🇳 {t('dashboard.regionIN')}</option>
+                <option value="BR">🇧🇷 {t('dashboard.regionBR')}</option>
               </select>
             </label>
           </div>
@@ -140,7 +142,7 @@ export const Dashboard = () => {
         {loading && videos.length === 0 && (
           <div className="loading-message">
             <Spinner size={24} />
-            <span>Loading trending videos...</span>
+            <span>{t('dashboard.loadingTrending')}</span>
           </div>
         )}
 
@@ -166,10 +168,10 @@ export const Dashboard = () => {
               >
                 {loading ? (
                   <>
-                    <Spinner size={16} /> Loading...
+                    <Spinner size={16} /> {t('dashboard.loading')}
                   </>
                 ) : (
-                  "Load More"
+                  t('dashboard.loadMore')
                 )}
               </button>
             )}
@@ -180,12 +182,12 @@ export const Dashboard = () => {
       {/* Last Liked Video Section */}
       {(user.auth_method === "google" || user.auth_method === "both") && (
         <div className="video-section">
-          <h3>Your Last Liked Video</h3>
+          <h3>{t('dashboard.lastLikedVideo')}</h3>
 
           {videoLoading && (
             <div className="loading-message">
               <Spinner size={24} />
-              <span>Loading your last liked video...</span>
+              <span>{t('dashboard.loadingLastLiked')}</span>
             </div>
           )}
 
@@ -194,7 +196,7 @@ export const Dashboard = () => {
               <p>{videoError}</p>
               {user.auth_method !== "google" && user.auth_method !== "both" && (
                 <button className="google-signin-button" onClick={googleLogin}>
-                  Sign in with Google to view YouTube data
+                  {t('dashboard.signInForYouTube')}
                 </button>
               )}
             </div>
@@ -213,7 +215,7 @@ export const Dashboard = () => {
                 <h4>{lastLikedVideo.title}</h4>
                 <p className="video-description">
                   {lastLikedVideo.description?.substring(0, 200) ??
-                    "No description"}
+                    t('dashboard.noDescription')}
                   ...
                 </p>
                 <a
@@ -222,19 +224,19 @@ export const Dashboard = () => {
                   rel="noopener noreferrer"
                   className="youtube-link"
                 >
-                  Watch on YouTube
+                  {t('dashboard.watchOnYouTube')}
                 </a>
               </div>
             </div>
           )}
 
           {!videoLoading && !videoError && !lastLikedVideo && (
-            <p>No liked videos found.</p>
+            <p>{t('dashboard.noLikedVideos')}</p>
           )}
 
           {lastLikedVideo && (
             <button className="refresh-button" onClick={fetchLastLikedVideo}>
-              Refresh
+              {t('dashboard.refresh')}
             </button>
           )}
         </div>
