@@ -9,7 +9,7 @@ import NotFound from "./NotFound.jsx";
 
 export const WordDetail = ({ word }) => {
   const navigate = useNavigate();
-  const router = useRouter()
+  const router = useRouter();
   const [definition, setDefinition] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -25,17 +25,24 @@ export const WordDetail = ({ word }) => {
         setError(null);
         setNotFound(false);
 
-        const [defData, saved] = await Promise.all([
-          dictionaryService.getDefinition(word),
-          vocabularyService.isWordSaved(word),
-        ]);
+        const savedResult = await vocabularyService.isWordSaved(word);
+        setIsSaved(savedResult.saved);
 
-        // Word not found - service returns null
+        let defData = null;
+        if (savedResult.saved && savedResult.definition) {
+          try {
+            defData = JSON.parse(savedResult.definition);
+          } catch {
+            defData = await dictionaryService.getDefinition(word);
+          }
+        } else {
+          defData = await dictionaryService.getDefinition(word);
+        }
+
         if (defData === null) {
           setNotFound(true);
         } else {
           setDefinition(defData);
-          setIsSaved(saved);
         }
       } catch (err) {
         // Only real errors (network, API failures) reach here

@@ -48,7 +48,7 @@ class TranslationService {
 
     try {
       const response = await axios.post(`${API_URL}/api/translate`, {
-        word: cleanText,
+        text: cleanText,
       });
 
       const data = response.data;

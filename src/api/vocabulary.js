@@ -110,7 +110,7 @@ class VocabularyService {
         currentTime,
       );
 
-      // Get dictionary definition
+      // Get dictionary definition — language is determined server-side from user profile
       const definition = await dictionaryService.getDefinition(word);
 
       if (!definition) {
@@ -138,16 +138,17 @@ class VocabularyService {
    * @param {string} videoId - ID of the video where the word was encountered
    * @returns {Promise<Object>} Save result
    */
-  async saveWord(word, videoId) {
+  async saveWord(word, videoId, { translation, nativeLanguage, definition } = {}) {
     try {
       const cleanWord = word.toLowerCase().trim();
 
-      // Build save data
       const saveData = {
         word: cleanWord,
         video_id: videoId,
+        translation: translation || null,
+        native_language: nativeLanguage || null,
+        definition: definition || null,
       };
-
 
       const response = await axios.post(`${API_URL}/vocabulary/save`, saveData);
 
@@ -168,17 +169,17 @@ class VocabularyService {
    */
   async isWordSaved(word) {
     try {
-      if (!word) return false;
+      if (!word) return { saved: false };
 
       const cleanWord = word.toLowerCase().trim();
       const response = await axios.get(
         `${API_URL}/vocabulary/check/${encodeURIComponent(cleanWord)}`,
       );
 
-      return response.data.saved || false;
+      return response.data; // { word, saved, definition, translation, native_language }
     } catch (error) {
       vocabularyLogger.error("Failed to check word status", error, { word });
-      return false;
+      return { saved: false };
     }
   }
 

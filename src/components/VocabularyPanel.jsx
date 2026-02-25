@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import vocabularyService from "../api/vocabulary.js";
 import translationService from "../api/translation.js";
+import { useAuth } from "../contexts/AuthContext";
 import { vocabularyLogger } from "../utils/logger";
 import styles from "../styles/VocabularyPanel.module.css";
 // Save state configuration
@@ -39,6 +40,7 @@ const SAVE_STATE_CONFIG = {
 };
 
 const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("definition");
   const [audioPlaying, setAudioPlaying] = useState(false);
   const [playingAudioIndex, setPlayingAudioIndex] = useState(null);
@@ -95,13 +97,31 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
     }
   }, [isOpen, vocabularyData?.word]);
 
+  // Start translation fetch immediately when panel opens — ready before user clicks the tab
+  useEffect(() => {
+    if (!isOpen || !vocabularyData?.word) return;
+
+    let cancelled = false;
+    const word = vocabularyData.definition?.word || vocabularyData.word;
+
+    setTranslationLoading(true);
+    setTranslationError(null);
+
+    translationService.translate(word)
+      .then((result) => { if (!cancelled) setTranslationData(result); })
+      .catch((error) => { if (!cancelled) setTranslationError(error.message || "Translation failed"); })
+      .finally(() => { if (!cancelled) setTranslationLoading(false); });
+
+    return () => { cancelled = true; };
+  }, [isOpen, vocabularyData?.word]);
+
   // Check if word is already saved when panel opens
   useEffect(() => {
     if (isOpen && vocabularyData?.word && saveState === "checking") {
       vocabularyService
         .isWordSaved(vocabularyData.word)
-        .then((isSaved) => {
-          setSaveState(isSaved ? "already-saved" : "idle");
+        .then((result) => {
+          setSaveState(result.saved ? "already-saved" : "idle");
         })
         .catch((error) => {
           vocabularyLogger.error("Failed to check if word is saved", error);
@@ -183,7 +203,13 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
       setSaveState("saving");
       setSaveError(null);
 
-      await vocabularyService.saveWord(vocabularyData.word, videoId);
+      await vocabularyService.saveWord(vocabularyData.word, videoId, {
+        translation: translationData?.translatedWord || null,
+        nativeLanguage: user?.native_language || null,
+        definition: vocabularyData.definition
+          ? JSON.stringify(vocabularyData.definition)
+          : null,
+      });
 
       setSaveState("saved");
       const wordText = vocabularyData.definition?.word || vocabularyData.word;
@@ -215,9 +241,9 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
     }
   };
 
-  // Lazy-fetch translation only when Translation tab is clicked
+  // Retry translation (called only from the error state retry button)
   const fetchTranslation = async () => {
-    if (translationData || translationLoading) return;
+    if (translationLoading) return;
 
     const word = vocabularyData?.definition?.word || vocabularyData?.word;
     if (!word) return;
@@ -300,10 +326,7 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
           </button>
           <button
             className={`${styles.tab} ${activeTab === "translation" ? styles.active : ""}`}
-            onClick={() => {
-              setActiveTab("translation");
-              fetchTranslation();
-            }}
+            onClick={() => setActiveTab("translation")}
           >
             <span className={styles.tabIcon}>🌐</span>
             <span className={styles.tabLabel}>Translation</span>
