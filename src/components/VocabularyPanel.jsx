@@ -176,12 +176,15 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
       : `/${phonetic}/`;
   };
 
-  // Handle save word
+  // Handle save word — optimistic: show "saved" immediately, sync in background
   const handleSaveWord = async () => {
-    try {
-      setSaveState("saving");
-      setSaveError(null);
+    const wordText = vocabularyData.definition?.word || vocabularyData.word;
 
+    // Update UI immediately — no waiting for the API
+    setSaveState("saved");
+    setSaveError(null);
+
+    try {
       await vocabularyService.saveWord(vocabularyData.word, videoId, {
         translation: translationData?.translatedWord || null,
         nativeLanguage: user?.native_language || null,
@@ -189,31 +192,23 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
           ? JSON.stringify(vocabularyData.definition)
           : null,
       });
-
-      setSaveState("saved");
-      const wordText = vocabularyData.definition?.word || vocabularyData.word;
       toast.success(t('vocPanel.saveSuccess', { word: wordText }));
     } catch (error) {
       vocabularyLogger.error("Failed to save word", error);
-      const wordText = vocabularyData.definition?.word || vocabularyData.word;
 
-      // Handle different error types
-      if (
-        error.response?.status === 409 ||
-        error.message?.includes("already saved")
-      ) {
-        setSaveState("already-saved");
+      if (error.response?.status === 409 || error.message?.includes("already saved")) {
+        // Already saved — keep "saved" state, it's accurate
         toast.info(t('vocPanel.alreadySaved', { word: wordText }));
       } else if (error.response?.status === 401) {
-        setSaveState("error");
+        setSaveState("idle");
         setSaveError(t('vocPanel.loginToSave'));
         toast.error(t('vocPanel.loginToSave'));
       } else if (!error.response) {
-        setSaveState("error");
+        setSaveState("idle");
         setSaveError(t('common.networkError'));
         toast.error(t('common.networkError'));
       } else {
-        setSaveState("error");
+        setSaveState("idle");
         setSaveError(error.message || t('vocPanel.saveFailed'));
         toast.error(t('vocPanel.saveFailed'));
       }

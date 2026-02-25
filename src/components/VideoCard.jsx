@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import savedVideosService from "../api/savedVideos.js";
+import { useOptimisticToggle } from "../hooks/useOptimisticToggle.js";
 import "../styles/VideoCard.css";
 
 /**
@@ -13,38 +14,26 @@ const VideoCard = ({ video, onClick }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { video_id, title, thumbnails, channel_title, published_at } = video;
-  const [isSaved, setIsSaved] = useState(false);
-  const [saving, setSaving] = useState(false);
 
-  useEffect(() => {
-    if (video_id) {
-      savedVideosService.isVideoSaved(video_id).then(setIsSaved);
-    }
-  }, [video_id]);
+  const { isSaved, checking, toggle } = useOptimisticToggle({
+    id: video_id,
+    fetchSaved: () => savedVideosService.isVideoSaved(video_id),
+    onSave: async () => {
+      await savedVideosService.saveVideo(video_id);
+      toast.success(t("videoCard.videoSaved"));
+    },
+    onUnsave: async () => {
+      await savedVideosService.deleteSavedVideo(video_id);
+      toast.success(t("videoCard.videoRemoved"));
+    },
+    onError: (error) => {
+      toast.error(error.message || t("videoCard.saveFailed"));
+    },
+  });
 
-  const handleSaveToggle = async (e) => {
+  const handleSaveToggle = (e) => {
     e.stopPropagation();
-    if (saving) return;
-    setSaving(true);
-    try {
-      if (isSaved) {
-        await savedVideosService.deleteSavedVideo(video_id);
-        setIsSaved(false);
-        toast.success(t('videoCard.videoRemoved'));
-      } else {
-        await savedVideosService.saveVideo(video_id);
-        setIsSaved(true);
-        toast.success(t('videoCard.videoSaved'));
-      }
-    } catch (error) {
-      if (error.message?.includes("already saved")) {
-        setIsSaved(true);
-      } else {
-        toast.error(error.message || t('videoCard.saveFailed'));
-      }
-    } finally {
-      setSaving(false);
-    }
+    toggle();
   };
 
   // Get the best available thumbnail
@@ -60,19 +49,20 @@ const VideoCard = ({ video, onClick }) => {
     const diffMs = now - date;
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-    if (diffDays === 0) return t('videoCard.today');
-    if (diffDays === 1) return t('videoCard.yesterday');
-    if (diffDays < 7) return t('videoCard.daysAgo', { count: diffDays });
-    if (diffDays < 30) return t('videoCard.weeksAgo', { count: Math.floor(diffDays / 7) });
-    if (diffDays < 365) return t('videoCard.monthsAgo', { count: Math.floor(diffDays / 30) });
-    return t('videoCard.yearsAgo', { count: Math.floor(diffDays / 365) });
+    if (diffDays === 0) return t("videoCard.today");
+    if (diffDays === 1) return t("videoCard.yesterday");
+    if (diffDays < 7) return t("videoCard.daysAgo", { count: diffDays });
+    if (diffDays < 30)
+      return t("videoCard.weeksAgo", { count: Math.floor(diffDays / 7) });
+    if (diffDays < 365)
+      return t("videoCard.monthsAgo", { count: Math.floor(diffDays / 30) });
+    return t("videoCard.yearsAgo", { count: Math.floor(diffDays / 365) });
   };
 
   const handleClick = () => {
     if (onClick) {
       onClick(video);
     } else {
-      // Navigate to player page (prepare for Milestone 3)
       navigate({ to: `/player/${video_id}` });
     }
   };
@@ -98,10 +88,14 @@ const VideoCard = ({ video, onClick }) => {
           <button
             className={`save-btn${isSaved ? " saved" : ""}`}
             onClick={handleSaveToggle}
-            disabled={saving}
-            title={isSaved ? t('videoCard.removeFromLibrary') : t('videoCard.saveToLibrary')}
+            disabled={checking}
+            title={
+              isSaved
+                ? t("videoCard.removeFromLibrary")
+                : t("videoCard.saveToLibrary")
+            }
           >
-            {saving ? "..." : isSaved ? "\u2605" : "\u2606"}
+            {checking ? "·" : isSaved ? "\u2605" : "\u2606"}
           </button>
         </div>
         <p className="video-channel">{channel_title}</p>
