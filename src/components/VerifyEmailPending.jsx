@@ -36,7 +36,7 @@ export const VerifyEmailPending = () => {
   return (
     <div style={styles.page}>
       <div style={styles.card}>
-        <div style={styles.logo}>Linguini</div>
+        <div style={styles.logo}>Languni</div>
         <div style={styles.icon}>✉️</div>
         <h1 style={styles.title}>{t('auth.verifyPending.title')}</h1>
         <p style={styles.subtitle}>

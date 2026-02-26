@@ -30,7 +30,7 @@ export default function Welcome() {
           </a>
           <nav className={s.nav}>
             <a href="#hero" className={s.navLink}>{t('nav.home')}</a>
-            <a href="#problem" className={s.navLink}>{t('nav.whyLinguini')}</a>
+            <a href="#problem" className={s.navLink}>{t('nav.whyLanguni')}</a>
             <a href="#benefits" className={s.navLink}>{t('nav.features')}</a>
             <a href="#pricing" className={s.navLink}>{t('nav.pricing')}</a>
           </nav>
@@ -94,7 +94,7 @@ export default function Welcome() {
                 <span className={s.hcDot} style={{ background: '#ff5f57' }} />
                 <span className={s.hcDot} style={{ background: '#ffbd2e' }} />
                 <span className={s.hcDot} style={{ background: '#28c841' }} />
-                <span className={s.hcUrl}>linguini.app/player</span>
+                <span className={s.hcUrl}>languni.app/player</span>
               </div>
               <div className={s.hcBody}>
                 <div className={s.hcVideo}>

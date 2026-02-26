@@ -39,7 +39,7 @@ function NotFound() {
 
         <div className="error-info">
           <p className="text-muted">
-            {t('notFound.needHelp')} <a href="mailto:support@linguini.com">{t('notFound.contactSupport')}</a>
+            {t('notFound.needHelp')} <a href="mailto:support@languni.com">{t('notFound.contactSupport')}</a>
           </p>
         </div>
       </div>

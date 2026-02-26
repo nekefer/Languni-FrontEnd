@@ -60,7 +60,7 @@ export default function LandingFive() {
           <p className={s.heroP}>
             Pick any YouTube video. We add interactive subtitles. Click a word
             you don't know — boom, instant definition. Save it, review it, own it.
-            That's Linguini.
+            That's Languni.
           </p>
           <button onClick={() => navigate({ to: "/register" })} className={s.heroBtn}>
             Start learning — free forever
@@ -330,7 +330,7 @@ export default function LandingFive() {
             </div>
           </div>
           <div className={s.footerBottom}>
-            &copy; 2026 Linguini. Made with &#10084;&#65039; for language lovers.
+            &copy; 2026 Languni. Made with &#10084;&#65039; for language lovers.
           </div>
         </div>
       </footer>

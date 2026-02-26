@@ -61,7 +61,7 @@ export const VerifyEmail = ({ token }) => {
     return (
       <div style={styles.page}>
         <div style={styles.card}>
-          <div style={styles.logo}>Linguini</div>
+          <div style={styles.logo}>Languni</div>
           <p style={styles.subtitle}>{t('auth.verifyEmail.verifying')}</p>
         </div>
       </div>
@@ -72,7 +72,7 @@ export const VerifyEmail = ({ token }) => {
     return (
       <div style={styles.page}>
         <div style={styles.card}>
-          <div style={styles.logo}>Linguini</div>
+          <div style={styles.logo}>Languni</div>
           <div style={styles.icon}>✅</div>
           <h1 style={styles.title}>{t('auth.verifyEmail.successTitle')}</h1>
           <p style={styles.subtitle}>{t('auth.verifyEmail.successDesc')}</p>
@@ -86,7 +86,7 @@ export const VerifyEmail = ({ token }) => {
     return (
       <div style={styles.page}>
         <div style={styles.card}>
-          <div style={styles.logo}>Linguini</div>
+          <div style={styles.logo}>Languni</div>
           <div style={styles.icon}>⏰</div>
           <h1 style={styles.title}>{t('auth.verifyEmail.expiredTitle')}</h1>
           <p style={styles.subtitle}>{t('auth.verifyEmail.expiredDesc')}</p>
@@ -118,7 +118,7 @@ export const VerifyEmail = ({ token }) => {
   return (
     <div style={styles.page}>
       <div style={styles.card}>
-        <div style={styles.logo}>Linguini</div>
+        <div style={styles.logo}>Languni</div>
         <div style={styles.icon}>❌</div>
         <h1 style={styles.title}>{t('auth.verifyEmail.invalidTitle')}</h1>
         <p style={styles.subtitle}>{t('auth.verifyEmail.invalidDesc')}</p>
