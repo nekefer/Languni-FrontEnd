@@ -12,7 +12,6 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("definition");
   const [audioPlaying, setAudioPlaying] = useState(false);
-  const [playingAudioIndex, setPlayingAudioIndex] = useState(null);
   const audioRef = useRef(null);
   const modalRef = useRef(null);
 
@@ -52,7 +51,7 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
     if (isOpen) {
       document.addEventListener("keydown", handleKeydown);
       document.addEventListener("mousedown", handleClickOutside);
-      document.body.style.overflow = "hidden"; // Prevent body scroll
+      document.body.style.overflow = "hidden";
     }
 
     return () => {
@@ -67,7 +66,6 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
     if (isOpen) {
       setActiveTab("definition");
       setAudioPlaying(false);
-      setPlayingAudioIndex(null);
       setSaveState("checking");
       setSaveError(null);
       setTranslationData(null);
@@ -104,44 +102,12 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
         })
         .catch((error) => {
           vocabularyLogger.error("Failed to check if word is saved", error);
-          setSaveState("idle"); // Default to allowing save on error
+          setSaveState("idle");
         });
     }
   }, [isOpen, vocabularyData?.word, saveState]);
 
-  // Enhanced audio playback for multiple pronunciations
-  const playAudio = async (audioUrl, phoneticIndex) => {
-    if (!audioUrl || playingAudioIndex === phoneticIndex) return;
-
-    try {
-      setPlayingAudioIndex(phoneticIndex);
-      setAudioPlaying(true);
-
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current.currentTime = 0;
-      }
-
-      audioRef.current = new Audio(audioUrl);
-      audioRef.current.onended = () => {
-        setAudioPlaying(false);
-        setPlayingAudioIndex(null);
-      };
-      audioRef.current.onerror = () => {
-        setAudioPlaying(false);
-        setPlayingAudioIndex(null);
-        vocabularyLogger.warn("Audio playback failed");
-      };
-
-      await audioRef.current.play();
-    } catch (error) {
-      vocabularyLogger.error("Audio playback error", error);
-      setAudioPlaying(false);
-      setPlayingAudioIndex(null);
-    }
-  };
-
-  // Handle audio playback (backward compatibility)
+  // Audio playback for the header pronunciation button
   const playPronunciation = async () => {
     const audioUrl = vocabularyData?.definition?.audio;
     if (!audioUrl || audioPlaying) return;
@@ -168,7 +134,6 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
     }
   };
 
-  // Format pronunciation display
   const formatPhonetic = (phonetic) => {
     if (!phonetic) return "";
     return phonetic.startsWith("/") && phonetic.endsWith("/")
@@ -180,7 +145,6 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
   const handleSaveWord = async () => {
     const wordText = vocabularyData.definition?.word || vocabularyData.word;
 
-    // Update UI immediately — no waiting for the API
     setSaveState("saved");
     setSaveError(null);
 
@@ -197,7 +161,6 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
       vocabularyLogger.error("Failed to save word", error);
 
       if (error.response?.status === 409 || error.message?.includes("already saved")) {
-        // Already saved — keep "saved" state, it's accurate
         toast.info(t('vocPanel.alreadySaved', { word: wordText }));
       } else if (error.response?.status === 401) {
         setSaveState("idle");
@@ -284,7 +247,7 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
           </button>
         </div>
 
-        {/* Enhanced Tabs */}
+        {/* Tabs */}
         <div className={styles.vocabularyTabs}>
           <button
             className={`${styles.tab} ${activeTab === "definition" ? styles.active : ""}`}
@@ -294,31 +257,17 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
             <span className={styles.tabLabel}>{t('vocPanel.tabDefinition')}</span>
           </button>
           <button
-            className={`${styles.tab} ${activeTab === "pronunciation" ? styles.active : ""}`}
-            onClick={() => setActiveTab("pronunciation")}
-          >
-            <span className={styles.tabIcon}>🔊</span>
-            <span className={styles.tabLabel}>{t('vocPanel.tabPronunciation')}</span>
-          </button>
-          <button
             className={`${styles.tab} ${activeTab === "translation" ? styles.active : ""}`}
             onClick={() => setActiveTab("translation")}
           >
             <span className={styles.tabIcon}>🌐</span>
             <span className={styles.tabLabel}>{t('vocPanel.tabTranslation')}</span>
           </button>
-          <button
-            className={`${styles.tab} ${activeTab === "related" ? styles.active : ""}`}
-            onClick={() => setActiveTab("related")}
-          >
-            <span className={styles.tabIcon}>🔗</span>
-            <span className={styles.tabLabel}>{t('vocPanel.tabRelated')}</span>
-          </button>
         </div>
 
         {/* Content */}
         <div className={styles.vocabularyContent}>
-          {/* Enhanced Definition Tab */}
+          {/* Definition Tab */}
           {activeTab === "definition" && (
             <div className={styles.definitionContent}>
               {vocabularyData.definition?.meanings?.length > 0
@@ -329,8 +278,6 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
                           <span className={styles.partOfSpeechBadge}>
                             {meaning.partOfSpeech}
                           </span>
-
-                          {/* Part-specific synonyms */}
                           {meaning.synonyms?.length > 0 && (
                             <div className={styles.miniSynonyms}>
                               {t('vocPanel.synonyms')}{" "}
@@ -340,13 +287,9 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
                           )}
                         </div>
 
-                        {/* All definitions for this part of speech */}
                         <div className={styles.definitionsList}>
                           {meaning.definitions.map((def, defIndex) => (
-                            <div
-                              key={defIndex}
-                              className={styles.definitionItem}
-                            >
+                            <div key={defIndex} className={styles.definitionItem}>
                               <div className={styles.definitionNumber}>
                                 {defIndex + 1}.
                               </div>
@@ -354,17 +297,13 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
                                 <p className={styles.definitionText}>
                                   {def.definition}
                                 </p>
-
                                 {def.example && (
                                   <div className={styles.exampleText}>
                                     <strong>{t('vocPanel.example')}</strong>{" "}
                                     <em>"{def.example}"</em>
                                   </div>
                                 )}
-
-                                {/* Definition-specific synonyms/antonyms */}
-                                {(def.synonyms?.length > 0 ||
-                                  def.antonyms?.length > 0) && (
+                                {(def.synonyms?.length > 0 || def.antonyms?.length > 0) && (
                                   <div className={styles.defWordRelations}>
                                     {def.synonyms?.length > 0 && (
                                       <span className={styles.defSynonyms}>
@@ -383,7 +322,6 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
                           ))}
                         </div>
 
-                        {/* Part-specific antonyms */}
                         {meaning.antonyms?.length > 0 && (
                           <div className={styles.partAntonyms}>
                             <strong>
@@ -395,8 +333,7 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
                       </div>
                     )
                   )
-                : // Fallback to old structure for backward compatibility
-                  vocabularyData.definition?.definitions?.map((def, index) => (
+                : vocabularyData.definition?.definitions?.map((def, index) => (
                     <div key={index} className={styles.definitionItem}>
                       <div className={styles.definitionMeta}>
                         <span className={styles.partOfSpeech}>
@@ -422,79 +359,6 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
                       )}
                     </div>
                   ))}
-            </div>
-          )}
-
-          {/*  Pronunciation Tab */}
-          {activeTab === "pronunciation" && (
-            <div className={styles.pronunciationContent}>
-              <h4>
-                {t('vocPanel.howToPronounce', { word: vocabularyData.definition?.word || vocabularyData.word })}
-              </h4>
-
-              {vocabularyData.definition?.phonetics?.length > 0 ? (
-                <div className={styles.phoneticsList}>
-                  {vocabularyData.definition.phonetics.map(
-                    (phonetic, index) => (
-                      <div key={index} className={styles.phoneticItem}>
-                        <div className={styles.phoneticTextWrapper}>
-                          {phonetic.text && (
-                            <span className={styles.phoneticSymbols}>
-                              {formatPhonetic(phonetic.text)}
-                            </span>
-                          )}
-                          {phonetic.region && (
-                            <span className={styles.phoneticRegion}>
-                              ({phonetic.region})
-                            </span>
-                          )}
-                        </div>
-
-                        {phonetic.audio && (
-                          <button
-                            className={`${styles.audioPlayBtn} ${playingAudioIndex === index ? styles.playing : ""}`}
-                            onClick={() => playAudio(phonetic.audio, index)}
-                            disabled={playingAudioIndex === index}
-                          >
-                            {playingAudioIndex === index ? "⏹️" : "▶️"}
-                            {t('vocPanel.playRegion', { region: phonetic.region || t('vocPanel.playAudio') })}
-                          </button>
-                        )}
-                      </div>
-                    )
-                  )}
-                </div>
-              ) : (
-                <div className={styles.noPronunciation}>
-                  <p>{t('vocPanel.limitedPronunciation')}</p>
-                  {vocabularyData.definition?.phonetic && (
-                    <div className={styles.fallbackPronunciation}>
-                      <span className={styles.phoneticSymbols}>
-                        {formatPhonetic(vocabularyData.definition.phonetic)}
-                      </span>
-                      {vocabularyData.definition?.audio && (
-                        <button
-                          className={`${styles.audioPlayBtn} ${audioPlaying ? styles.playing : ""}`}
-                          onClick={playPronunciation}
-                          disabled={audioPlaying}
-                        >
-                          {audioPlaying ? "⏹️" : "▶️"} {t('vocPanel.playAudio')}
-                        </button>
-                      )}
-                    </div>
-                  )}
-                </div>
-              )}
-
-              <div className={styles.pronunciationTips}>
-                <h5>{t('vocPanel.pronunciationTipsTitle')}</h5>
-                <ul>
-                  <li>{t('vocPanel.tip1')}</li>
-                  <li>{t('vocPanel.tip2')}</li>
-                  <li>{t('vocPanel.tip3')}</li>
-                  <li>{t('vocPanel.tip4')}</li>
-                </ul>
-              </div>
             </div>
           )}
 
@@ -546,69 +410,6 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
                   </div>
                 </div>
               )}
-            </div>
-          )}
-
-          {/*  Related Words Tab */}
-          {activeTab === "related" && (
-            <div className={styles.relatedContent}>
-              {vocabularyData.definition?.globalSynonyms?.length > 0 && (
-                <div className={styles.synonymsSection}>
-                  <h4>📗 {t('vocPanel.synonymsTitle')}</h4>
-                  <div className={styles.wordChips}>
-                    {vocabularyData.definition.globalSynonyms.map(
-                      (synonym, index) => (
-                        <button
-                          key={index}
-                          className={`${styles.wordChip} ${styles.synonym}`}
-                          onClick={() => {
-                            // TODO: Implement synonym lookup
-                          }}
-                          title={`Look up "${synonym}"`}
-                        >
-                          {synonym}
-                        </button>
-                      )
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {vocabularyData.definition?.globalAntonyms?.length > 0 && (
-                <div className={styles.antonymsSection}>
-                  <h4>📕 {t('vocPanel.antonymsTitle')}</h4>
-                  <div className={styles.wordChips}>
-                    {vocabularyData.definition.globalAntonyms.map(
-                      (antonym, index) => (
-                        <button
-                          key={index}
-                          className={`${styles.wordChip} ${styles.antonym}`}
-                          onClick={() => {
-                            // TODO: Implement antonym lookup
-                          }}
-                          title={`Look up "${antonym}"`}
-                        >
-                          {antonym}
-                        </button>
-                      )
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {!vocabularyData.definition?.globalSynonyms?.length &&
-                !vocabularyData.definition?.globalAntonyms?.length && (
-                  <div className={styles.noRelatedWords}>
-                    <p>
-                      {t('vocPanel.noRelated', { word: vocabularyData.definition?.word || vocabularyData.word })}
-                    </p>
-                    <div className={styles.suggestion}>
-                      <p>
-                        💡 {t('vocPanel.noRelatedTip')}
-                      </p>
-                    </div>
-                  </div>
-                )}
             </div>
           )}
         </div>
