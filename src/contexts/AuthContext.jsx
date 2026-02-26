@@ -5,7 +5,7 @@ import React, {
   useEffect,
   useCallback,
 } from "react";
-import { fetchUserInfo, logoutUser, refreshToken } from "../api/auth";
+import { fetchUserInfo, logoutUser } from "../api/auth";
 import { authLogger } from "../utils/logger";
 
 const AuthContext = createContext();
@@ -25,7 +25,8 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Check if user is authenticated on app start
+  // Check if user is authenticated on app start.
+  // Token refresh is handled transparently by the axios interceptor.
   const checkAuth = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -35,29 +36,11 @@ export const AuthProvider = ({ children }) => {
       const userData = await fetchUserInfo();
       authLogger.debug("User authenticated", { email: userData.email });
       setUser(userData);
-
       return userData;
-    } catch (error) {
-      // 401 is expected for unauthenticated users — try to refresh silently
-      if (error.response?.status === 401) {
-        try {
-          authLogger.debug("Attempting token refresh...");
-          await refreshToken();
-          // Retry getting user info
-          const userData = await fetchUserInfo();
-          setUser(userData);
-          authLogger.debug("Token refreshed successfully");
-          return userData;
-        } catch {
-          // Refresh also failed — user is simply not logged in
-          setUser(null);
-          return null;
-        }
-      } else {
-        authLogger.debug("Auth check failed", { status: error.response?.status });
-        setUser(null);
-        return null;
-      }
+    } catch {
+      // Not logged in, or refresh also failed — stay on landing page
+      setUser(null);
+      return null;
     } finally {
       setLoading(false);
     }
@@ -93,6 +76,19 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
+
+  // Interceptor fires this when a refresh fails mid-session
+  useEffect(() => {
+    const handleSessionExpired = () => {
+      if (!user) return; // not logged in — ignore
+      authLogger.info("Session expired, logging out");
+      setUser(null);
+      setError(null);
+    };
+
+    window.addEventListener("auth:sessionExpired", handleSessionExpired);
+    return () => window.removeEventListener("auth:sessionExpired", handleSessionExpired);
+  }, [user]);
 
   const value = {
     user,
