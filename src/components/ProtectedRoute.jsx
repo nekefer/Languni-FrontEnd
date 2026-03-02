@@ -14,10 +14,6 @@ export const ProtectedRoute = ({ children, noLayout = false }) => {
     return <Navigate to="/login" />;
   }
 
-  if (!isVerified) {
-    return <Navigate to="/verify-email-pending" />;
-  }
-
   if (noLayout) return children;
 
   return <AppLayout>{children}</AppLayout>;

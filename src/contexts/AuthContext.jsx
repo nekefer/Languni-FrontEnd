@@ -77,6 +77,15 @@ export const AuthProvider = ({ children }) => {
     checkAuth();
   }, [checkAuth]);
 
+  // Re-check auth on window focus when user is unverified
+  // so the verification banner disappears automatically after clicking the email link in another tab
+  useEffect(() => {
+    if (!user || user.is_verified) return;
+    const handleFocus = () => checkAuth();
+    window.addEventListener("focus", handleFocus);
+    return () => window.removeEventListener("focus", handleFocus);
+  }, [user, checkAuth]);
+
   // Interceptor fires this when a refresh fails mid-session
   useEffect(() => {
     const handleSessionExpired = () => {

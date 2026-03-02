@@ -219,6 +219,11 @@
       "signOut": "Sign out",
       "resendSuccess": "Verification email sent! Check your inbox.",
       "resendFailed": "Failed to send email. Please try again."
+    },
+    "verifyBanner": {
+      "message": "Please verify your email —",
+      "helpLink": "Need help?",
+      "dismiss": "Dismiss"
     }
   },
   "onboarding": {

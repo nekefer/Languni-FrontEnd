@@ -219,6 +219,11 @@
       "signOut": "Cerrar sesión",
       "resendSuccess": "¡Correo de verificación enviado! Revisa tu bandeja.",
       "resendFailed": "Error al enviar el correo. Inténtalo de nuevo."
+    },
+    "verifyBanner": {
+      "message": "Por favor verifica tu correo —",
+      "helpLink": "¿Necesitas ayuda?",
+      "dismiss": "Cerrar"
     }
   },
   "onboarding": {

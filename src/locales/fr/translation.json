@@ -219,6 +219,11 @@
       "signOut": "Se déconnecter",
       "resendSuccess": "E-mail de vérification envoyé ! Vérifiez votre boîte.",
       "resendFailed": "Échec de l'envoi. Veuillez réessayer."
+    },
+    "verifyBanner": {
+      "message": "Veuillez vérifier votre adresse e-mail —",
+      "helpLink": "Besoin d'aide ?",
+      "dismiss": "Fermer"
     }
   },
   "onboarding": {

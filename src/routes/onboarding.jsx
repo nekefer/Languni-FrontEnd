@@ -4,7 +4,7 @@ import { ProtectedRoute } from "../components/ProtectedRoute";
 
 export const Route = createFileRoute("/onboarding")({
   component: () => (
-    <ProtectedRoute>
+    <ProtectedRoute noLayout>
       <OnboardingFlow />
     </ProtectedRoute>
   ),

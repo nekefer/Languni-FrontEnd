@@ -3,6 +3,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../contexts/AuthContext";
 import { useOnboarding } from "../contexts/OnboardingContext";
+import { VerificationBanner } from "./VerificationBanner";
 import styles from "../styles/AppLayout.module.css";
 
 const NAV_LINKS = [
@@ -145,6 +146,8 @@ export function AppLayout({ children }) {
             )}
           </div>
         </header>
+
+        <VerificationBanner />
 
         <main className={styles.mainContent}>
           {children}
