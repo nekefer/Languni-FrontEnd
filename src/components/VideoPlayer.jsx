@@ -1,14 +1,17 @@
-import React, { useState, useRef, useCallback, useEffect } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import YouTubePlayer from "./YouTubePlayer";
 import CaptionPanel from "./CaptionPanel";
 import VocabularyPanel from "./VocabularyPanel";
 import NotFound from "./NotFound";
 import savedVideosService from "../api/savedVideos.js";
+import { useOptimisticToggle } from "../hooks/useOptimisticToggle.js";
 import styles from "../styles/VideoPlayer.module.css";
 
 function VideoPlayer({ videoId }) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   // Use ref for raw time (doesn't cause re-renders)
   const currentTimeRef = useRef(0);
@@ -17,10 +20,24 @@ function VideoPlayer({ videoId }) {
   const [playerRef, setPlayerRef] = useState(null);
   const [vocabularyData, setVocabularyData] = useState(null);
   const [isVocabularyPanelOpen, setIsVocabularyPanelOpen] = useState(false);
-  const [isSaved, setIsSaved] = useState(false);
-  const [savingVideo, setSavingVideo] = useState(false);
   // Store captions reference for index calculation
   const captionsRef = useRef([]);
+
+  const { isSaved, checking, toggle: toggleSave } = useOptimisticToggle({
+    id: videoId,
+    fetchSaved: () => savedVideosService.isVideoSaved(videoId),
+    onSave: async () => {
+      await savedVideosService.saveVideo(videoId);
+      toast.success(t("videoCard.videoSaved"));
+    },
+    onUnsave: async () => {
+      await savedVideosService.deleteSavedVideo(videoId);
+      toast.success(t("videoCard.videoRemoved"));
+    },
+    onError: (error) => {
+      toast.error(error.message || t("videoCard.saveFailed"));
+    },
+  });
 
   // Calculate caption index from time
   const calculateCaptionIndex = useCallback((time, captions) => {
@@ -88,36 +105,6 @@ function VideoPlayer({ videoId }) {
     navigate({ to: "/dashboard" });
   };
 
-  useEffect(() => {
-    if (videoId) {
-      savedVideosService.isVideoSaved(videoId).then(setIsSaved);
-    }
-  }, [videoId]);
-
-  const handleSaveToggle = async () => {
-    if (savingVideo) return;
-    setSavingVideo(true);
-    try {
-      if (isSaved) {
-        await savedVideosService.deleteSavedVideo(videoId);
-        setIsSaved(false);
-        toast.success("Video removed from library");
-      } else {
-        await savedVideosService.saveVideo(videoId);
-        setIsSaved(true);
-        toast.success("Video saved to library");
-      }
-    } catch (error) {
-      if (error.message?.includes("already saved")) {
-        setIsSaved(true);
-      } else {
-        toast.error(error.message || "Failed to update library");
-      }
-    } finally {
-      setSavingVideo(false);
-    }
-  };
-
   // Early guard: missing or invalid videoId → show 404 page
   const isMissing = !videoId || videoId === "undefined" || videoId === "null";
   const isInvalidFormat = !/^[a-zA-Z0-9_-]{11}$/.test(videoId || "");
@@ -134,10 +121,10 @@ function VideoPlayer({ videoId }) {
         <h2 className={styles.videoTitle}>Video Player</h2>
         <button
           className={`${styles.playerSaveBtn}${isSaved ? ` ${styles.saved}` : ""}`}
-          onClick={handleSaveToggle}
-          disabled={savingVideo}
+          onClick={toggleSave}
+          disabled={checking}
         >
-          {savingVideo ? "..." : isSaved ? "\u2605 Saved" : "\u2606 Save"}
+          {checking ? "···" : isSaved ? "\u2605 Saved" : "\u2606 Save"}
         </button>
       </nav>
 
