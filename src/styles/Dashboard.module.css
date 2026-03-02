@@ -9,86 +9,6 @@
   color: var(--txt);
 }
 
-/* ── Top navigation bar ── */
-
-.dashboardHeader {
-  background: #fff;
-  border-bottom: 1px solid var(--border);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-.headerContent {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 32px;
-  height: 64px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-}
-
-.dashboardLogo {
-  font-family: var(--heading);
-  font-size: 1.4rem;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  color: var(--txt);
-  text-decoration: none;
-  flex-shrink: 0;
-}
-
-.dashboardLogo span {
-  color: var(--pri);
-}
-
-.headerActions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.vocabularyLink {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
-  font-family: var(--body);
-  font-size: 0.88rem;
-  font-weight: 600;
-  color: var(--txt2);
-  text-decoration: none;
-  border-radius: 8px;
-  transition: background 0.15s, color 0.15s;
-}
-
-.vocabularyLink:hover {
-  background: var(--pri-faint);
-  color: var(--txt);
-}
-
-.logoutButton {
-  padding: 8px 16px;
-  font-family: var(--body);
-  font-size: 0.88rem;
-  font-weight: 600;
-  color: var(--txt3);
-  background: none;
-  border: 1.5px solid var(--border);
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.15s;
-  margin-left: 8px;
-}
-
-.logoutButton:hover {
-  color: var(--txt);
-  border-color: var(--txt2);
-  background: var(--pri-faint);
-}
-
 /* ── Page body ── */
 
 .dashboardBody {
@@ -359,10 +279,6 @@
 /* ── Responsive ── */
 
 @media (max-width: 900px) {
-  .headerContent {
-    padding: 0 20px;
-  }
-
   .dashboardBody {
     padding: 24px 20px 48px;
   }
@@ -379,11 +295,6 @@
 }
 
 @media (max-width: 640px) {
-  .headerContent {
-    padding: 0 16px;
-    height: 56px;
-  }
-
   .dashboardBody {
     padding: 20px 16px 48px;
   }

@@ -11,7 +11,7 @@ function VideoPlayerPage() {
   const { videoId } = Route.useParams();
 
   return (
-    <ProtectedRoute>
+    <ProtectedRoute noLayout>
       <RequireOnboarding>
         <VideoPlayer videoId={videoId} />
       </RequireOnboarding>

@@ -19,7 +19,12 @@
     "features": "Fonctionnalités",
     "pricing": "Tarifs",
     "login": "Connexion",
-    "getStarted": "Commencer"
+    "getStarted": "Commencer",
+    "appDashboard": "Tableau de bord",
+    "appLibrary": "Ma bibliothèque",
+    "appVocabulary": "Mon vocabulaire",
+    "appSettings": "Paramètres",
+    "signOut": "Se déconnecter"
   },
   "landing": {
     "heroLabel": "Apprendre les langues, réinventé",

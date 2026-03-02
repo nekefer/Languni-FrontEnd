@@ -19,7 +19,12 @@
     "features": "Características",
     "pricing": "Precios",
     "login": "Iniciar sesión",
-    "getStarted": "Comenzar"
+    "getStarted": "Comenzar",
+    "appDashboard": "Panel",
+    "appLibrary": "Mi biblioteca",
+    "appVocabulary": "Mi vocabulario",
+    "appSettings": "Configuración",
+    "signOut": "Cerrar sesión"
   },
   "landing": {
     "heroLabel": "El aprendizaje de idiomas, reinventado",

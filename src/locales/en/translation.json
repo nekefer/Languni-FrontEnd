@@ -19,7 +19,12 @@
     "features": "Features",
     "pricing": "Pricing",
     "login": "Log in",
-    "getStarted": "Get started"
+    "getStarted": "Get started",
+    "appDashboard": "Dashboard",
+    "appLibrary": "My Library",
+    "appVocabulary": "My Vocabulary",
+    "appSettings": "Settings",
+    "signOut": "Sign out"
   },
   "landing": {
     "heroLabel": "Language learning, reimagined",

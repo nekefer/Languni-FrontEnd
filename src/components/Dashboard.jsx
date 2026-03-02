@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../contexts/AuthContext";
-import { useOnboarding } from "../contexts/OnboardingContext";
 import { googleLogin } from "../api/auth";
 import { getLastLikedVideo } from "../api/youtube";
 import useTrendingStore from "../stores/trendingStore";
@@ -15,9 +13,7 @@ const logger = createLogger("dashboard");
 
 export const Dashboard = () => {
   const { t } = useTranslation();
-  const { user, logout } = useAuth();
-  const { resetOnboardingState } = useOnboarding();
-  const navigate = useNavigate();
+  const { user } = useAuth();
   const [lastLikedVideo, setLastLikedVideo] = useState(null);
   const [videoLoading, setVideoLoading] = useState(true);
   const [videoError, setVideoError] = useState(null);
@@ -32,12 +28,6 @@ export const Dashboard = () => {
     loadMore,
     changeRegion,
   } = useTrendingStore();
-
-  const handleLogout = async () => {
-    await logout();
-    resetOnboardingState();
-    navigate({ to: "/" });
-  };
 
   const fetchLastLikedVideo = async () => {
     try {
@@ -70,27 +60,6 @@ export const Dashboard = () => {
 
   return (
     <div className={styles.dashboardContainer}>
-      {/* Top navigation */}
-      <header className={styles.dashboardHeader}>
-        <div className={styles.headerContent}>
-          <a href="/" className={styles.dashboardLogo}>
-            Lang<span>uni</span>
-          </a>
-          <nav className={styles.headerActions}>
-            <Link to="/library" className={styles.vocabularyLink}>
-              🎬 {t('dashboard.myLibrary')}
-            </Link>
-            <Link to="/words" className={styles.vocabularyLink}>
-              📚 {t('dashboard.myVocabulary')}
-            </Link>
-            <button className={styles.logoutButton} onClick={handleLogout}>
-              {t('dashboard.logout')}
-            </button>
-          </nav>
-        </div>
-      </header>
-
-      {/* Page body */}
       <main className={styles.dashboardBody}>
         <div className={styles.dashboardGreeting}>
           <h2>{t('dashboard.welcome', { name: user.first_name })}</h2>
