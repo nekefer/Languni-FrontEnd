@@ -6,7 +6,7 @@ import CaptionPanel from "./CaptionPanel";
 import VocabularyPanel from "./VocabularyPanel";
 import NotFound from "./NotFound";
 import savedVideosService from "../api/savedVideos.js";
-import "../styles/VideoPlayer.css";
+import styles from "../styles/VideoPlayer.module.css";
 
 function VideoPlayer({ videoId }) {
   const navigate = useNavigate();
@@ -126,14 +126,14 @@ function VideoPlayer({ videoId }) {
   }
 
   return (
-    <div className="video-player-page">
-      <nav className="player-nav">
-        <button className="back-button" onClick={handleBackToDashboard}>
-          ← Back to Dashboard
+    <div className={styles.videoPlayerPage}>
+      <nav className={styles.playerNav}>
+        <button className={styles.backButton} onClick={handleBackToDashboard}>
+          ← Back
         </button>
-        <h2 className="video-title">Video Player</h2>
+        <h2 className={styles.videoTitle}>Video Player</h2>
         <button
-          className={`player-save-btn${isSaved ? " saved" : ""}`}
+          className={`${styles.playerSaveBtn}${isSaved ? ` ${styles.saved}` : ""}`}
           onClick={handleSaveToggle}
           disabled={savingVideo}
         >
@@ -141,8 +141,8 @@ function VideoPlayer({ videoId }) {
         </button>
       </nav>
 
-      <div className="video-player-layout">
-        <div className="player-section">
+      <div className={styles.videoPlayerLayout}>
+        <div className={styles.playerSection}>
           <YouTubePlayer
             videoId={videoId}
             onTimeUpdate={handleTimeUpdate}
@@ -150,7 +150,7 @@ function VideoPlayer({ videoId }) {
           />
         </div>
 
-        <div className="caption-section">
+        <div className={styles.captionSection}>
           <CaptionPanel
             videoId={videoId}
             currentCaptionIndex={currentCaptionIndex}

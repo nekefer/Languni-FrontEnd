@@ -1,0 +1,254 @@
+/* ============================================
+   AUTH CARD — shared by ForgotPassword,
+   ResetPassword, VerifyEmail, VerifyEmailPending
+   ============================================ */
+
+.ac-page {
+  min-height: 100vh;
+  background: var(--pri-faint);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  font-family: var(--body);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle decorative circles */
+.ac-page::before {
+  content: '';
+  position: fixed;
+  width: 500px;
+  height: 500px;
+  top: -200px;
+  right: -200px;
+  background: rgba(42, 176, 144, 0.06);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.ac-page::after {
+  content: '';
+  position: fixed;
+  width: 360px;
+  height: 360px;
+  bottom: -160px;
+  left: -160px;
+  background: rgba(42, 176, 144, 0.05);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* Card */
+.ac-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 52px 44px;
+  max-width: 460px;
+  width: 100%;
+  text-align: center;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+  position: relative;
+  z-index: 1;
+  animation: acCardIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes acCardIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Logo */
+.ac-logo {
+  font-family: var(--heading);
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--txt);
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: 28px;
+}
+
+.ac-logo span {
+  color: var(--pri);
+}
+
+/* Icon */
+.ac-icon {
+  font-size: 3rem;
+  margin-bottom: 16px;
+  line-height: 1;
+  display: block;
+}
+
+/* Headings */
+.ac-title {
+  font-family: var(--heading);
+  font-size: 1.55rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--txt);
+  margin: 0 0 10px;
+}
+
+.ac-subtitle {
+  font-size: 0.95rem;
+  color: var(--txt2);
+  line-height: 1.65;
+  margin: 0 0 28px;
+}
+
+/* Form */
+.ac-form {
+  text-align: left;
+  margin-top: 4px;
+}
+
+.ac-label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--txt);
+  margin-bottom: 7px;
+}
+
+.ac-input {
+  display: block;
+  width: 100%;
+  font-family: var(--body);
+  font-size: 0.92rem;
+  color: var(--txt);
+  background: var(--pri-faint);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 13px 16px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+  margin-bottom: 16px;
+}
+
+.ac-input:focus {
+  border-color: var(--pri);
+  box-shadow: 0 0 0 3px rgba(42, 176, 144, 0.12);
+}
+
+.ac-input::placeholder {
+  color: var(--txt3);
+}
+
+/* Error */
+.ac-error {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--red);
+  background: var(--red-bg);
+  border: 1px solid rgba(239, 68, 68, 0.12);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  text-align: left;
+  margin-bottom: 14px;
+}
+
+/* Buttons */
+.ac-btn {
+  display: block;
+  width: 100%;
+  font-family: var(--body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #fff;
+  background: var(--pri);
+  border: none;
+  border-radius: var(--radius);
+  padding: 14px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.15s;
+  box-sizing: border-box;
+}
+
+.ac-btn:hover:not(:disabled) {
+  background: var(--pri-dark);
+  transform: translateY(-1px);
+  color: #fff;
+}
+
+.ac-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.ac-btn-inline {
+  display: inline-block;
+  width: auto;
+  padding: 13px 30px;
+}
+
+/* Back link */
+.ac-back-link {
+  display: inline-block;
+  margin-top: 20px;
+  font-size: 0.88rem;
+  color: var(--txt3);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.ac-back-link:hover {
+  color: var(--pri);
+}
+
+/* Hint text */
+.ac-hint {
+  font-size: 0.85rem;
+  color: var(--txt3);
+  margin: 0 0 24px;
+  line-height: 1.5;
+}
+
+/* Ghost link button */
+.ac-link-btn {
+  background: none;
+  border: none;
+  font-family: var(--body);
+  font-size: 0.88rem;
+  color: var(--txt3);
+  cursor: pointer;
+  text-decoration: underline;
+  margin-top: 8px;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.ac-link-btn:hover {
+  color: var(--txt2);
+}
+
+/* Divider line */
+.ac-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 24px 0;
+}
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  .ac-card {
+    padding: 36px 24px;
+  }
+
+  .ac-title {
+    font-size: 1.35rem;
+  }
+}

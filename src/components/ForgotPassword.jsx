@@ -4,6 +4,7 @@ import { forgotPassword } from "../api/auth";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { Trans } from "react-i18next";
+import styles from "../styles/auth-card.module.css";
 
 export const ForgotPassword = () => {
   const { t } = useTranslation();
@@ -27,36 +28,40 @@ export const ForgotPassword = () => {
 
   if (submitted) {
     return (
-      <div style={styles.page}>
-        <div style={styles.card}>
-          <div style={styles.logo}>Languni</div>
-          <div style={styles.icon}>✉️</div>
-          <h1 style={styles.title}>{t('auth.forgotPassword.checkEmailTitle')}</h1>
-          <p style={styles.subtitle}>
+      <div className={styles.acPage}>
+        <div className={styles.acCard}>
+          <a href="/" className={styles.acLogo}>Lang<span>uni</span></a>
+          <span className={styles.acIcon}>✉️</span>
+          <h1 className={styles.acTitle}>{t('auth.forgotPassword.checkEmailTitle')}</h1>
+          <p className={styles.acSubtitle}>
             <Trans
               i18nKey="auth.forgotPassword.checkEmailDesc"
               values={{ email }}
               components={{ strong: <strong /> }}
             />
           </p>
-          <Link to="/login" style={styles.backLink}>{t('auth.forgotPassword.backToLogin')}</Link>
+          <Link to="/login" className={`${styles.acBtn} ${styles.acBtnInline}`}>
+            {t('auth.forgotPassword.backToLogin')}
+          </Link>
         </div>
       </div>
     );
   }
 
   return (
-    <div style={styles.page}>
-      <div style={styles.card}>
-        <div style={styles.logo}>Languni</div>
-        <h1 style={styles.title}>{t('auth.forgotPassword.title')}</h1>
-        <p style={styles.subtitle}>{t('auth.forgotPassword.subtitle')}</p>
+    <div className={styles.acPage}>
+      <div className={styles.acCard}>
+        <a href="/" className={styles.acLogo}>Lang<span>uni</span></a>
+        <h1 className={styles.acTitle}>{t('auth.forgotPassword.title')}</h1>
+        <p className={styles.acSubtitle}>{t('auth.forgotPassword.subtitle')}</p>
 
-        <form onSubmit={handleSubmit} style={styles.form}>
-          <label style={styles.label} htmlFor="email">{t('auth.forgotPassword.email')}</label>
+        <form onSubmit={handleSubmit} className={styles.acForm}>
+          <label className={styles.acLabel} htmlFor="fp-email">
+            {t('auth.forgotPassword.email')}
+          </label>
           <input
-            id="email"
-            style={styles.input}
+            id="fp-email"
+            className={styles.acInput}
             type="email"
             placeholder={t('auth.forgotPassword.emailPlaceholder')}
             value={email}
@@ -64,69 +69,15 @@ export const ForgotPassword = () => {
             required
             autoFocus
           />
-          <button style={{ ...styles.btn, ...(loading ? styles.btnDisabled : {}) }} type="submit" disabled={loading}>
+          <button className={styles.acBtn} type="submit" disabled={loading}>
             {loading ? t('auth.forgotPassword.submitting') : t('auth.forgotPassword.submit')}
           </button>
         </form>
 
-        <Link to="/login" style={styles.backLink}>{t('auth.forgotPassword.backToLogin')}</Link>
+        <Link to="/login" className={styles.acBackLink}>
+          {t('auth.forgotPassword.backToLogin')}
+        </Link>
       </div>
     </div>
   );
-};
-
-const styles = {
-  page: {
-    minHeight: "100vh",
-    background: "#f4f4f5",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: "24px 16px",
-  },
-  card: {
-    background: "#fff",
-    borderRadius: "12px",
-    padding: "48px 40px",
-    maxWidth: "420px",
-    width: "100%",
-    textAlign: "center",
-    boxShadow: "0 1px 6px rgba(0,0,0,0.08)",
-  },
-  logo: { fontSize: "20px", fontWeight: "bold", color: "#4f46e5", marginBottom: "24px" },
-  icon: { fontSize: "48px", marginBottom: "16px" },
-  title: { fontSize: "22px", fontWeight: "700", color: "#111827", margin: "0 0 8px" },
-  subtitle: { fontSize: "15px", color: "#374151", lineHeight: "1.6", margin: "0 0 28px" },
-  form: { textAlign: "left" },
-  label: { display: "block", fontSize: "14px", fontWeight: "600", color: "#374151", marginBottom: "6px" },
-  input: {
-    display: "block",
-    width: "100%",
-    padding: "11px 14px",
-    border: "1px solid #d1d5db",
-    borderRadius: "7px",
-    fontSize: "14px",
-    marginBottom: "16px",
-    boxSizing: "border-box",
-  },
-  btn: {
-    display: "block",
-    width: "100%",
-    padding: "13px",
-    background: "#4f46e5",
-    color: "#fff",
-    border: "none",
-    borderRadius: "7px",
-    fontSize: "15px",
-    fontWeight: "600",
-    cursor: "pointer",
-  },
-  btnDisabled: { background: "#a5b4fc", cursor: "not-allowed" },
-  backLink: {
-    display: "inline-block",
-    marginTop: "20px",
-    fontSize: "14px",
-    color: "#6b7280",
-    textDecoration: "none",
-  },
 };

@@ -1,6 +1,6 @@
 import { useNavigate, useLocation } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import "../styles/NotFound.css";
+import styles from "../styles/NotFound.module.css";
 
 function NotFound() {
   const { t } = useTranslation();
@@ -8,38 +8,37 @@ function NotFound() {
   const location = useLocation();
 
   return (
-    <div className="error-page">
-      <div className="error-content">
-        <h1 className="error-code">404</h1>
-        <h2>{t('notFound.title')}</h2>
-        <p className="error-description">
-          {t('notFound.desc')}
-        </p>
+    <div className={styles.errorPage}>
+      <div className={styles.errorContent}>
+        <h1 className={styles.errorCode}>404</h1>
+        <h2 className={styles.errorTitle}>{t('notFound.title')}</h2>
+        <p className={styles.errorDescription}>{t('notFound.desc')}</p>
 
         {location.pathname && (
-          <p className="error-path">
+          <p className={styles.errorPath}>
             <code>{location.pathname}</code>
           </p>
         )}
 
-        <div className="error-actions">
+        <div className={styles.errorActions}>
           <button
-            className="btn btn-primary"
+            className={styles.btnPrimary}
             onClick={() => navigate({ to: "/dashboard" })}
           >
             {t('notFound.backToDashboard')}
           </button>
           <button
-            className="btn btn-secondary"
+            className={styles.btnSecondary}
             onClick={() => window.history.back()}
           >
             {t('notFound.goBack')}
           </button>
         </div>
 
-        <div className="error-info">
-          <p className="text-muted">
-            {t('notFound.needHelp')} <a href="mailto:support@languni.com">{t('notFound.contactSupport')}</a>
+        <div className={styles.errorInfo}>
+          <p className={styles.textMuted}>
+            {t('notFound.needHelp')}{" "}
+            <a href="mailto:support@languni.com">{t('notFound.contactSupport')}</a>
           </p>
         </div>
       </div>

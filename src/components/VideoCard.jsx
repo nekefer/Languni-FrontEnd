@@ -4,12 +4,8 @@ import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import savedVideosService from "../api/savedVideos.js";
 import { useOptimisticToggle } from "../hooks/useOptimisticToggle.js";
-import "../styles/VideoCard.css";
+import styles from "../styles/VideoCard.module.css";
 
-/**
- * VideoCard Component
- * Displays a single trending video with thumbnail, title, channel, and metadata.
- */
 const VideoCard = ({ video, onClick }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -36,26 +32,21 @@ const VideoCard = ({ video, onClick }) => {
     toggle();
   };
 
-  // Get the best available thumbnail
   const thumbnail =
     thumbnails?.high?.url ||
     thumbnails?.medium?.url ||
     thumbnails?.default?.url;
 
-  // Format published date using i18n pluralization
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const now = new Date();
-    const diffMs = now - date;
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    const diffDays = Math.floor((now - date) / (1000 * 60 * 60 * 24));
 
     if (diffDays === 0) return t("videoCard.today");
     if (diffDays === 1) return t("videoCard.yesterday");
     if (diffDays < 7) return t("videoCard.daysAgo", { count: diffDays });
-    if (diffDays < 30)
-      return t("videoCard.weeksAgo", { count: Math.floor(diffDays / 7) });
-    if (diffDays < 365)
-      return t("videoCard.monthsAgo", { count: Math.floor(diffDays / 30) });
+    if (diffDays < 30) return t("videoCard.weeksAgo", { count: Math.floor(diffDays / 7) });
+    if (diffDays < 365) return t("videoCard.monthsAgo", { count: Math.floor(diffDays / 30) });
     return t("videoCard.yearsAgo", { count: Math.floor(diffDays / 365) });
   };
 
@@ -69,37 +60,31 @@ const VideoCard = ({ video, onClick }) => {
 
   return (
     <div
-      className="video-card"
+      className={styles.videoCard}
       onClick={handleClick}
       role="button"
       tabIndex={0}
     >
-      <div className="video-thumbnail">
+      <div className={styles.videoThumbnail}>
         <img src={thumbnail} alt={title} loading="lazy" />
-        <div className="video-duration-overlay">
-          {/* Could add duration here if available */}
-        </div>
+        <div className={styles.videoDurationOverlay} />
       </div>
-      <div className="video-info">
-        <div className="video-info-header">
-          <h3 className="video-title" title={title}>
+      <div className={styles.videoInfo}>
+        <div className={styles.videoInfoHeader}>
+          <h3 className={styles.videoTitle} title={title}>
             {title}
           </h3>
           <button
-            className={`save-btn${isSaved ? " saved" : ""}`}
+            className={`${styles.saveBtn}${isSaved ? ` ${styles.saved}` : ""}`}
             onClick={handleSaveToggle}
             disabled={checking}
-            title={
-              isSaved
-                ? t("videoCard.removeFromLibrary")
-                : t("videoCard.saveToLibrary")
-            }
+            title={isSaved ? t("videoCard.removeFromLibrary") : t("videoCard.saveToLibrary")}
           >
-            {checking ? "·" : isSaved ? "\u2605" : "\u2606"}
+            {checking ? "·" : isSaved ? "★" : "☆"}
           </button>
         </div>
-        <p className="video-channel">{channel_title}</p>
-        <p className="video-metadata">{formatDate(published_at)}</p>
+        <p className={styles.videoChannel}>{channel_title}</p>
+        <p className={styles.videoMetadata}>{formatDate(published_at)}</p>
       </div>
     </div>
   );

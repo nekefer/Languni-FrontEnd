@@ -99,15 +99,15 @@
 .phoneticText {
     font-family: 'Courier New', monospace;
     font-size: 1.1rem;
-    color: #60a5fa;
-    background: rgba(96, 165, 250, 0.1);
+    color: var(--pri);
+    background: rgba(42, 176, 144, 0.1);
     padding: 4px 8px;
     border-radius: 4px;
-    border: 1px solid rgba(96, 165, 250, 0.2);
+    border: 1px solid rgba(42, 176, 144, 0.2);
 }
 
 .audioBtn {
-    background: #60a5fa;
+    background: var(--pri);
     border: none;
     border-radius: 50%;
     width: 32px;
@@ -122,7 +122,7 @@
 }
 
 .audioBtn:hover:not(:disabled) {
-    background: #3b82f6;
+    background: var(--pri-dark);
     transform: scale(1.05);
 }
 
@@ -194,8 +194,8 @@
 }
 
 .active {
-    color: #60a5fa;
-    background: rgba(96, 165, 250, 0.1);
+    color: var(--pri);
+    background: rgba(42, 176, 144, 0.1);
 }
 
 .active::after {
@@ -205,7 +205,7 @@
     left: 0;
     right: 0;
     height: 2px;
-    background: #60a5fa;
+    background: var(--pri);
 }
 
 /* Content Area */
@@ -227,7 +227,7 @@
     background: #222;
     border-radius: 8px;
     padding: 20px;
-    border-left: 4px solid #60a5fa;
+    border-left: 4px solid var(--pri);
 }
 
 .definitionMeta {
@@ -235,7 +235,7 @@
 }
 
 .partOfSpeech {
-    background: #60a5fa;
+    background: var(--pri);
     color: white;
     padding: 4px 12px;
     border-radius: 16px;
@@ -254,14 +254,14 @@
 .definitionExample {
     margin-bottom: 16px;
     padding: 12px;
-    background: rgba(96, 165, 250, 0.1);
+    background: rgba(42, 176, 144, 0.1);
     border-radius: 6px;
-    border-left: 3px solid #60a5fa;
+    border-left: 3px solid var(--pri);
 }
 
 .exampleLabel {
     font-weight: 600;
-    color: #60a5fa;
+    color: var(--pri);
     margin-right: 8px;
 }
 
@@ -279,7 +279,7 @@
 
 .synonymsLabel {
     font-weight: 600;
-    color: #60a5fa;
+    color: var(--pri);
     margin-right: 8px;
 }
 
@@ -295,7 +295,7 @@
 }
 
 .contextSection h4 {
-    color: #60a5fa;
+    color: var(--pri);
     margin: 0 0 16px 0;
     font-size: 1.2rem;
     font-weight: 600;
@@ -322,8 +322,8 @@
 }
 
 .current {
-    background: rgba(96, 165, 250, 0.15);
-    border-left: 3px solid #60a5fa;
+    background: rgba(42, 176, 144, 0.15);
+    border-left: 3px solid var(--pri);
 }
 
 .next {
@@ -334,7 +334,7 @@
 .contextTimestamp {
     background: none;
     border: 1px solid rgba(255, 255, 255, 0.2);
-    color: #60a5fa;
+    color: var(--pri);
     padding: 6px 12px;
     border-radius: 16px;
     font-size: 0.85rem;
@@ -345,15 +345,15 @@
 }
 
 .contextTimestamp:hover {
-    background: rgba(96, 165, 250, 0.2);
-    border-color: #60a5fa;
+    background: rgba(42, 176, 144, 0.2);
+    border-color: var(--pri);
     transform: translateY(-1px);
 }
 
 .contextTimestamp.active {
-    background: #60a5fa;
+    background: var(--pri);
     color: white;
-    border-color: #60a5fa;
+    border-color: var(--pri);
 }
 
 .contextText {
@@ -372,7 +372,7 @@
 }
 
 .usageSection h4 {
-    color: #60a5fa;
+    color: var(--pri);
     margin: 0 0 16px 0;
     font-size: 1.2rem;
     font-weight: 600;
@@ -414,7 +414,7 @@
 
 .clueTiming {
     font-weight: 600;
-    color: #60a5fa;
+    color: var(--pri);
     text-transform: capitalize;
     min-width: 60px;
 }
@@ -431,7 +431,7 @@
 }
 
 .relatedWord {
-    background: #60a5fa;
+    background: var(--pri);
     color: white;
     padding: 6px 12px;
     border-radius: 16px;
@@ -475,14 +475,14 @@
 }
 
 .primary {
-    background: #60a5fa;
+    background: var(--pri);
     color: white;
 }
 
 .primary:hover {
-    background: #3b82f6;
+    background: var(--pri-dark);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(96, 165, 250, 0.4);
+    box-shadow: 0 4px 12px rgba(42, 176, 144, 0.4);
 }
 
 .success {
@@ -593,7 +593,7 @@
     background: #222;
     border-radius: 8px;
     padding: 1.25rem;
-    border-left: 4px solid #60a5fa;
+    border-left: 4px solid var(--pri);
 }
 
 .partOfSpeechHeader {
@@ -604,7 +604,7 @@
 }
 
 .partOfSpeechBadge {
-    background: #60a5fa;
+    background: var(--pri);
     color: white;
     padding: 6px 16px;
     border-radius: 20px;
@@ -634,7 +634,7 @@
 
 .definitionNumber {
     background: #333;
-    color: #60a5fa;
+    color: var(--pri);
     width: 24px;
     height: 24px;
     border-radius: 50%;
@@ -654,9 +654,9 @@
 .exampleText {
     margin-top: 8px;
     padding: 8px 12px;
-    background: rgba(96, 165, 250, 0.1);
+    background: rgba(42, 176, 144, 0.1);
     border-radius: 6px;
-    border-left: 3px solid #60a5fa;
+    border-left: 3px solid var(--pri);
 }
 
 .defWordRelations {
@@ -692,7 +692,7 @@
 
 .pronunciationContent h4 {
     margin: 0 0 1.5rem 0;
-    color: #60a5fa;
+    color: var(--pri);
     font-size: 1.2rem;
 }
 
@@ -707,7 +707,7 @@
     background: #222;
     padding: 1rem;
     border-radius: 8px;
-    border-left: 4px solid #60a5fa;
+    border-left: 4px solid var(--pri);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -722,11 +722,11 @@
 .phoneticSymbols {
     font-family: 'Courier New', monospace;
     font-size: 1.2rem;
-    color: #60a5fa;
-    background: rgba(96, 165, 250, 0.1);
+    color: var(--pri);
+    background: rgba(42, 176, 144, 0.1);
     padding: 6px 12px;
     border-radius: 6px;
-    border: 1px solid rgba(96, 165, 250, 0.2);
+    border: 1px solid rgba(42, 176, 144, 0.2);
 }
 
 .phoneticRegion {
@@ -736,7 +736,7 @@
 }
 
 .audioPlayBtn {
-    background: #60a5fa;
+    background: var(--pri);
     border: none;
     border-radius: 6px;
     color: white;
@@ -748,7 +748,7 @@
 }
 
 .audioPlayBtn:hover:not(:disabled) {
-    background: #3b82f6;
+    background: var(--pri-dark);
     transform: translateY(-1px);
 }
 
@@ -871,10 +871,10 @@
 .suggestion {
     margin-top: 1rem;
     padding: 1rem;
-    background: rgba(96, 165, 250, 0.1);
+    background: rgba(42, 176, 144, 0.1);
     border-radius: 8px;
-    border-left: 4px solid #60a5fa;
-    color: #60a5fa;
+    border-left: 4px solid var(--pri);
+    color: var(--pri);
 }
 
 /* Enhanced Usage Content */
@@ -888,11 +888,11 @@
     background: #222;
     padding: 1.25rem;
     border-radius: 8px;
-    border-left: 4px solid #60a5fa;
+    border-left: 4px solid var(--pri);
 }
 
 .meaningPartOfSpeech {
-    color: #60a5fa;
+    color: var(--pri);
     margin: 0 0 1rem 0;
     font-size: 1.1rem;
     font-weight: 600;
@@ -912,7 +912,7 @@
 
 .defNumber {
     background: #333;
-    color: #60a5fa;
+    color: var(--pri);
     width: 24px;
     height: 24px;
     border-radius: 50%;
@@ -937,9 +937,9 @@
 
 .defExample {
     padding: 8px 12px;
-    background: rgba(96, 165, 250, 0.1);
+    background: rgba(42, 176, 144, 0.1);
     border-radius: 6px;
-    border-left: 3px solid #60a5fa;
+    border-left: 3px solid var(--pri);
     color: #e2e8f0;
 }
 
@@ -983,13 +983,13 @@
 
 .contextTiming {
     font-weight: 600;
-    color: #60a5fa;
+    color: var(--pri);
     text-transform: capitalize;
     min-width: 60px;
 }
 
 .highlighted {
-    background: rgba(96, 165, 250, 0.2);
+    background: rgba(42, 176, 144, 0.2);
     padding: 2px 4px;
     border-radius: 4px;
 }
@@ -1008,7 +1008,7 @@
     background: #222;
     border-radius: 8px;
     padding: 1.5rem;
-    border-left: 4px solid #60a5fa;
+    border-left: 4px solid var(--pri);
 }
 
 .translationPair {
@@ -1020,7 +1020,7 @@
 }
 
 .languageBadge {
-    background: #60a5fa;
+    background: var(--pri);
     color: white;
     padding: 4px 14px;
     border-radius: 16px;
@@ -1049,7 +1049,7 @@
 }
 
 .translationDivider {
-    color: #60a5fa;
+    color: var(--pri);
     font-size: 1.4rem;
 }
 
@@ -1066,7 +1066,7 @@
     width: 36px;
     height: 36px;
     border: 3px solid #333;
-    border-top: 3px solid #60a5fa;
+    border-top: 3px solid var(--pri);
     border-radius: 50%;
     animation: translationSpin 0.8s linear infinite;
 }
@@ -1091,7 +1091,7 @@
 }
 
 .retryBtn {
-    background: #60a5fa;
+    background: var(--pri);
     border: none;
     color: white;
     padding: 8px 20px;
@@ -1103,7 +1103,7 @@
 }
 
 .retryBtn:hover {
-    background: #3b82f6;
+    background: var(--pri-dark);
     transform: translateY(-1px);
 }
 

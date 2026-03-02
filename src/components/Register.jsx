@@ -17,7 +17,7 @@ import {
   getPasswordStrengthColor,
   getPasswordStrengthWidth,
 } from "../utils/validators";
-import "../styles/Register.css";
+import styles from "../styles/Register.module.css";
 
 const STRENGTH_KEYS = {
   weak: "auth.register.strengthWeak",
@@ -35,7 +35,6 @@ export const Register = () => {
     confirmPassword: "",
   });
 
-  // Real-time validation states
   const [validation, setValidation] = useState({
     email: { isValid: null, errors: [] },
     first_name: { isValid: null, errors: [] },
@@ -52,109 +51,58 @@ export const Register = () => {
   const { register } = useAuth();
   const { markAsNewUser } = useOnboarding();
 
-  // Debounce form values for validation
   const debouncedEmail = useDebounce(form.email, 500);
   const debouncedPassword = useDebounce(form.password, 300);
   const debouncedFirstName = useDebounce(form.first_name, 300);
   const debouncedLastName = useDebounce(form.last_name, 300);
   const debouncedConfirmPassword = useDebounce(form.confirmPassword, 300);
 
-  // Handle error messages from URL params
   useEffect(() => {
     if (search?.error) {
-      if (search.error === "oauth_failed") {
-        setError(t('auth.login.oauthFailed'));
-      } else {
-        setError(t('auth.login.authFailed'));
-      }
+      setError(search.error === "oauth_failed" ? t('auth.login.oauthFailed') : t('auth.login.authFailed'));
     }
   }, [search]);
 
-  // Real-time email validation
   useEffect(() => {
     if (!debouncedEmail) {
-      setValidation((prev) => ({
-        ...prev,
-        email: { isValid: null, errors: [] },
-      }));
+      setValidation((prev) => ({ ...prev, email: { isValid: null, errors: [] } }));
       return;
     }
-
-    const emailValidation = validateEmail(debouncedEmail);
-    setValidation((prev) => ({
-      ...prev,
-      email: { ...emailValidation, checkPending: false },
-    }));
+    setValidation((prev) => ({ ...prev, email: { ...validateEmail(debouncedEmail), checkPending: false } }));
   }, [debouncedEmail]);
 
-  // Real-time password validation
   useEffect(() => {
     if (!debouncedPassword) {
-      setValidation((prev) => ({
-        ...prev,
-        password: { isValid: null, strength: "none", errors: [] },
-      }));
+      setValidation((prev) => ({ ...prev, password: { isValid: null, strength: "none", errors: [] } }));
       return;
     }
-
-    const passwordValidation = validatePassword(debouncedPassword);
-    setValidation((prev) => ({
-      ...prev,
-      password: passwordValidation,
-    }));
+    setValidation((prev) => ({ ...prev, password: validatePassword(debouncedPassword) }));
   }, [debouncedPassword]);
 
-  // Real-time first name validation
   useEffect(() => {
     if (!debouncedFirstName) {
-      setValidation((prev) => ({
-        ...prev,
-        first_name: { isValid: null, errors: [] },
-      }));
+      setValidation((prev) => ({ ...prev, first_name: { isValid: null, errors: [] } }));
       return;
     }
-
-    const nameValidation = validateName(debouncedFirstName);
-    setValidation((prev) => ({
-      ...prev,
-      first_name: nameValidation,
-    }));
+    setValidation((prev) => ({ ...prev, first_name: validateName(debouncedFirstName) }));
   }, [debouncedFirstName]);
 
-  // Real-time last name validation
   useEffect(() => {
     if (!debouncedLastName) {
-      setValidation((prev) => ({
-        ...prev,
-        last_name: { isValid: null, errors: [] },
-      }));
+      setValidation((prev) => ({ ...prev, last_name: { isValid: null, errors: [] } }));
       return;
     }
-
-    const nameValidation = validateName(debouncedLastName);
-    setValidation((prev) => ({
-      ...prev,
-      last_name: nameValidation,
-    }));
+    setValidation((prev) => ({ ...prev, last_name: validateName(debouncedLastName) }));
   }, [debouncedLastName]);
 
-  // Real-time password match validation
   useEffect(() => {
     if (!debouncedConfirmPassword) {
-      setValidation((prev) => ({
-        ...prev,
-        confirmPassword: { isValid: null, errors: [] },
-      }));
+      setValidation((prev) => ({ ...prev, confirmPassword: { isValid: null, errors: [] } }));
       return;
     }
-
-    const matchValidation = validatePasswordMatch(
-      debouncedPassword,
-      debouncedConfirmPassword,
-    );
     setValidation((prev) => ({
       ...prev,
-      confirmPassword: matchValidation,
+      confirmPassword: validatePasswordMatch(debouncedPassword, debouncedConfirmPassword),
     }));
   }, [debouncedConfirmPassword, debouncedPassword]);
 
@@ -164,7 +112,6 @@ export const Register = () => {
     if (error) setError("");
   };
 
-  // Check if form is valid for submission
   const isFormValid =
     validation.email.isValid === true &&
     validation.first_name.isValid === true &&
@@ -181,37 +128,22 @@ export const Register = () => {
     try {
       const { confirmPassword: _confirmPassword, ...registrationData } = form;
       await registerUser(registrationData);
-
       const userData = await fetchUserInfo();
       register(userData);
-      markAsNewUser(); // Mark as new user for onboarding
-
+      markAsNewUser();
       toast.success(t('auth.register.success'));
       navigate({ to: "/dashboard" });
     } catch (err) {
       if (!err.response) {
-        const errorMsg = t('common.networkError');
-        setError(errorMsg);
-        toast.error(errorMsg);
+        const msg = t('common.networkError'); setError(msg); toast.error(msg);
       } else if (err.response?.status === 409) {
-        const errorMsg = t('auth.register.emailTaken');
-        setError(errorMsg);
-        toast.error(errorMsg);
+        const msg = t('auth.register.emailTaken'); setError(msg); toast.error(msg);
       } else if (err.response?.status === 422 || err.response?.status === 400) {
-        const errorMsg =
-          err.response?.data?.detail || t('auth.register.checkInput');
-        setError(errorMsg);
-        toast.error(errorMsg);
+        const msg = err.response?.data?.detail || t('auth.register.checkInput'); setError(msg); toast.error(msg);
       } else if (err.response?.status === 429) {
-        const errorMsg = t('auth.register.tooManyAttempts');
-        setError(errorMsg);
-        toast.error(errorMsg);
+        const msg = t('auth.register.tooManyAttempts'); setError(msg); toast.error(msg);
       } else {
-        const errorMsg =
-          err.response?.data?.detail ||
-          t('auth.register.failed');
-        setError(errorMsg);
-        toast.error(errorMsg);
+        const msg = err.response?.data?.detail || t('auth.register.failed'); setError(msg); toast.error(msg);
       }
     } finally {
       setLoading(false);
@@ -219,11 +151,8 @@ export const Register = () => {
   };
 
   const handleGoogleRegister = async () => {
-    try {
-      await googleRegister();
-    } catch (err) {
-      toast.error(t('auth.register.googleFailed'));
-    }
+    try { await googleRegister(); }
+    catch (err) { toast.error(t('auth.register.googleFailed')); }
   };
 
   const checkIcon = (
@@ -234,53 +163,39 @@ export const Register = () => {
 
   return (
     <GuestRoute>
-      <div className="register-page">
+      <div className={styles.registerPage}>
         {/* Left panel — branding */}
-        <div className="register-brand">
-          <div className="register-brand-inner">
-            <a href="/" className="register-logo">
-              Lingu<span>ini</span>
+        <div className={styles.registerBrand}>
+          <div className={styles.registerBrandInner}>
+            <a href="/" className={styles.registerLogo}>
+              Lang<span>uni</span>
             </a>
             <h1>
               <Trans i18nKey="auth.register.brandHeading" components={{ em: <em /> }} />
             </h1>
             <p>{t('auth.register.brandDesc')}</p>
-            <ul className="register-brand-features">
-              <li>
-                {checkIcon}
-                {t('auth.register.brandFeat1')}
-              </li>
-              <li>
-                {checkIcon}
-                {t('auth.register.brandFeat2')}
-              </li>
-              <li>
-                {checkIcon}
-                {t('auth.register.brandFeat3')}
-              </li>
-              <li>
-                {checkIcon}
-                {t('auth.register.brandFeat4')}
-              </li>
+            <ul className={styles.registerBrandFeatures}>
+              <li>{checkIcon}{t('auth.register.brandFeat1')}</li>
+              <li>{checkIcon}{t('auth.register.brandFeat2')}</li>
+              <li>{checkIcon}{t('auth.register.brandFeat3')}</li>
+              <li>{checkIcon}{t('auth.register.brandFeat4')}</li>
             </ul>
           </div>
         </div>
 
         {/* Right panel — form */}
-        <div className="register-container">
-          <form className="register-form" onSubmit={handleSubmit}>
-            <h2 className="register-form-title">{t('auth.register.title')}</h2>
-            <p className="register-form-sub">
-              {t('auth.register.subtitle')}
-            </p>
+        <div className={styles.registerContainer}>
+          <form className={styles.registerForm} onSubmit={handleSubmit}>
+            <h2 className={styles.registerFormTitle}>{t('auth.register.title')}</h2>
+            <p className={styles.registerFormSub}>{t('auth.register.subtitle')}</p>
 
-            {error && <div className="error">{error}</div>}
+            {error && <div className={styles.formError}>{error}</div>}
 
             {/* Email */}
-            <div className="register-field">
-              <label className="register-label">{t('auth.register.email')}</label>
+            <div className={styles.registerField}>
+              <label className={styles.registerLabel}>{t('auth.register.email')}</label>
               <input
-                className="register-input"
+                className={styles.registerInput}
                 name="email"
                 type="email"
                 placeholder={t('auth.register.emailPlaceholder')}
@@ -289,23 +204,19 @@ export const Register = () => {
                 required
               />
               {form.email && validation.email.isValid !== null && (
-                <div
-                  className={`register-feedback ${
-                    validation.email.isValid ? "valid" : "invalid"
-                  }`}
-                >
-                  {validation.email.isValid ? "\u2713" : "\u2717"}{" "}
+                <div className={`${styles.registerFeedback} ${validation.email.isValid ? styles.valid : styles.invalid}`}>
+                  {validation.email.isValid ? "✓" : "✗"}{" "}
                   {validation.email.errors[0] || t('auth.register.validEmail')}
                 </div>
               )}
             </div>
 
-            {/* First & Last Name — side by side */}
-            <div className="register-row">
-              <div className="register-field">
-                <label className="register-label">{t('auth.register.firstName')}</label>
+            {/* First & Last Name */}
+            <div className={styles.registerRow}>
+              <div className={styles.registerField}>
+                <label className={styles.registerLabel}>{t('auth.register.firstName')}</label>
                 <input
-                  className="register-input"
+                  className={styles.registerInput}
                   name="first_name"
                   placeholder={t('auth.register.firstNamePlaceholder')}
                   value={form.first_name}
@@ -313,21 +224,17 @@ export const Register = () => {
                   required
                 />
                 {form.first_name && validation.first_name.isValid !== null && (
-                  <div
-                    className={`register-feedback ${
-                      validation.first_name.isValid ? "valid" : "invalid"
-                    }`}
-                  >
-                    {validation.first_name.isValid ? "\u2713" : "\u2717"}{" "}
+                  <div className={`${styles.registerFeedback} ${validation.first_name.isValid ? styles.valid : styles.invalid}`}>
+                    {validation.first_name.isValid ? "✓" : "✗"}{" "}
                     {validation.first_name.errors[0] || t('auth.register.validName')}
                   </div>
                 )}
               </div>
 
-              <div className="register-field">
-                <label className="register-label">{t('auth.register.lastName')}</label>
+              <div className={styles.registerField}>
+                <label className={styles.registerLabel}>{t('auth.register.lastName')}</label>
                 <input
-                  className="register-input"
+                  className={styles.registerInput}
                   name="last_name"
                   placeholder={t('auth.register.lastNamePlaceholder')}
                   value={form.last_name}
@@ -335,12 +242,8 @@ export const Register = () => {
                   required
                 />
                 {form.last_name && validation.last_name.isValid !== null && (
-                  <div
-                    className={`register-feedback ${
-                      validation.last_name.isValid ? "valid" : "invalid"
-                    }`}
-                  >
-                    {validation.last_name.isValid ? "\u2713" : "\u2717"}{" "}
+                  <div className={`${styles.registerFeedback} ${validation.last_name.isValid ? styles.valid : styles.invalid}`}>
+                    {validation.last_name.isValid ? "✓" : "✗"}{" "}
                     {validation.last_name.errors[0] || t('auth.register.validName')}
                   </div>
                 )}
@@ -348,10 +251,10 @@ export const Register = () => {
             </div>
 
             {/* Password */}
-            <div className="register-field">
-              <label className="register-label">{t('auth.register.password')}</label>
+            <div className={styles.registerField}>
+              <label className={styles.registerLabel}>{t('auth.register.password')}</label>
               <input
-                className="register-input"
+                className={styles.registerInput}
                 name="password"
                 type="password"
                 placeholder={t('auth.register.passwordPlaceholder')}
@@ -361,42 +264,40 @@ export const Register = () => {
                 minLength={8}
               />
               {form.password && (
-                <div className="register-strength">
-                  <div className="register-strength-track">
+                <div className={styles.registerStrength}>
+                  <div className={styles.registerStrengthTrack}>
                     <div
-                      className="register-strength-fill"
+                      className={styles.registerStrengthFill}
                       style={{
                         width: `${getPasswordStrengthWidth(validation.password.strength)}%`,
-                        backgroundColor: getPasswordStrengthColor(
-                          validation.password.strength,
-                        ),
+                        backgroundColor: getPasswordStrengthColor(validation.password.strength),
                       }}
                     />
                   </div>
-                  <span className="register-strength-label">
+                  <span className={styles.registerStrengthLabel}>
                     {t(STRENGTH_KEYS[validation.password.strength] || '')}
                   </span>
                 </div>
               )}
               {form.password && validation.password.errors.length > 0 && (
-                <div className="register-feedback invalid">
-                  {validation.password.errors.map((error, idx) => (
-                    <div key={idx}>{"\u2717"} {error}</div>
+                <div className={`${styles.registerFeedback} ${styles.invalid}`}>
+                  {validation.password.errors.map((err, idx) => (
+                    <div key={idx}>✗ {err}</div>
                   ))}
                 </div>
               )}
               {form.password && validation.password.isValid === true && (
-                <div className="register-feedback valid">
-                  {"\u2713"} {t('auth.register.passwordValid')}
+                <div className={`${styles.registerFeedback} ${styles.valid}`}>
+                  ✓ {t('auth.register.passwordValid')}
                 </div>
               )}
             </div>
 
             {/* Confirm Password */}
-            <div className="register-field">
-              <label className="register-label">{t('auth.register.confirmPassword')}</label>
+            <div className={styles.registerField}>
+              <label className={styles.registerLabel}>{t('auth.register.confirmPassword')}</label>
               <input
-                className="register-input"
+                className={styles.registerInput}
                 name="confirmPassword"
                 type="password"
                 placeholder={t('auth.register.confirmPasswordPlaceholder')}
@@ -404,66 +305,43 @@ export const Register = () => {
                 onChange={handleChange}
                 required
               />
-              {form.confirmPassword &&
-                validation.confirmPassword.isValid !== null && (
-                  <div
-                    className={`register-feedback ${
-                      validation.confirmPassword.isValid ? "valid" : "invalid"
-                    }`}
-                  >
-                    {validation.confirmPassword.isValid ? "\u2713" : "\u2717"}{" "}
-                    {validation.confirmPassword.errors[0] || t('auth.register.passwordsMatch')}
-                  </div>
-                )}
+              {form.confirmPassword && validation.confirmPassword.isValid !== null && (
+                <div className={`${styles.registerFeedback} ${validation.confirmPassword.isValid ? styles.valid : styles.invalid}`}>
+                  {validation.confirmPassword.isValid ? "✓" : "✗"}{" "}
+                  {validation.confirmPassword.errors[0] || t('auth.register.passwordsMatch')}
+                </div>
+              )}
             </div>
 
-            <button
-              className="register-submit"
-              type="submit"
-              disabled={!isFormValid}
-            >
+            <button className={styles.registerSubmit} type="submit" disabled={!isFormValid}>
               {loading ? (
-                <>
-                  <Spinner size={16} /> {t('auth.register.submitting')}
-                </>
+                <><Spinner size={16} /> {t('auth.register.submitting')}</>
               ) : (
                 t('auth.register.submit')
               )}
             </button>
 
-            <div className="register-divider">{t('common.or')}</div>
+            <div className={styles.registerDivider}>{t('common.or')}</div>
 
             <button
-              className="register-google"
+              className={styles.registerGoogle}
               type="button"
               onClick={handleGoogleRegister}
               disabled={loading}
             >
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                <path
-                  d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 01-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"
-                  fill="#4285F4"
-                />
-                <path
-                  d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.26c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z"
-                  fill="#34A853"
-                />
-                <path
-                  d="M3.964 10.71A5.41 5.41 0 013.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.997 8.997 0 000 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"
-                  fill="#FBBC05"
-                />
-                <path
-                  d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"
-                  fill="#EA4335"
-                />
+                <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 01-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4" />
+                <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.26c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z" fill="#34A853" />
+                <path d="M3.964 10.71A5.41 5.41 0 013.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.997 8.997 0 000 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05" />
+                <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335" />
               </svg>
               {t('auth.register.google')}
             </button>
 
-            <div className="register-footer">
+            <div className={styles.registerFooter}>
               {t('auth.register.hasAccount')}{" "}
               <button
-                className="register-footer-link"
+                className={styles.registerFooterLink}
                 type="button"
                 onClick={() => navigate({ to: "/login" })}
               >

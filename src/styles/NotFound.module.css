@@ -1,8 +1,8 @@
 /* ============================================
-   NOT FOUND — Editorial Premium
+   NOT FOUND MODULE — Editorial Premium
    ============================================ */
 
-.error-page {
+.errorPage {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -14,7 +14,7 @@
   overflow: hidden;
 }
 
-.error-page::before {
+.errorPage::before {
   content: '';
   position: fixed;
   width: 480px;
@@ -26,7 +26,7 @@
   pointer-events: none;
 }
 
-.error-page::after {
+.errorPage::after {
   content: '';
   position: fixed;
   width: 320px;
@@ -38,7 +38,7 @@
   pointer-events: none;
 }
 
-.error-content {
+.errorContent {
   background: #fff;
   border-radius: 16px;
   border: 1px solid var(--border);
@@ -57,7 +57,7 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-.error-code {
+.errorCode {
   font-family: var(--heading);
   font-size: 6rem;
   font-weight: 800;
@@ -68,7 +68,7 @@
   margin: 0 0 8px;
 }
 
-.error-content h2 {
+.errorTitle {
   font-family: var(--heading);
   font-size: 1.55rem;
   font-weight: 700;
@@ -77,18 +77,18 @@
   margin: 0 0 12px;
 }
 
-.error-description {
+.errorDescription {
   color: var(--txt2);
   font-size: 0.95rem;
   line-height: 1.65;
   margin: 0 0 8px;
 }
 
-.error-path {
+.errorPath {
   margin: 12px 0 24px;
 }
 
-.error-path code {
+.errorPath code {
   display: inline-block;
   background: var(--pri-faint);
   color: var(--txt2);
@@ -99,7 +99,7 @@
   border: 1px solid var(--border);
 }
 
-.error-actions {
+.errorActions {
   display: flex;
   gap: 12px;
   margin: 24px 0 16px;
@@ -107,7 +107,7 @@
   flex-wrap: wrap;
 }
 
-.btn {
+.btnPrimary {
   padding: 12px 24px;
   border: none;
   border-radius: var(--radius);
@@ -116,67 +116,71 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-}
-
-.btn-primary {
   background: var(--pri);
   color: #fff;
 }
 
-.btn-primary:hover {
+.btnPrimary:hover {
   background: var(--pri-dark);
   transform: translateY(-1px);
 }
 
-.btn-secondary {
+.btnSecondary {
+  padding: 12px 24px;
+  border-radius: var(--radius);
+  font-family: var(--body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
   background: var(--pri-faint);
   color: var(--txt2);
   border: 1.5px solid var(--border);
 }
 
-.btn-secondary:hover {
+.btnSecondary:hover {
   background: var(--pri-light);
   border-color: var(--pri);
   color: var(--txt);
 }
 
-.error-info {
+.errorInfo {
   margin-top: 16px;
   padding-top: 16px;
   border-top: 1px solid var(--border);
 }
 
-.text-muted {
+.textMuted {
   color: var(--txt3);
   font-size: 0.85rem;
 }
 
-.text-muted a {
+.textMuted a {
   color: var(--pri);
   text-decoration: none;
   font-weight: 600;
 }
 
-.text-muted a:hover {
+.textMuted a:hover {
   color: var(--pri-dark);
   text-decoration: underline;
 }
 
-/* Mobile */
 @media (max-width: 480px) {
-  .error-content {
+  .errorContent {
     padding: 36px 24px;
   }
 
-  .error-code {
+  .errorCode {
     font-size: 4.5rem;
   }
 
-  .error-actions {
+  .errorActions {
     flex-direction: column;
   }
 
-  .btn {
+  .btnPrimary,
+  .btnSecondary {
     width: 100%;
   }
 }

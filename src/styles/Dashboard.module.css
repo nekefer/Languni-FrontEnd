@@ -1,8 +1,8 @@
 /* ============================================
-   DASHBOARD — Editorial Premium
+   DASHBOARD MODULE — Editorial Premium
    ============================================ */
 
-.dashboard-container {
+.dashboardContainer {
   min-height: 100vh;
   background: var(--bg);
   font-family: var(--body);
@@ -11,7 +11,7 @@
 
 /* ── Top navigation bar ── */
 
-.dashboard-header {
+.dashboardHeader {
   background: #fff;
   border-bottom: 1px solid var(--border);
   position: sticky;
@@ -19,7 +19,7 @@
   z-index: 100;
 }
 
-.header-content {
+.headerContent {
   max-width: 1280px;
   margin: 0 auto;
   padding: 0 32px;
@@ -30,8 +30,7 @@
   gap: 24px;
 }
 
-/* Logo */
-.dashboard-logo {
+.dashboardLogo {
   font-family: var(--heading);
   font-size: 1.4rem;
   font-weight: 700;
@@ -41,22 +40,22 @@
   flex-shrink: 0;
 }
 
-.dashboard-logo span {
+.dashboardLogo span {
   color: var(--pri);
 }
 
-/* Nav links */
-.header-actions {
+.headerActions {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.vocabulary-link {
+.vocabularyLink {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   padding: 8px 16px;
+  font-family: var(--body);
   font-size: 0.88rem;
   font-weight: 600;
   color: var(--txt2);
@@ -65,12 +64,12 @@
   transition: background 0.15s, color 0.15s;
 }
 
-.vocabulary-link:hover {
+.vocabularyLink:hover {
   background: var(--pri-faint);
   color: var(--txt);
 }
 
-.logout-button {
+.logoutButton {
   padding: 8px 16px;
   font-family: var(--body);
   font-size: 0.88rem;
@@ -84,7 +83,7 @@
   margin-left: 8px;
 }
 
-.logout-button:hover {
+.logoutButton:hover {
   color: var(--txt);
   border-color: var(--txt2);
   background: var(--pri-faint);
@@ -92,7 +91,7 @@
 
 /* ── Page body ── */
 
-.dashboard-body {
+.dashboardBody {
   max-width: 1280px;
   margin: 0 auto;
   padding: 32px 32px 64px;
@@ -100,11 +99,11 @@
 
 /* ── Welcome strip ── */
 
-.dashboard-greeting {
+.dashboardGreeting {
   margin-bottom: 32px;
 }
 
-.dashboard-greeting h2 {
+.dashboardGreeting h2 {
   font-family: var(--heading);
   font-size: 1.8rem;
   font-weight: 700;
@@ -113,14 +112,14 @@
   margin-bottom: 4px;
 }
 
-.dashboard-greeting p {
+.dashboardGreeting p {
   font-size: 0.92rem;
   color: var(--txt2);
 }
 
 /* ── Trending section ── */
 
-.trending-section {
+.trendingSection {
   background: #fff;
   border: 1px solid var(--border);
   border-radius: 16px;
@@ -129,7 +128,7 @@
   box-shadow: var(--shadow-sm);
 }
 
-.trending-header {
+.trendingHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -138,7 +137,7 @@
   gap: 12px;
 }
 
-.trending-header h3 {
+.trendingHeader h3 {
   font-family: var(--heading);
   font-size: 1.2rem;
   font-weight: 700;
@@ -162,7 +161,7 @@
   color: var(--txt2);
 }
 
-.region-select {
+.regionSelect {
   font-family: var(--body);
   font-size: 0.85rem;
   font-weight: 600;
@@ -176,21 +175,19 @@
   transition: border-color 0.2s;
 }
 
-.region-select:hover,
-.region-select:focus {
+.regionSelect:hover,
+.regionSelect:focus {
   border-color: var(--pri);
 }
 
-/* Video grid */
-.video-grid {
+.videoGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 20px;
   margin-bottom: 24px;
 }
 
-/* Load more button */
-.load-more-button {
+.loadMoreButton {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -208,19 +205,19 @@
   transition: all 0.2s;
 }
 
-.load-more-button:hover:not(:disabled) {
+.loadMoreButton:hover:not(:disabled) {
   background: var(--pri-light);
   border-color: var(--pri);
 }
 
-.load-more-button:disabled {
+.loadMoreButton:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-/* ── Last liked / YouTube section ── */
+/* ── Last liked section ── */
 
-.video-section {
+.videoSection {
   background: #fff;
   border: 1px solid var(--border);
   border-radius: 16px;
@@ -228,7 +225,7 @@
   box-shadow: var(--shadow-sm);
 }
 
-.video-section h3 {
+.videoSection h3 {
   font-family: var(--heading);
   font-size: 1.2rem;
   font-weight: 700;
@@ -237,20 +234,20 @@
   margin: 0 0 20px;
 }
 
-.video-content {
+.videoContent {
   display: flex;
   gap: 20px;
   align-items: flex-start;
 }
 
-.video-thumbnail {
+.videoThumbnail {
   width: 200px;
   border-radius: 10px;
   flex-shrink: 0;
   box-shadow: var(--shadow-sm);
 }
 
-.video-details h4 {
+.videoDetails h4 {
   font-family: var(--heading);
   font-size: 1.05rem;
   font-weight: 600;
@@ -259,14 +256,14 @@
   line-height: 1.4;
 }
 
-.video-description {
+.videoDescription {
   color: var(--txt2);
   font-size: 0.9rem;
   line-height: 1.6;
   margin-bottom: 16px;
 }
 
-.youtube-link {
+.youtubeLink {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -281,13 +278,13 @@
   transition: background 0.2s;
 }
 
-.youtube-link:hover {
+.youtubeLink:hover {
   background: #cc0000;
 }
 
 /* ── States ── */
 
-.loading-message {
+.loadingMessage {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -297,7 +294,7 @@
   font-size: 0.9rem;
 }
 
-.error-message {
+.errorMessage {
   color: var(--red);
   background: var(--red-bg);
   padding: 14px 18px;
@@ -307,11 +304,11 @@
   font-size: 0.9rem;
 }
 
-.error-message p {
+.errorMessage p {
   margin: 0;
 }
 
-.refresh-button {
+.refreshButton {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -328,12 +325,12 @@
   transition: all 0.2s;
 }
 
-.refresh-button:hover {
+.refreshButton:hover {
   background: var(--pri-light);
   border-color: var(--pri);
 }
 
-.google-signin-button {
+.googleSigninButton {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -350,64 +347,65 @@
   transition: background 0.2s;
 }
 
-.google-signin-button:hover {
+.googleSigninButton:hover {
   background: #3367d6;
+}
+
+.emptyText {
+  color: var(--txt2);
+  font-size: 0.9rem;
 }
 
 /* ── Responsive ── */
 
 @media (max-width: 900px) {
-  .header-content {
+  .headerContent {
     padding: 0 20px;
   }
 
-  .dashboard-body {
+  .dashboardBody {
     padding: 24px 20px 48px;
   }
 
-  .trending-section,
-  .video-section {
+  .trendingSection,
+  .videoSection {
     padding: 20px;
   }
 
-  .video-grid {
+  .videoGrid {
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 16px;
   }
 }
 
 @media (max-width: 640px) {
-  .header-content {
+  .headerContent {
     padding: 0 16px;
     height: 56px;
   }
 
-  .vocabulary-link span {
-    display: none;
-  }
-
-  .dashboard-body {
+  .dashboardBody {
     padding: 20px 16px 48px;
   }
 
-  .dashboard-greeting h2 {
+  .dashboardGreeting h2 {
     font-size: 1.4rem;
   }
 
-  .trending-header {
+  .trendingHeader {
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .video-grid {
+  .videoGrid {
     grid-template-columns: 1fr;
   }
 
-  .video-content {
+  .videoContent {
     flex-direction: column;
   }
 
-  .video-thumbnail {
+  .videoThumbnail {
     width: 100%;
   }
 }

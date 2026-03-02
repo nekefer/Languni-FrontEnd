@@ -6,6 +6,7 @@ import React, {
   useMemo,
   memo,
 } from "react";
+import { create } from "zustand";
 import { List, useListRef } from "react-window";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
@@ -14,41 +15,47 @@ import vocabularyService from "../api/vocabulary";
 import { Spinner } from "../ui/Spinner";
 import expandContractions from "@stdlib/nlp-expand-contractions";
 import { playerLogger } from "../utils/logger";
+import captionStyles from "../styles/CaptionPanel.module.css";
+
+// Isolated store — only the 2 rows that change active state re-render
+const useActiveCaptionStore = create((set) => ({
+  activeIndex: -1,
+  setActiveIndex: (index) => set({ activeIndex: index }),
+}));
 
 // Memoized row component - OUTSIDE to prevent recreation on every render
 const CaptionRow = memo(function CaptionRow({
   index,
   style,
   parsedCaptions,
-  currentCaptionIndex,
   handleCaptionClick,
   handleWordClick,
 }) {
   const caption = parsedCaptions[index];
-  if (!caption) return null;
+  const isActive = useActiveCaptionStore((s) => s.activeIndex === index);
 
-  const isActive = index === currentCaptionIndex;
+  if (!caption) return null;
 
   return (
     <div
       style={style}
-      className={`caption-item ${isActive ? "active" : ""}`}
+      className={`${captionStyles.captionItem}${isActive ? ` ${captionStyles.active}` : ""}`}
       data-caption-index={index}
       onClick={() => handleCaptionClick(caption.start)}
       title={`Seek to ${Math.floor(caption.start / 60)}:${String(Math.floor(caption.start % 60)).padStart(2, "0")}`}
     >
-      <div className="caption-timestamp">
+      <div className={captionStyles.captionTimestamp}>
         {Math.floor(caption.start / 60)}:
         {String(Math.floor(caption.start % 60)).padStart(2, "0")}
-        <span className="caption-duration">
+        <span className={captionStyles.captionDuration}>
           ({caption.duration.toFixed(1)}s)
         </span>
       </div>
-      <div className="caption-text">
+      <div className={captionStyles.captionText}>
         {caption.text.split(" ").map((word, i) => (
           <span
             key={i}
-            className="caption-word"
+            className={captionStyles.captionWord}
             onClick={(e) => {
               e.stopPropagation();
               handleWordClick(word, index);
@@ -77,6 +84,12 @@ function CaptionPanel({
   const listRef = useListRef();
   const scrollTimeoutRef = useRef(null);
   const lastScrolledIndexRef = useRef(-1);
+  const setActiveIndex = useActiveCaptionStore((s) => s.setActiveIndex);
+
+  // Sync prop → store so CaptionRow instances subscribe individually
+  useEffect(() => {
+    setActiveIndex(currentCaptionIndex);
+  }, [currentCaptionIndex, setActiveIndex]);
 
   // Memoize the function with useCallback
   const fetchCaptions = useCallback(async () => {
@@ -178,12 +191,15 @@ function CaptionPanel({
     [captions, getCurrentTime, onWordClick, t],
   );
 
-  const parsedCaptions = useMemo(() => captions, [captions]);
+  const rowProps = useMemo(
+    () => ({ parsedCaptions: captions, handleCaptionClick, handleWordClick }),
+    [captions, handleCaptionClick, handleWordClick],
+  );
 
   if (loading) {
     return (
-      <div className="caption-panel">
-        <div className="caption-loading">
+      <div className={captionStyles.captionPanel}>
+        <div className={captionStyles.captionLoading}>
           <Spinner size={24} />
           <span>{t('player.loadingCaptions')}</span>
         </div>
@@ -193,10 +209,10 @@ function CaptionPanel({
 
   if (error) {
     return (
-      <div className="caption-panel">
-        <div className="caption-error">
+      <div className={captionStyles.captionPanel}>
+        <div className={captionStyles.captionError}>
           <p>{t('player.captionsFailed')}</p>
-          <button onClick={fetchCaptions} className="retry-button">
+          <button onClick={fetchCaptions} className={captionStyles.retryButton}>
             {t('common.retry')}
           </button>
         </div>
@@ -204,10 +220,10 @@ function CaptionPanel({
     );
   }
 
-  if (!parsedCaptions.length) {
+  if (!captions.length) {
     return (
-      <div className="caption-panel">
-        <div className="caption-empty">
+      <div className={captionStyles.captionPanel}>
+        <div className={captionStyles.captionEmpty}>
           {t('player.noCaptions')}
         </div>
       </div>
@@ -215,27 +231,21 @@ function CaptionPanel({
   }
 
   return (
-    <div className="caption-panel">
-      <div className="caption-header">
+    <div className={captionStyles.captionPanel}>
+      <div className={captionStyles.captionHeader}>
         <h3>{t('player.captions')}</h3>
-        <p className="caption-info">
+        <p className={captionStyles.captionInfo}>
           {t('player.captionHint')}
         </p>
       </div>
 
-      {/* Virtualized list - only renders ~15 visible captions at a time */}
       <List
         listRef={listRef}
         rowComponent={CaptionRow}
-        rowCount={parsedCaptions.length}
+        rowCount={captions.length}
         rowHeight={80}
-        rowProps={{
-          parsedCaptions,
-          currentCaptionIndex,
-          handleCaptionClick,
-          handleWordClick,
-        }}
-        style={{ height: 400 }}
+        rowProps={rowProps}
+        style={{ width: "100%" }}
       />
     </div>
   );

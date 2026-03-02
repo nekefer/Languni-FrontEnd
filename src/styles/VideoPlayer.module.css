@@ -1,0 +1,166 @@
+/* ============================================
+   VIDEO PLAYER — Dark cinematic theme
+   ============================================ */
+
+.videoPlayerPage {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #000;
+  color: #fff;
+  font-family: var(--body);
+}
+
+/* Nav */
+
+.playerNav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.875rem 1.5rem;
+  background-color: #111;
+  border-bottom: 1px solid #1e1e1e;
+  gap: 1rem;
+}
+
+.backButton {
+  background: rgba(255, 255, 255, 0.07);
+  border: none;
+  color: #ccc;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-family: var(--body);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: background 0.2s, color 0.2s;
+  white-space: nowrap;
+}
+
+.backButton:hover {
+  background: rgba(255, 255, 255, 0.13);
+  color: #fff;
+}
+
+.videoTitle {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+  font-family: var(--body);
+  color: #d0d0d0;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.playerSaveBtn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #aaa;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-family: var(--body);
+  font-weight: 500;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.playerSaveBtn:hover {
+  border-color: var(--pri);
+  color: var(--pri);
+  background: rgba(42, 176, 144, 0.08);
+}
+
+.saved {
+  border-color: var(--pri) !important;
+  color: var(--pri) !important;
+  background: rgba(42, 176, 144, 0.12) !important;
+}
+
+.playerSaveBtn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Layout */
+
+.videoPlayerLayout {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  /* explicit height so grid children can use height: 100% */
+  height: calc(100vh - 56px);
+  min-height: 0;
+  overflow: hidden;
+}
+
+.playerSection {
+  background: #000;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  /* grid child: align-self stretch is default, but height:100% ensures
+     the flex children inside can resolve their own height percentages */
+  height: 100%;
+  position: relative;
+}
+
+.captionSection {
+  background: #0e0e0e;
+  border-radius: 8px;
+  border: 1px solid #1e1e1e;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  /* fill the full grid row height */
+  height: 100%;
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+  .videoPlayerLayout {
+    grid-template-columns: 1fr;
+    /* video gets 56% of viewport height, captions get rest */
+    grid-template-rows: 56vw 1fr;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    height: calc(100vh - 52px);
+  }
+
+  .playerNav {
+    padding: 0.75rem 1rem;
+  }
+
+  .videoTitle {
+    font-size: 0.85rem;
+  }
+
+  .captionSection {
+    /* on mobile captions fill the second row fully */
+    height: 100%;
+    max-height: none;
+  }
+}
+
+@media (max-width: 1024px) and (min-width: 769px) {
+  .videoPlayerLayout {
+    grid-template-columns: 1.5fr 1fr;
+  }
+
+  .playerNav {
+    padding: 0.875rem 1.25rem;
+  }
+}
