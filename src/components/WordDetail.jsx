@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useRouter  } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import dictionaryService from "../api/dictionary.js";
@@ -16,9 +16,9 @@ export const WordDetail = ({ word }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [notFound, setNotFound] = useState(false);
-  const [audioPlaying, setAudioPlaying] = useState(false);
+  // const [audioPlaying, setAudioPlaying] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
-  const audioRef = useRef(null);
+  // const audioRef = useRef(null);
 
   useEffect(() => {
     const loadData = async () => {
@@ -57,24 +57,24 @@ export const WordDetail = ({ word }) => {
     if (word) loadData();
   }, [word]);
 
-  const playAudio = async () => {
-    const audioUrl =
-      definition?.audio || definition?.phonetics?.find((p) => p.audio)?.audio;
-    if (!audioUrl || audioPlaying) return;
+  // const playAudio = async () => {
+  //   const audioUrl =
+  //     definition?.audio || definition?.phonetics?.find((p) => p.audio)?.audio;
+  //   if (!audioUrl || audioPlaying) return;
 
-    try {
-      setAudioPlaying(true);
-      if (audioRef.current) {
-        audioRef.current.pause();
-      }
-      audioRef.current = new Audio(audioUrl);
-      audioRef.current.onended = () => setAudioPlaying(false);
-      audioRef.current.onerror = () => setAudioPlaying(false);
-      await audioRef.current.play();
-    } catch {
-      setAudioPlaying(false);
-    }
-  };
+  //   try {
+  //     setAudioPlaying(true);
+  //     if (audioRef.current) {
+  //       audioRef.current.pause();
+  //     }
+  //     audioRef.current = new Audio(audioUrl);
+  //     audioRef.current.onended = () => setAudioPlaying(false);
+  //     audioRef.current.onerror = () => setAudioPlaying(false);
+  //     await audioRef.current.play();
+  //   } catch {
+  //     setAudioPlaying(false);
+  //   }
+  // };
 
   const getPhonetic = () => {
     const p =
@@ -82,8 +82,8 @@ export const WordDetail = ({ word }) => {
     return p ? (p.startsWith("/") ? p : `/${p}/`) : "";
   };
 
-  const hasAudio = () =>
-    definition?.audio || definition?.phonetics?.some((p) => p.audio);
+  // const hasAudio = () =>
+  //   definition?.audio || definition?.phonetics?.some((p) => p.audio);
 
   const handleRemove = async () => {
     if (!confirm(`Remove "${word}" from vocabulary?`)) return;
@@ -158,6 +158,15 @@ export const WordDetail = ({ word }) => {
               {getPhonetic() && (
                 <span className={styles.phonetic}>{getPhonetic()}</span>
               )}
+              {/* {hasAudio() && (
+                <button
+                  className={`${styles.audioBtn} ${audioPlaying ? styles.playing : ""}`}
+                  onClick={playAudio}
+                  disabled={audioPlaying}
+                >
+                  {audioPlaying ? "●" : "▶"}
+                </button>
+              )} */}
             </div>
           </div>
         </div>

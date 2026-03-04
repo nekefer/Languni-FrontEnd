@@ -14,7 +14,7 @@ const logger = createLogger("vocabulary");
 const WORDS_PER_PAGE = 12;
 
 // Individual word card component
-const WordCard = ({ wordData, onDelete, onViewVideo, onViewDetails }) => {
+const WordCard = ({ wordData, onDelete, onViewDetails }) => {
   const { t, i18n } = useTranslation();
   const [definition, setDefinition] = useState(null);
   const [loadingDefinition, setLoadingDefinition] = useState(false);
