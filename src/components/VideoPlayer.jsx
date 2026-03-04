@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, Bookmark, BookmarkCheck } from "lucide-react";
 import { toast } from "sonner";
@@ -7,7 +7,9 @@ import YouTubePlayer from "./YouTubePlayer";
 import CaptionPanel from "./CaptionPanel";
 import VocabularyPanel from "./VocabularyPanel";
 import NotFound from "./NotFound";
+import { UpgradeModal } from "./UpgradeModal";
 import savedVideosService from "../api/savedVideos.js";
+import { startWatching } from "../api/billing.js";
 import { useOptimisticToggle } from "../hooks/useOptimisticToggle.js";
 import styles from "../styles/VideoPlayer.module.css";
 
@@ -21,8 +23,18 @@ function VideoPlayer({ videoId }) {
   const [playerRef, setPlayerRef] = useState(null);
   const [vocabularyData, setVocabularyData] = useState(null);
   const [isVocabularyPanelOpen, setIsVocabularyPanelOpen] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   // Store captions reference for index calculation
   const captionsRef = useRef([]);
+
+  // Check daily video limit on mount
+  useEffect(() => {
+    startWatching(videoId).catch((err) => {
+      if (err?.response?.data?.detail?.code === "DAILY_LIMIT_REACHED") {
+        setShowUpgradeModal(true);
+      }
+    });
+  }, [videoId]);
 
   const { isSaved, checking, toggle: toggleSave } = useOptimisticToggle({
     id: videoId,
@@ -115,6 +127,9 @@ function VideoPlayer({ videoId }) {
 
   return (
     <div className={styles.videoPlayerPage}>
+      {showUpgradeModal && (
+        <UpgradeModal onDismiss={() => setShowUpgradeModal(false)} />
+      )}
       <nav className={styles.playerNav}>
         <button className={styles.backButton} onClick={handleBackToDashboard}>
           <ArrowLeft size={15} /> {t('player.back')}

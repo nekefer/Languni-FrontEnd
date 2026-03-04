@@ -1,0 +1,60 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  padding: 24px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  box-shadow: var(--shadow-md);
+  padding: 48px 40px;
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+}
+
+.icon {
+  color: var(--pri);
+  margin-bottom: 20px;
+}
+
+.iconCancel {
+  color: var(--red);
+}
+
+.title {
+  font-family: var(--heading);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--txt);
+  margin: 0 0 12px;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: var(--txt2);
+  line-height: 1.6;
+  margin: 0 0 32px;
+}
+
+.btn {
+  display: inline-block;
+  background: var(--pri);
+  color: #fff;
+  font-family: var(--body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 12px 28px;
+  border-radius: 50px;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.btn:hover {
+  background: var(--pri-dark);
+}

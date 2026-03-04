@@ -664,9 +664,9 @@
 
 .priceRow {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 24px;
-  max-width: 940px;
+  max-width: 700px;
   margin: 0 auto;
   position: relative;
   z-index: 1;
@@ -777,6 +777,20 @@
   font-size: 0.85rem;
 }
 
+.pSoon {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--txt3);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  padding: 1px 7px;
+  margin-left: 6px;
+  vertical-align: middle;
+  letter-spacing: 0.02em;
+}
+
 .pcBtnOutline {
   font-family: var(--body);
   font-size: 0.9rem;
@@ -813,6 +827,20 @@
 .pcBtnFill:hover {
   background: var(--terra-dark);
   transform: translateY(-1px);
+}
+
+.pcBtnGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.pcBtnFill:disabled,
+.pcBtnOutline:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
 }
 
 /* ───── FOOTER ───── */

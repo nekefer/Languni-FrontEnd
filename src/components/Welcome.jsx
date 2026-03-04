@@ -3,6 +3,9 @@ import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import s from "../styles/Welcome.module.css";
 import languni from "../assets/Languni.png";
+import { useAuth } from "../contexts/AuthContext";
+import { createCheckout } from "../api/billing";
+import config from "../config";
 
 const LANG_OPTIONS = [
   { code: "en", label: "EN" },
@@ -13,7 +16,25 @@ const LANG_OPTIONS = [
 export default function Welcome() {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
+  const { isAuthenticated } = useAuth();
   const [scrolled, setScrolled] = useState(false);
+  const [checkoutLoading, setCheckoutLoading] = useState(null); // 'monthly' | 'yearly' | null
+
+  const handleUpgrade = async (billing) => {
+    if (!isAuthenticated) {
+      navigate({ to: "/register" });
+      return;
+    }
+    const variantId = billing === "yearly" ? config.lsYearlyVariantId : config.lsMonthlyVariantId;
+    if (!variantId) return;
+    try {
+      setCheckoutLoading(billing);
+      const checkoutUrl = await createCheckout(variantId);
+      window.location.href = checkoutUrl;
+    } catch {
+      setCheckoutLoading(null);
+    }
+  };
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -256,56 +277,36 @@ export default function Welcome() {
                 <li className={s.pYes}>{t('landing.freeFeat2')}</li>
                 <li className={s.pYes}>{t('landing.freeFeat3')}</li>
                 <li className={s.pYes}>{t('landing.freeFeat4')}</li>
-                <li className={s.pNo}>{t('landing.freeNoFeat1')}</li>
-                <li className={s.pNo}>{t('landing.freeNoFeat2')}</li>
+                <li className={s.pYes}>{t('landing.freeFeat5')}</li>
               </ul>
               <button onClick={() => navigate({ to: "/register" })} className={s.pBtnLight}>
                 {t('nav.getStarted')}
               </button>
             </div>
 
-            {/* Pro */}
+            {/* Premium */}
             <div className={`${s.priceCard} ${s.priceCardPop}`}>
               <div className={s.popTag}>{t('landing.popular')}</div>
               <div className={s.priceTop}>
-                <h3 className={s.pName}>{t('landing.proPlan')}</h3>
-                <div className={s.pAmount}>
-                  $6<span className={s.pMo}>/mo</span>
-                </div>
-                <p className={s.pSub}>{t('landing.proYearly')}</p>
-              </div>
-              <ul className={s.pList}>
-                <li className={s.pYes}>{t('landing.proFeat1')}</li>
-                <li className={s.pYes}>{t('landing.proFeat2')}</li>
-                <li className={s.pYes}>{t('landing.proFeat3')}</li>
-                <li className={s.pYes}>{t('landing.proFeat4')}</li>
-                <li className={s.pYes}>{t('landing.proFeat5')}</li>
-                <li className={s.pYes}>{t('landing.proFeat6')}</li>
-              </ul>
-              <button onClick={() => navigate({ to: "/register" })} className={s.pBtnSolid}>
-                {t('landing.startPro')}
-              </button>
-            </div>
-
-            {/* Premium */}
-            <div className={s.priceCard}>
-              <div className={s.priceTop}>
                 <h3 className={s.pName}>{t('landing.premiumPlan')}</h3>
                 <div className={s.pAmount}>
-                  $15<span className={s.pMo}>/mo</span>
+                  $5<span className={s.pMo}>/mo</span>
                 </div>
                 <p className={s.pSub}>{t('landing.premiumYearly')}</p>
               </div>
               <ul className={s.pList}>
                 <li className={s.pYes}>{t('landing.premiumFeat1')}</li>
-                <li className={s.pYes}>{t('landing.premiumFeat2')}</li>
-                <li className={s.pYes}>{t('landing.premiumFeat3')}</li>
-                <li className={s.pYes}>{t('landing.premiumFeat4')}</li>
+                <li className={s.pYes}>{t('landing.premiumFeat2')}<span className={s.pSoon}>{t('landing.comingSoon')}</span></li>
+                <li className={s.pYes}>{t('landing.premiumFeat3')}<span className={s.pSoon}>{t('landing.comingSoon')}</span></li>
+                <li className={s.pYes}>{t('landing.premiumFeat4')}<span className={s.pSoon}>{t('landing.comingSoon')}</span></li>
                 <li className={s.pYes}>{t('landing.premiumFeat5')}</li>
-                <li className={s.pYes}>{t('landing.premiumFeat6')}</li>
               </ul>
-              <button onClick={() => navigate({ to: "/register" })} className={s.pBtnLight}>
-                {t('landing.startPremium')}
+              <button
+                onClick={() => handleUpgrade("monthly")}
+                className={s.pBtnSolid}
+                disabled={checkoutLoading !== null}
+              >
+                {checkoutLoading ? "..." : t('landing.startPremium')}
               </button>
             </div>
           </div>

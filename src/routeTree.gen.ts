@@ -19,9 +19,10 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as LibraryRouteImport } from './routes/library'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as DashboardRouteImport } from './routes/dashboard'
-import { Route as R5RouteImport } from './routes/5'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as WordWordIdRouteImport } from './routes/word/$wordId'
+import { Route as PricingSuccessRouteImport } from './routes/pricing/success'
+import { Route as PricingCancelRouteImport } from './routes/pricing/cancel'
 import { Route as PlayerVideoIdRouteImport } from './routes/player/$videoId'
 
 const WordsRoute = WordsRouteImport.update({
@@ -74,11 +75,6 @@ const DashboardRoute = DashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
-const R5Route = R5RouteImport.update({
-  id: '/5',
-  path: '/5',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -89,6 +85,16 @@ const WordWordIdRoute = WordWordIdRouteImport.update({
   path: '/word/$wordId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PricingSuccessRoute = PricingSuccessRouteImport.update({
+  id: '/pricing/success',
+  path: '/pricing/success',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PricingCancelRoute = PricingCancelRouteImport.update({
+  id: '/pricing/cancel',
+  path: '/pricing/cancel',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PlayerVideoIdRoute = PlayerVideoIdRouteImport.update({
   id: '/player/$videoId',
   path: '/player/$videoId',
@@ -97,7 +103,6 @@ const PlayerVideoIdRoute = PlayerVideoIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/5': typeof R5Route
   '/dashboard': typeof DashboardRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/library': typeof LibraryRoute
@@ -109,11 +114,12 @@ export interface FileRoutesByFullPath {
   '/verify-email-pending': typeof VerifyEmailPendingRoute
   '/words': typeof WordsRoute
   '/player/$videoId': typeof PlayerVideoIdRoute
+  '/pricing/cancel': typeof PricingCancelRoute
+  '/pricing/success': typeof PricingSuccessRoute
   '/word/$wordId': typeof WordWordIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/5': typeof R5Route
   '/dashboard': typeof DashboardRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/library': typeof LibraryRoute
@@ -125,12 +131,13 @@ export interface FileRoutesByTo {
   '/verify-email-pending': typeof VerifyEmailPendingRoute
   '/words': typeof WordsRoute
   '/player/$videoId': typeof PlayerVideoIdRoute
+  '/pricing/cancel': typeof PricingCancelRoute
+  '/pricing/success': typeof PricingSuccessRoute
   '/word/$wordId': typeof WordWordIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/5': typeof R5Route
   '/dashboard': typeof DashboardRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/library': typeof LibraryRoute
@@ -142,13 +149,14 @@ export interface FileRoutesById {
   '/verify-email-pending': typeof VerifyEmailPendingRoute
   '/words': typeof WordsRoute
   '/player/$videoId': typeof PlayerVideoIdRoute
+  '/pricing/cancel': typeof PricingCancelRoute
+  '/pricing/success': typeof PricingSuccessRoute
   '/word/$wordId': typeof WordWordIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/5'
     | '/dashboard'
     | '/forgot-password'
     | '/library'
@@ -160,11 +168,12 @@ export interface FileRouteTypes {
     | '/verify-email-pending'
     | '/words'
     | '/player/$videoId'
+    | '/pricing/cancel'
+    | '/pricing/success'
     | '/word/$wordId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/5'
     | '/dashboard'
     | '/forgot-password'
     | '/library'
@@ -176,11 +185,12 @@ export interface FileRouteTypes {
     | '/verify-email-pending'
     | '/words'
     | '/player/$videoId'
+    | '/pricing/cancel'
+    | '/pricing/success'
     | '/word/$wordId'
   id:
     | '__root__'
     | '/'
-    | '/5'
     | '/dashboard'
     | '/forgot-password'
     | '/library'
@@ -192,12 +202,13 @@ export interface FileRouteTypes {
     | '/verify-email-pending'
     | '/words'
     | '/player/$videoId'
+    | '/pricing/cancel'
+    | '/pricing/success'
     | '/word/$wordId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  R5Route: typeof R5Route
   DashboardRoute: typeof DashboardRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   LibraryRoute: typeof LibraryRoute
@@ -209,6 +220,8 @@ export interface RootRouteChildren {
   VerifyEmailPendingRoute: typeof VerifyEmailPendingRoute
   WordsRoute: typeof WordsRoute
   PlayerVideoIdRoute: typeof PlayerVideoIdRoute
+  PricingCancelRoute: typeof PricingCancelRoute
+  PricingSuccessRoute: typeof PricingSuccessRoute
   WordWordIdRoute: typeof WordWordIdRoute
 }
 
@@ -284,13 +297,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/5': {
-      id: '/5'
-      path: '/5'
-      fullPath: '/5'
-      preLoaderRoute: typeof R5RouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -305,6 +311,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WordWordIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pricing/success': {
+      id: '/pricing/success'
+      path: '/pricing/success'
+      fullPath: '/pricing/success'
+      preLoaderRoute: typeof PricingSuccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricing/cancel': {
+      id: '/pricing/cancel'
+      path: '/pricing/cancel'
+      fullPath: '/pricing/cancel'
+      preLoaderRoute: typeof PricingCancelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/player/$videoId': {
       id: '/player/$videoId'
       path: '/player/$videoId'
@@ -317,7 +337,6 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  R5Route: R5Route,
   DashboardRoute: DashboardRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   LibraryRoute: LibraryRoute,
@@ -329,6 +348,8 @@ const rootRouteChildren: RootRouteChildren = {
   VerifyEmailPendingRoute: VerifyEmailPendingRoute,
   WordsRoute: WordsRoute,
   PlayerVideoIdRoute: PlayerVideoIdRoute,
+  PricingCancelRoute: PricingCancelRoute,
+  PricingSuccessRoute: PricingSuccessRoute,
   WordWordIdRoute: WordWordIdRoute,
 }
 export const routeTree = rootRouteImport

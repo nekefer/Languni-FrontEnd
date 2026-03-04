@@ -13,6 +13,10 @@ export const config = {
   // Helpers
   isProduction: import.meta.env.VITE_ENVIRONMENT === "production",
   isDevelopment: import.meta.env.VITE_ENVIRONMENT !== "production",
+
+  // Lemon Squeezy variant IDs (not secret — safe to expose in frontend)
+  lsMonthlyVariantId: import.meta.env.VITE_LS_MONTHLY_VARIANT_ID || "",
+  lsYearlyVariantId: import.meta.env.VITE_LS_YEARLY_VARIANT_ID || "",
 };
 
 export default config;

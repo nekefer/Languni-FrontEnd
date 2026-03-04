@@ -18,7 +18,7 @@ const NAV_LINKS = [
 
 export function AppLayout({ children }) {
   const { t } = useTranslation();
-  const { user, logout } = useAuth();
+  const { user, logout, isPremium } = useAuth();
   const { isDark, toggleTheme } = useTheme();
   const { resetOnboardingState } = useOnboarding();
   const navigate = useNavigate();
@@ -148,9 +148,14 @@ export function AppLayout({ children }) {
             {dropdownOpen && (
               <div className={styles.dropdown}>
                 <div className={styles.dropdownUser}>
-                  <span className={styles.dropdownName}>
-                    {user?.first_name} {user?.last_name}
-                  </span>
+                  <div className={styles.dropdownNameRow}>
+                    <span className={styles.dropdownName}>
+                      {user?.first_name} {user?.last_name}
+                    </span>
+                    {isPremium && (
+                      <span className={styles.planBadge}>Premium</span>
+                    )}
+                  </div>
                   <span className={styles.dropdownEmail}>{user?.email}</span>
                 </div>
                 <hr className={styles.dropdownDivider} />
