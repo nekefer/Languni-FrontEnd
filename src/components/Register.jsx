@@ -18,6 +18,7 @@ import {
   getPasswordStrengthWidth,
 } from "../utils/validators";
 import styles from "../styles/Register.module.css";
+import languni from "../assets/Languni.png";
 
 const STRENGTH_KEYS = {
   weak: "auth.register.strengthWeak",
@@ -168,7 +169,7 @@ export const Register = () => {
         <div className={styles.registerBrand}>
           <div className={styles.registerBrandInner}>
             <a href="/" className={styles.registerLogo}>
-              Lang<span>uni</span>
+              <img src={languni} alt="Languni" height="40" />
             </a>
             <h1>
               <Trans i18nKey="auth.register.brandHeading" components={{ em: <em /> }} />

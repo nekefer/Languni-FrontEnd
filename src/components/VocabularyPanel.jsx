@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { toast } from "sonner";
+import { Search, Loader, CheckCircle, XCircle, Bookmark, Volume2, Volume1, X, BookOpen, Globe, ArrowRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import vocabularyService from "../api/vocabulary.js";
 import translationService from "../api/translation.js";
@@ -26,12 +27,12 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
 
   // Save state config — built from t() at render time
   const getSaveStateConfig = () => ({
-    checking: { label: `🔍 ${t('vocPanel.stateChecking')}`, className: "primary", disabled: true },
-    saving: { label: `⏳ ${t('vocPanel.stateSaving')}`, className: "primary", disabled: true },
-    saved: { label: `✅ ${t('vocPanel.stateSaved')}`, className: "success", disabled: true },
-    "already-saved": { label: `✅ ${t('vocPanel.stateAlreadySaved')}`, className: "success", disabled: true },
-    error: { label: `❌ ${t('vocPanel.stateTryAgain')}`, className: "error", disabled: false },
-    idle: { label: `💾 ${t('vocPanel.stateSaveWord')}`, className: "primary", disabled: false },
+    checking:      { label: <><Search size={14} /> {t('vocPanel.stateChecking')}</>,    className: "primary", disabled: true },
+    saving:        { label: <><Loader size={14} /> {t('vocPanel.stateSaving')}</>,       className: "primary", disabled: true },
+    saved:         { label: <><CheckCircle size={14} /> {t('vocPanel.stateSaved')}</>,   className: "success", disabled: true },
+    "already-saved": { label: <><CheckCircle size={14} /> {t('vocPanel.stateAlreadySaved')}</>, className: "success", disabled: true },
+    error:         { label: <><XCircle size={14} /> {t('vocPanel.stateTryAgain')}</>,    className: "error",   disabled: false },
+    idle:          { label: <><Bookmark size={14} /> {t('vocPanel.stateSaveWord')}</>,   className: "primary", disabled: false },
   });
 
   // Handle escape key and outside clicks
@@ -236,14 +237,14 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
                     disabled={audioPlaying}
                     title="Play pronunciation"
                   >
-                    {audioPlaying ? "🔊" : "🔈"}
+                    {audioPlaying ? <Volume2 size={18} /> : <Volume1 size={18} />}
                   </button>
                 )}
               </div>
             )}
           </div>
           <button className={styles.closeBtn} onClick={onClose} title={t('vocPanel.close')}>
-            ✕
+            <X size={18} />
           </button>
         </div>
 
@@ -253,14 +254,14 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
             className={`${styles.tab} ${activeTab === "definition" ? styles.active : ""}`}
             onClick={() => setActiveTab("definition")}
           >
-            <span className={styles.tabIcon}>📖</span>
+            <span className={styles.tabIcon}><BookOpen size={16} /></span>
             <span className={styles.tabLabel}>{t('vocPanel.tabDefinition')}</span>
           </button>
           <button
             className={`${styles.tab} ${activeTab === "translation" ? styles.active : ""}`}
             onClick={() => setActiveTab("translation")}
           >
-            <span className={styles.tabIcon}>🌐</span>
+            <span className={styles.tabIcon}><Globe size={16} /></span>
             <span className={styles.tabLabel}>{t('vocPanel.tabTranslation')}</span>
           </button>
         </div>
@@ -403,7 +404,7 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
                     <div className={styles.translationWord}>
                       {vocabularyData.definition?.word || vocabularyData.word}
                     </div>
-                    <div className={styles.translationDivider}>⟶</div>
+                    <div className={styles.translationDivider}><ArrowRight size={18} /></div>
                     <div className={styles.translationWord}>
                       {translationData.translatedWord}
                     </div>

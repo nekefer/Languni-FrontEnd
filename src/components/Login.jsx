@@ -9,6 +9,7 @@ import { Spinner } from "../ui/Spinner";
 import { useTranslation } from "react-i18next";
 import { Trans } from "react-i18next";
 import styles from "../styles/Login.module.css";
+import languni from "../assets/Languni.png";
 
 export const Login = () => {
   const { t } = useTranslation();
@@ -85,7 +86,7 @@ export const Login = () => {
         <div className={styles.loginBrand}>
           <div className={styles.loginBrandInner}>
             <a href="/" className={styles.loginLogo}>
-              Lang<span>uni</span>
+              <img src={languni} alt="Languni" height="40" />
             </a>
             <h1>
               <Trans i18nKey="auth.brandHeading" components={{ em: <em /> }} />

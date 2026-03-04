@@ -1,56 +1,57 @@
 /* ============================================
-   VIDEO PLAYER — Dark cinematic theme
+   VIDEO PLAYER — Design system theme
    ============================================ */
 
 .videoPlayerPage {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: #000;
-  color: #fff;
+  background-color: var(--bg);
   font-family: var(--body);
 }
 
-/* Nav */
+/* ── Nav ── */
 
 .playerNav {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.875rem 1.5rem;
-  background-color: #111;
-  border-bottom: 1px solid #1e1e1e;
+  padding: 0 1.5rem;
+  height: 56px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
   gap: 1rem;
+  flex-shrink: 0;
 }
 
 .backButton {
-  background: rgba(255, 255, 255, 0.07);
-  border: none;
-  color: #ccc;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.88rem;
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--txt2);
+  padding: 0.4rem 0.875rem;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
   font-family: var(--body);
   font-weight: 500;
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  transition: background 0.2s, color 0.2s;
+  gap: 0.35rem;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
   white-space: nowrap;
 }
 
 .backButton:hover {
-  background: rgba(255, 255, 255, 0.13);
-  color: #fff;
+  background: var(--pri-faint);
+  border-color: var(--pri);
+  color: var(--txt);
 }
 
 .videoTitle {
   margin: 0;
-  font-size: 1rem;
-  font-weight: 500;
+  font-size: 0.925rem;
+  font-weight: 600;
   font-family: var(--body);
-  color: #d0d0d0;
+  color: var(--txt);
   text-align: center;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -59,29 +60,31 @@
 }
 
 .playerSaveBtn {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  color: #aaa;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.88rem;
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--txt2);
+  padding: 0.4rem 0.875rem;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
   font-family: var(--body);
   font-weight: 500;
-  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.15s;
   white-space: nowrap;
 }
 
 .playerSaveBtn:hover {
   border-color: var(--pri);
   color: var(--pri);
-  background: rgba(42, 176, 144, 0.08);
+  background: var(--pri-faint);
 }
 
 .saved {
   border-color: var(--pri) !important;
   color: var(--pri) !important;
-  background: rgba(42, 176, 144, 0.12) !important;
+  background: var(--pri-light) !important;
 }
 
 .playerSaveBtn:disabled {
@@ -89,7 +92,7 @@
   cursor: not-allowed;
 }
 
-/* Layout */
+/* ── Layout ── */
 
 .videoPlayerLayout {
   flex: 1;
@@ -97,7 +100,6 @@
   grid-template-columns: 2fr 1fr;
   gap: 0.75rem;
   padding: 0.75rem;
-  /* explicit height so grid children can use height: 100% */
   height: calc(100vh - 56px);
   min-height: 0;
   overflow: hidden;
@@ -105,43 +107,41 @@
 
 .playerSection {
   background: #000;
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   min-height: 0;
-  /* grid child: align-self stretch is default, but height:100% ensures
-     the flex children inside can resolve their own height percentages */
   height: 100%;
   position: relative;
+  box-shadow: var(--shadow-md);
 }
 
 .captionSection {
-  background: #0e0e0e;
-  border-radius: 8px;
-  border: 1px solid #1e1e1e;
+  background: var(--surface);
+  border-radius: 12px;
+  border: 1px solid var(--border);
   overflow: hidden;
   display: flex;
   flex-direction: column;
   min-height: 0;
-  /* fill the full grid row height */
   height: 100%;
+  box-shadow: var(--shadow-sm);
 }
 
-/* Responsive */
+/* ── Responsive ── */
 
 @media (max-width: 768px) {
   .videoPlayerLayout {
     grid-template-columns: 1fr;
-    /* video gets 56% of viewport height, captions get rest */
     grid-template-rows: 56vw 1fr;
     gap: 0.5rem;
     padding: 0.5rem;
-    height: calc(100vh - 52px);
+    height: calc(100vh - 56px);
   }
 
   .playerNav {
-    padding: 0.75rem 1rem;
+    padding: 0 1rem;
   }
 
   .videoTitle {
@@ -149,7 +149,6 @@
   }
 
   .captionSection {
-    /* on mobile captions fill the second row fully */
     height: 100%;
     max-height: none;
   }
@@ -158,9 +157,5 @@
 @media (max-width: 1024px) and (min-width: 769px) {
   .videoPlayerLayout {
     grid-template-columns: 1.5fr 1fr;
-  }
-
-  .playerNav {
-    padding: 0.875rem 1.25rem;
   }
 }

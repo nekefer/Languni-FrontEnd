@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { Trans } from "react-i18next";
 import styles from "../styles/auth-card.module.css";
+import languni from "../assets/Languni.png";
 
 export const ForgotPassword = () => {
   const { t } = useTranslation();
@@ -30,7 +31,7 @@ export const ForgotPassword = () => {
     return (
       <div className={styles.acPage}>
         <div className={styles.acCard}>
-          <a href="/" className={styles.acLogo}>Lang<span>uni</span></a>
+          <a href="/" className={styles.acLogo}><img src={languni} alt="Languni" height="36" /></a>
           <span className={styles.acIcon}>✉️</span>
           <h1 className={styles.acTitle}>{t('auth.forgotPassword.checkEmailTitle')}</h1>
           <p className={styles.acSubtitle}>
@@ -51,7 +52,7 @@ export const ForgotPassword = () => {
   return (
     <div className={styles.acPage}>
       <div className={styles.acCard}>
-        <a href="/" className={styles.acLogo}>Lang<span>uni</span></a>
+        <a href="/" className={styles.acLogo}><img src={languni} alt="Languni" height="36" /></a>
         <h1 className={styles.acTitle}>{t('auth.forgotPassword.title')}</h1>
         <p className={styles.acSubtitle}>{t('auth.forgotPassword.subtitle')}</p>
 

@@ -370,6 +370,9 @@
     "removeFailed": "Error al eliminar el video. Inténtalo de nuevo."
   },
   "player": {
+    "back": "Volver",
+    "save": "Guardar",
+    "saved": "Guardado",
     "captions": "Subtítulos",
     "captionHint": "Haz clic en el subtítulo para navegar • Haz clic en las palabras para definiciones",
     "loadingCaptions": "Cargando subtítulos...",

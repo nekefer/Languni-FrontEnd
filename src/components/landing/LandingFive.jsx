@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import s from "../../styles/LandingFive.module.css";
+import languni from "../../assets/Languni.png";
 
 export default function LandingFive() {
   const navigate = useNavigate();
@@ -18,8 +19,7 @@ export default function LandingFive() {
       <header className={`${s.header} ${scrolled ? s.headerScrolled : ""}`}>
         <div className={s.headerInner}>
           <a href="/5" className={s.logo}>
-            <span className={s.logoIcon}>&#127837;</span>
-            linguini
+            <img src={languni} alt="Languni" height="32" />
           </a>
           <nav className={s.nav}>
             <a href="#hero" className={s.navLink}>Home</a>
@@ -307,7 +307,7 @@ export default function LandingFive() {
           <div className={s.footerInner}>
             <div className={s.footerBrand}>
               <a href="/5" className={s.footerLogo}>
-                <span>&#127837;</span> linguini
+                <img src={languni} alt="Languni" height="28" />
               </a>
               <p>Learn languages through real YouTube videos.</p>
             </div>

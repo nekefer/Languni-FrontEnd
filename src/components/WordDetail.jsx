@@ -158,15 +158,6 @@ export const WordDetail = ({ word }) => {
               {getPhonetic() && (
                 <span className={styles.phonetic}>{getPhonetic()}</span>
               )}
-              {hasAudio() && (
-                <button
-                  className={`${styles.audioBtn} ${audioPlaying ? styles.playing : ""}`}
-                  onClick={playAudio}
-                  disabled={audioPlaying}
-                >
-                  {audioPlaying ? "●" : "▶"}
-                </button>
-              )}
             </div>
           </div>
         </div>

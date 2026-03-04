@@ -9,7 +9,7 @@
   min-height: 100vh;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  background: #fff;
+  background: var(--surface);
   color: var(--txt);
   line-height: 1.6;
 }
@@ -320,7 +320,7 @@
   font-size: 0.92rem;
   font-weight: 600;
   color: var(--txt);
-  background: #fff;
+  background: var(--surface);
   border: 1.5px solid var(--border);
   border-radius: 10px;
   padding: 13px;

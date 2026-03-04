@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
+import { Video, Trash2, Tv, XCircle, BookOpen } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import vocabularyService from "../api/vocabulary.js";
@@ -39,11 +40,11 @@ const WordCard = ({ wordData, onDelete, onViewVideo, onViewDetails }) => {
     }
   };
 
-  const handleViewVideo = () => {
-    if (wordData.video_id) {
-      onViewVideo(wordData.video_id);
-    }
-  };
+  // const handleViewVideo = () => {
+  //   if (wordData.video_id) {
+  //     onViewVideo(wordData.video_id);
+  //   }
+  // };
 
   const getDefinitionPreview = () => {
     if (definition?.error) return definition.error;
@@ -66,21 +67,21 @@ const WordCard = ({ wordData, onDelete, onViewVideo, onViewDetails }) => {
       <div className={styles.wordHeader}>
         <h3 className={styles.wordTitle}>{wordData.word}</h3>
         <div className={styles.wordActions}>
-          {wordData.video_id && (
+          {/* {wordData.video_id && (
             <button
               className={`${styles.btnIcon} ${styles.videoBtn}`}
               onClick={handleViewVideo}
               title={t('vocabulary.viewInVideo')}
             >
-              📹
+              <Video size={16} />
             </button>
-          )}
+          )} */}
           <button
             className={`${styles.btnIcon} ${styles.deleteBtn}`}
             onClick={handleDelete}
             title={t('vocabulary.deleteWord')}
           >
-            🗑️
+            <Trash2 size={16} />
           </button>
         </div>
       </div>
@@ -90,7 +91,7 @@ const WordCard = ({ wordData, onDelete, onViewVideo, onViewDetails }) => {
           {t('vocabulary.savedOn', { date: formatDate(wordData.saved_at) })}
         </span>
         {wordData.video_id && (
-          <span className={styles.videoBadge}>📺 {t('vocabulary.fromVideo')}</span>
+          <span className={styles.videoBadge}><Tv size={13} /> {t('vocabulary.fromVideo')}</span>
         )}
       </div>
 
@@ -150,7 +151,7 @@ const VocabularyGrid = ({
   if (error) {
     return (
       <div className={styles.vocabularyError}>
-        <h3>❌ {t('vocabulary.errorTitle')}</h3>
+        <h3><XCircle size={20} /> {t('vocabulary.errorTitle')}</h3>
         <p>{error}</p>
         <button
           className={styles.btnPrimary}
@@ -165,7 +166,7 @@ const VocabularyGrid = ({
   if (words.length === 0) {
     return (
       <div className={styles.vocabularyEmpty}>
-        <div className={styles.emptyIcon}>📚</div>
+        <div className={styles.emptyIcon}><BookOpen size={48} /></div>
         <h3>{t('vocabulary.emptyTitle')}</h3>
         <p>{t('vocabulary.emptyDesc')}</p>
         <Link to="/dashboard" className={styles.btnPrimary}>
@@ -309,7 +310,7 @@ export const MyVocabulary = () => {
     <div className={styles.vocabularyPage}>
       <div className={styles.vocabularyControls}>
         <div className={styles.vocabularyStats}>
-          <h3>📚 {t('vocabulary.title')}</h3>
+          <h3><BookOpen size={20} /> {t('vocabulary.title')}</h3>
           <p className={styles.statsText}>
             {t('vocabulary.wordsSaved', { count: totalWords })}
           </p>

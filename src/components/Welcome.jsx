@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import s from "../styles/Welcome.module.css";
+import languni from "../assets/Languni.png";
 
 const LANG_OPTIONS = [
   { code: "en", label: "EN" },
@@ -26,7 +27,7 @@ export default function Welcome() {
       <header className={`${s.header} ${scrolled ? s.headerScrolled : ""}`}>
         <div className={s.headerInner}>
           <a href="/" className={s.logo}>
-            Lingu<span className={s.logoAcc}>ini</span>
+            <img src={languni} alt="Languni" height="32" />
           </a>
           <nav className={s.nav}>
             <a href="#hero" className={s.navLink}>{t('nav.home')}</a>
@@ -330,7 +331,7 @@ export default function Welcome() {
 
           <div className={s.footerBottom}>
             <a href="/" className={s.footerLogo}>
-              Lingu<span className={s.logoAcc}>ini</span>
+              <img src={languni} alt="Languni" height="28" />
             </a>
             <div className={s.footerLinks}>
               <a href="#benefits">{t('landing.footerFeatLink')}</a>

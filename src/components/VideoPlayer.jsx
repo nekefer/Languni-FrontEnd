@@ -1,5 +1,6 @@
 import React, { useState, useRef, useCallback } from "react";
 import { useNavigate } from "@tanstack/react-router";
+import { ArrowLeft, Bookmark, BookmarkCheck } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import YouTubePlayer from "./YouTubePlayer";
@@ -116,7 +117,7 @@ function VideoPlayer({ videoId }) {
     <div className={styles.videoPlayerPage}>
       <nav className={styles.playerNav}>
         <button className={styles.backButton} onClick={handleBackToDashboard}>
-          ← Back
+          <ArrowLeft size={15} /> {t('player.back')}
         </button>
         <h2 className={styles.videoTitle}>Video Player</h2>
         <button
@@ -124,7 +125,10 @@ function VideoPlayer({ videoId }) {
           onClick={toggleSave}
           disabled={checking}
         >
-          {checking ? "···" : isSaved ? "\u2605 Saved" : "\u2606 Save"}
+          {checking ? "···" : isSaved
+            ? <><BookmarkCheck size={15} /> {t('player.saved')}</>
+            : <><Bookmark size={15} /> {t('player.save')}</>
+          }
         </button>
       </nav>
 

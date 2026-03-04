@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { Flame, Play, RefreshCw } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { googleLogin } from "../api/auth";
 import { getLastLikedVideo } from "../api/youtube";
@@ -69,7 +70,7 @@ export const Dashboard = () => {
         {/* Trending Videos */}
         <div className={styles.trendingSection}>
           <div className={styles.trendingHeader}>
-            <h3>🔥 {t('dashboard.trendingVideos')}</h3>
+            <h3><Flame size={18} /> {t('dashboard.trendingVideos')}</h3>
             <div className={styles.filters}>
               <label>
                 {t('dashboard.regionLabel')}:
@@ -78,16 +79,16 @@ export const Dashboard = () => {
                   onChange={(e) => changeRegion(e.target.value)}
                   className={styles.regionSelect}
                 >
-                  <option value="US">🇺🇸 {t('dashboard.regionUS')}</option>
-                  <option value="GB">🇬🇧 {t('dashboard.regionGB')}</option>
-                  <option value="CA">🇨🇦 {t('dashboard.regionCA')}</option>
-                  <option value="AU">🇦🇺 {t('dashboard.regionAU')}</option>
-                  <option value="DE">🇩🇪 {t('dashboard.regionDE')}</option>
-                  <option value="FR">🇫🇷 {t('dashboard.regionFR')}</option>
-                  <option value="JP">🇯🇵 {t('dashboard.regionJP')}</option>
-                  <option value="KR">🇰🇷 {t('dashboard.regionKR')}</option>
-                  <option value="IN">🇮🇳 {t('dashboard.regionIN')}</option>
-                  <option value="BR">🇧🇷 {t('dashboard.regionBR')}</option>
+                  <option value="US">{t('dashboard.regionUS')}</option>
+                  <option value="GB">{t('dashboard.regionGB')}</option>
+                  <option value="CA">{t('dashboard.regionCA')}</option>
+                  <option value="AU">{t('dashboard.regionAU')}</option>
+                  <option value="DE">{t('dashboard.regionDE')}</option>
+                  <option value="FR">{t('dashboard.regionFR')}</option>
+                  <option value="JP">{t('dashboard.regionJP')}</option>
+                  <option value="KR">{t('dashboard.regionKR')}</option>
+                  <option value="IN">{t('dashboard.regionIN')}</option>
+                  <option value="BR">{t('dashboard.regionBR')}</option>
                 </select>
               </label>
             </div>
@@ -173,7 +174,7 @@ export const Dashboard = () => {
                     rel="noopener noreferrer"
                     className={styles.youtubeLink}
                   >
-                    ▶ {t('dashboard.watchOnYouTube')}
+                    <Play size={13} /> {t('dashboard.watchOnYouTube')}
                   </a>
                 </div>
               </div>
@@ -185,7 +186,7 @@ export const Dashboard = () => {
 
             {lastLikedVideo && (
               <button className={styles.refreshButton} onClick={fetchLastLikedVideo}>
-                ↻ {t('dashboard.refresh')}
+                <RefreshCw size={14} /> {t('dashboard.refresh')}
               </button>
             )}
           </div>

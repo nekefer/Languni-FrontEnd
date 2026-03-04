@@ -11,6 +11,7 @@ import { LevelStep } from "./LevelStep";
 import { Spinner } from "../../ui/Spinner";
 import { createLogger } from "../../utils/logger";
 import "../../styles/Onboarding.css";
+import languni from "../../assets/Languni.png";
 
 const logger = createLogger("onboarding");
 
@@ -161,7 +162,7 @@ export const OnboardingFlow = () => {
       <div className="onboarding-card">
         {/* Logo */}
         <div className="onboarding-logo">
-          Lingu<span>ini</span>
+          <img src={languni} alt="Languni" height="36" />
         </div>
 
         {/* Progress Bar */}

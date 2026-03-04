@@ -370,6 +370,9 @@
     "removeFailed": "Failed to remove video. Please try again."
   },
   "player": {
+    "back": "Back",
+    "save": "Save",
+    "saved": "Saved",
     "captions": "Captions",
     "captionHint": "Click caption to seek • Click words for definitions",
     "loadingCaptions": "Loading captions...",

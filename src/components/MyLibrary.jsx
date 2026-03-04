@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
+import { Clapperboard } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import savedVideosService from "../api/savedVideos.js";
@@ -103,7 +104,7 @@ const VideoGrid = ({ videos, onDelete, onWatch, loading, error }) => {
   if (videos.length === 0) {
     return (
       <div className={styles.emptyState}>
-        <div className={styles.emptyIcon}>🎬</div>
+        <div className={styles.emptyIcon}><Clapperboard size={48} /></div>
         <h3>{t('library.emptyTitle')}</h3>
         <p>{t('library.emptyDesc')}</p>
         <Link to="/dashboard" className={styles.btnPrimary}>

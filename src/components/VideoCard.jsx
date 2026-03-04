@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "@tanstack/react-router";
+import { Bookmark, BookmarkCheck } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import savedVideosService from "../api/savedVideos.js";
@@ -80,7 +81,7 @@ const VideoCard = ({ video, onClick }) => {
             disabled={checking}
             title={isSaved ? t("videoCard.removeFromLibrary") : t("videoCard.saveToLibrary")}
           >
-            {checking ? "·" : isSaved ? "★" : "☆"}
+            {checking ? "·" : isSaved ? <BookmarkCheck size={16} /> : <Bookmark size={16} />}
           </button>
         </div>
         <p className={styles.videoChannel}>{channel_title}</p>

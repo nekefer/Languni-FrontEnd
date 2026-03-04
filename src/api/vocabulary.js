@@ -144,7 +144,7 @@ class VocabularyService {
 
       const saveData = {
         word: cleanWord,
-        video_id: videoId,
+        youtube_video_id: videoId || null,
         translation: translation || null,
         native_language: nativeLanguage || null,
         definition: definition || null,

@@ -5,6 +5,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import styles from "../styles/auth-card.module.css";
+import languni from "../assets/Languni.png";
 
 const RESEND_COOLDOWN = 60;
 
@@ -54,7 +55,7 @@ export const VerifyEmail = ({ token }) => {
     return (
       <div className={styles.acPage}>
         <div className={styles.acCard}>
-          <a href="/" className={styles.acLogo}>Lang<span>uni</span></a>
+          <a href="/" className={styles.acLogo}><img src={languni} alt="Languni" height="36" /></a>
           <p className={styles.acSubtitle}>{t('auth.verifyEmail.verifying')}</p>
         </div>
       </div>
@@ -65,7 +66,7 @@ export const VerifyEmail = ({ token }) => {
     return (
       <div className={styles.acPage}>
         <div className={styles.acCard}>
-          <a href="/" className={styles.acLogo}>Lang<span>uni</span></a>
+          <a href="/" className={styles.acLogo}><img src={languni} alt="Languni" height="36" /></a>
           <span className={styles.acIcon}>✅</span>
           <h1 className={styles.acTitle}>{t('auth.verifyEmail.successTitle')}</h1>
           <p className={styles.acSubtitle}>{t('auth.verifyEmail.successDesc')}</p>
@@ -81,7 +82,7 @@ export const VerifyEmail = ({ token }) => {
     return (
       <div className={styles.acPage}>
         <div className={styles.acCard}>
-          <a href="/" className={styles.acLogo}>Lang<span>uni</span></a>
+          <a href="/" className={styles.acLogo}><img src={languni} alt="Languni" height="36" /></a>
           <span className={styles.acIcon}>⏰</span>
           <h1 className={styles.acTitle}>{t('auth.verifyEmail.expiredTitle')}</h1>
           <p className={styles.acSubtitle}>{t('auth.verifyEmail.expiredDesc')}</p>
@@ -113,7 +114,7 @@ export const VerifyEmail = ({ token }) => {
   return (
     <div className={styles.acPage}>
       <div className={styles.acCard}>
-        <a href="/" className={styles.acLogo}>Lang<span>uni</span></a>
+        <a href="/" className={styles.acLogo}><img src={languni} alt="Languni" height="36" /></a>
         <span className={styles.acIcon}>❌</span>
         <h1 className={styles.acTitle}>{t('auth.verifyEmail.invalidTitle')}</h1>
         <p className={styles.acSubtitle}>{t('auth.verifyEmail.invalidDesc')}</p>

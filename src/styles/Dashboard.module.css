@@ -40,7 +40,7 @@
 /* ── Trending section ── */
 
 .trendingSection {
-  background: #fff;
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 16px;
   padding: 28px 28px 32px;
@@ -138,7 +138,7 @@
 /* ── Last liked section ── */
 
 .videoSection {
-  background: #fff;
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 16px;
   padding: 28px;

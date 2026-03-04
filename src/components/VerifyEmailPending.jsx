@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { Trans } from "react-i18next";
 import styles from "../styles/auth-card.module.css";
+import languni from "../assets/Languni.png";
 
 const RESEND_COOLDOWN = 60;
 
@@ -37,7 +38,7 @@ export const VerifyEmailPending = () => {
   return (
     <div className={styles.acPage}>
       <div className={styles.acCard}>
-        <a href="/" className={styles.acLogo}>Lang<span>uni</span></a>
+        <a href="/" className={styles.acLogo}><img src={languni} alt="Languni" height="36" /></a>
         <span className={styles.acIcon}>✉️</span>
         <h1 className={styles.acTitle}>{t('auth.verifyPending.title')}</h1>
         <p className={styles.acSubtitle}>

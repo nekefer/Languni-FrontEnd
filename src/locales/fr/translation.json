@@ -370,6 +370,9 @@
     "removeFailed": "Échec du retrait de la vidéo. Veuillez réessayer."
   },
   "player": {
+    "back": "Retour",
+    "save": "Sauvegarder",
+    "saved": "Sauvegardé",
     "captions": "Sous-titres",
     "captionHint": "Cliquez sur un sous-titre pour naviguer • Cliquez sur les mots pour les définitions",
     "loadingCaptions": "Chargement des sous-titres...",

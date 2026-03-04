@@ -11,7 +11,7 @@
 }
 
 .libraryHeader {
-  background: #fff;
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 16px;
   padding: 28px;
@@ -46,7 +46,7 @@
 /* Video Cards */
 
 .videoCard {
-  background: #fff;
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 14px;
   overflow: hidden;
@@ -202,7 +202,7 @@
   justify-content: center;
   padding: 64px 24px;
   text-align: center;
-  background: #fff;
+  background: var(--surface);
   border-radius: 16px;
   border: 2px dashed var(--border);
 }
@@ -263,7 +263,7 @@
   gap: 12px;
   margin: 24px 0;
   padding: 20px;
-  background: #fff;
+  background: var(--surface);
   border-radius: 12px;
   border: 1px solid var(--border);
 }

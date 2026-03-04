@@ -1,20 +1,25 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
+import { Home, Clapperboard, BookOpen, Settings, Menu, Sun, Moon } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
+import { useTheme } from "../contexts/ThemeContext";
 import { useOnboarding } from "../contexts/OnboardingContext";
 import { VerificationBanner } from "./VerificationBanner";
 import styles from "../styles/AppLayout.module.css";
+import languni from "../assets/Languni.png";
+import languniDark from "../assets/Languni dark.png";
 
 const NAV_LINKS = [
-  { to: "/dashboard", labelKey: "nav.appDashboard", icon: "🏠" },
-  { to: "/library",   labelKey: "nav.appLibrary",   icon: "🎬" },
-  { to: "/words",     labelKey: "nav.appVocabulary", icon: "📚" },
+  { to: "/dashboard", labelKey: "nav.appDashboard", Icon: Home },
+  { to: "/library",   labelKey: "nav.appLibrary",   Icon: Clapperboard },
+  { to: "/words",     labelKey: "nav.appVocabulary", Icon: BookOpen },
 ];
 
 export function AppLayout({ children }) {
   const { t } = useTranslation();
   const { user, logout } = useAuth();
+  const { isDark, toggleTheme } = useTheme();
   const { resetOnboardingState } = useOnboarding();
   const navigate = useNavigate();
 
@@ -63,12 +68,12 @@ export function AppLayout({ children }) {
       <aside className={`${styles.sidebar} ${sidebarOpen ? styles.sidebarOpen : ""}`}>
         <div className={styles.sidebarTop}>
           <Link to="/dashboard" className={styles.logo} onClick={() => setSidebarOpen(false)}>
-            Lang<span>uni</span>
+            <img src={isDark ? languniDark : languni} alt="Languni" height="36" />
           </Link>
         </div>
 
         <nav className={styles.sidebarNav}>
-          {NAV_LINKS.map(({ to, labelKey, icon }) => (
+          {NAV_LINKS.map(({ to, labelKey, Icon }) => (
             <Link
               key={to}
               to={to}
@@ -76,7 +81,7 @@ export function AppLayout({ children }) {
               activeProps={{ className: `${styles.navLink} ${styles.navLinkActive}` }}
               onClick={() => setSidebarOpen(false)}
             >
-              <span className={styles.navIcon}>{icon}</span>
+              <span className={styles.navIcon}><Icon size={18} /></span>
               <span>{t(labelKey)}</span>
             </Link>
           ))}
@@ -89,7 +94,7 @@ export function AppLayout({ children }) {
             activeProps={{ className: `${styles.navLink} ${styles.navLinkActive}` }}
             onClick={() => setSidebarOpen(false)}
           >
-            <span className={styles.navIcon}>⚙️</span>
+            <span className={styles.navIcon}><Settings size={18} /></span>
             <span>{t("nav.appSettings")}</span>
           </Link>
         </div>
@@ -109,15 +114,25 @@ export function AppLayout({ children }) {
             onClick={() => setSidebarOpen((v) => !v)}
             aria-label="Open navigation"
           >
-            ☰
-          </button>
+            <Menu size={22} />
+</button>
 
           {/* Logo — mobile only (sidebar hidden on mobile) */}
           <Link to="/dashboard" className={styles.topBarLogo}>
-            Lang<span>uni</span>
+            <img src={isDark ? languniDark : languni} alt="Languni" height="36" />
           </Link>
 
           <div className={styles.topBarSpacer} />
+
+          {/* Theme toggle */}
+          <button
+            className={styles.themeBtn}
+            onClick={toggleTheme}
+            title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+            aria-label="Toggle theme"
+          >
+            {isDark ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
 
           {/* Profile avatar + dropdown */}
           <div className={styles.avatarWrap} ref={dropdownRef}>

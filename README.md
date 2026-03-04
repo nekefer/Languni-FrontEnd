@@ -1,6 +1,6 @@
-# Linguini Frontend
+# Languni Frontend
 
-React frontend for Linguini - a language learning app that helps people learn **English, Spanish, or French** through interactive YouTube videos and songs.
+React frontend for Languni - a language learning app that helps people learn **English, Spanish, or French** through interactive YouTube videos and songs.
 
 ## Features
 
@@ -27,7 +27,7 @@ React frontend for Linguini - a language learning app that helps people learn **
 
 1. **Clone and navigate to the frontend directory**
    ```bash
-   cd Linguini-FrontEnd
+   cd Languni-Frontend
    ```
 
 2. **Install dependencies**
