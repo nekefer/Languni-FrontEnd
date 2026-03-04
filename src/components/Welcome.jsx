@@ -230,7 +230,7 @@ export default function Welcome() {
             <div className={s.featCard}>
               <div className={s.featIcon}>
                 <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M14 3l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z" />
+                  <path d="M7 4h14a2 2 0 0 1 2 2v17l-7-4-7 4V6a2 2 0 0 1 2-2z" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
               <h3>{t('landing.feat3Title')}</h3>
