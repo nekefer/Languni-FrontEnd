@@ -1,21 +1,16 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { Home, Clapperboard, BookOpen, Settings, Menu, Sun, Moon } from "lucide-react";
+import { Home, Clapperboard, BookOpen, Settings, Menu, Sun, Moon, Flame, Sparkles, Lock } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { useTheme } from "../contexts/ThemeContext";
 import { useOnboarding } from "../contexts/OnboardingContext";
 import { VerificationBanner } from "./VerificationBanner";
+import { PremiumGate } from "./PremiumGate";
 import { getUserInitials } from "../utils/avatar";
 import styles from "../styles/AppLayout.module.css";
 import languni from "../assets/Languni.png";
 import languniDark from "../assets/Languni dark.png";
-
-const NAV_LINKS = [
-  { to: "/dashboard", labelKey: "nav.appDashboard", Icon: Home },
-  { to: "/library",   labelKey: "nav.appLibrary",   Icon: Clapperboard },
-  { to: "/words",     labelKey: "nav.appVocabulary", Icon: BookOpen },
-];
 
 export function AppLayout({ children }) {
   const { t } = useTranslation();
@@ -26,6 +21,7 @@ export function AppLayout({ children }) {
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [gateOpen, setGateOpen] = useState(false);
   const dropdownRef = useRef(null);
 
   const initials = getUserInitials(user);
@@ -36,6 +32,8 @@ export function AppLayout({ children }) {
     resetOnboardingState();
     navigate({ to: "/" });
   };
+
+  const closeSidebar = () => setSidebarOpen(false);
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -50,9 +48,7 @@ export function AppLayout({ children }) {
 
   // Close sidebar on resize to desktop
   useEffect(() => {
-    const handler = () => {
-      if (window.innerWidth >= 768) setSidebarOpen(false);
-    };
+    const handler = () => { if (window.innerWidth >= 768) setSidebarOpen(false); };
     window.addEventListener("resize", handler);
     return () => window.removeEventListener("resize", handler);
   }, []);
@@ -63,24 +59,72 @@ export function AppLayout({ children }) {
       {/* ── Sidebar ── */}
       <aside className={`${styles.sidebar} ${sidebarOpen ? styles.sidebarOpen : ""}`}>
         <div className={styles.sidebarTop}>
-          <Link to="/dashboard" className={styles.logo} onClick={() => setSidebarOpen(false)}>
+          <Link to="/dashboard" className={styles.logo} onClick={closeSidebar}>
             <img src={isDark ? languniDark : languni} alt="Languni" height="36" />
           </Link>
         </div>
 
         <nav className={styles.sidebarNav}>
-          {NAV_LINKS.map(({ to, labelKey, Icon }) => (
+          <Link
+            to="/dashboard"
+            className={styles.navLink}
+            activeProps={{ className: `${styles.navLink} ${styles.navLinkActive}` }}
+            onClick={closeSidebar}
+          >
+            <span className={styles.navIcon}><Home size={18} /></span>
+            <span>{t("nav.appDashboard")}</span>
+          </Link>
+
+          <Link
+            to="/trending"
+            className={styles.navLink}
+            activeProps={{ className: `${styles.navLink} ${styles.navLinkActive}` }}
+            onClick={closeSidebar}
+          >
+            <span className={styles.navIcon}><Flame size={18} /></span>
+            <span>{t("nav.appTrending")}</span>
+          </Link>
+
+          {isPremium ? (
             <Link
-              key={to}
-              to={to}
+              to="/recommended"
               className={styles.navLink}
               activeProps={{ className: `${styles.navLink} ${styles.navLinkActive}` }}
-              onClick={() => setSidebarOpen(false)}
+              onClick={closeSidebar}
             >
-              <span className={styles.navIcon}><Icon size={18} /></span>
-              <span>{t(labelKey)}</span>
+              <span className={styles.navIcon}><Sparkles size={18} /></span>
+              <span>{t("nav.appForYou")}</span>
             </Link>
-          ))}
+          ) : (
+            <button
+              className={`${styles.navLink} ${styles.navLinkLocked}`}
+              onClick={() => { closeSidebar(); setGateOpen(true); }}
+            >
+              <span className={styles.navIcon}><Sparkles size={18} /></span>
+              <span>{t("nav.appForYou")}</span>
+              <Lock size={13} className={styles.lockIcon} />
+            </button>
+          )}
+
+          <Link
+            to="/library"
+            className={styles.navLink}
+            activeProps={{ className: `${styles.navLink} ${styles.navLinkActive}` }}
+            onClick={closeSidebar}
+          >
+            <span className={styles.navIcon}><Clapperboard size={18} /></span>
+            <span>{t("nav.appLibrary")}</span>
+          </Link>
+
+          <Link
+            to="/words"
+            className={styles.navLink}
+            activeProps={{ className: `${styles.navLink} ${styles.navLinkActive}` }}
+            onClick={closeSidebar}
+          >
+            <span className={styles.navIcon}><BookOpen size={18} /></span>
+            <span>{t("nav.appVocabulary")}</span>
+          </Link>
         </nav>
 
         <div className={styles.sidebarBottom}>
@@ -88,7 +132,7 @@ export function AppLayout({ children }) {
             to="/settings"
             className={styles.navLink}
             activeProps={{ className: `${styles.navLink} ${styles.navLinkActive}` }}
-            onClick={() => setSidebarOpen(false)}
+            onClick={closeSidebar}
           >
             <span className={styles.navIcon}><Settings size={18} /></span>
             <span>{t("nav.appSettings")}</span>
@@ -98,29 +142,26 @@ export function AppLayout({ children }) {
 
       {/* Mobile overlay */}
       {sidebarOpen && (
-        <div className={styles.overlay} onClick={() => setSidebarOpen(false)} />
+        <div className={styles.overlay} onClick={closeSidebar} />
       )}
 
       {/* ── Main (top bar + content) ── */}
       <div className={styles.appMain}>
         <header className={styles.topBar}>
-          {/* Hamburger — mobile only */}
           <button
             className={styles.hamburger}
             onClick={() => setSidebarOpen((v) => !v)}
             aria-label="Open navigation"
           >
             <Menu size={22} />
-</button>
+          </button>
 
-          {/* Logo — mobile only (sidebar hidden on mobile) */}
           <Link to="/dashboard" className={styles.topBarLogo}>
             <img src={isDark ? languniDark : languni} alt="Languni" height="36" />
           </Link>
 
           <div className={styles.topBarSpacer} />
 
-          {/* Theme toggle */}
           <button
             className={styles.themeBtn}
             onClick={toggleTheme}
@@ -130,7 +171,6 @@ export function AppLayout({ children }) {
             {isDark ? <Sun size={18} /> : <Moon size={18} />}
           </button>
 
-          {/* Profile avatar + dropdown */}
           <div className={styles.avatarWrap} ref={dropdownRef}>
             <button
               className={styles.avatar}
@@ -170,6 +210,7 @@ export function AppLayout({ children }) {
         </main>
       </div>
 
+      {gateOpen && <PremiumGate onClose={() => setGateOpen(false)} />}
     </div>
   );
 }

@@ -21,6 +21,8 @@
     "login": "Log in",
     "getStarted": "Get started",
     "appDashboard": "Dashboard",
+    "appTrending": "Trending",
+    "appForYou": "For You",
     "appLibrary": "My Library",
     "appVocabulary": "My Vocabulary",
     "appSettings": "Settings",
@@ -302,6 +304,10 @@
     "loadingTrending": "Loading trending videos...",
     "loadMore": "Load More",
     "loading": "Loading...",
+    "forYou": "For You",
+    "loadingForYou": "Personalizing your feed...",
+    "seeAll": "See all",
+    "viewAllTrending": "View all trending",
     "lastLikedVideo": "Your Last Liked Video",
     "loadingLastLiked": "Loading your last liked video...",
     "signInForYouTube": "Sign in with Google to view YouTube data",
@@ -436,6 +442,27 @@
     "videoRemoved": "Video removed from library",
     "videoSaved": "Video saved to library",
     "saveFailed": "Failed to update library"
+  },
+  "premium": {
+    "gateTitle": "Unlock personalized learning",
+    "gateSubtitle": "Get a curated feed of {{lang}} videos matched to your level and interests — updated every week.",
+    "gateSubtitleLevel": "Videos picked for your {{level}} level",
+    "benefit1": "Weekly curated videos matched to your level",
+    "benefit2": "Filtered by your interests and topics",
+    "benefit3": "Unlimited videos per day",
+    "benefit4": "Priority support",
+    "yearlyNote": "or $50/yr — save 2 months",
+    "upgradeBtn": "Upgrade to Premium — $5/mo",
+    "laterBtn": "Maybe later",
+    "unlockForYou": "Unlock your personalized feed",
+    "teaserLabel": "Premium"
+  },
+  "trending": {
+    "subtitle": "What the world is watching right now"
+  },
+  "recommended": {
+    "subtitle": "{{lang}} videos picked for your level and interests",
+    "refreshNote": "Refreshes weekly"
   },
   "notFound": {
     "title": "Page Not Found",

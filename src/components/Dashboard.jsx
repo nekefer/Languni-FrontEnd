@@ -1,23 +1,20 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { Flame, Play, RefreshCw } from "lucide-react";
+import { Flame, Sparkles, Lock, ArrowRight } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
-import { googleLogin } from "../api/auth";
-import { getLastLikedVideo } from "../api/youtube";
 import useTrendingStore from "../stores/trendingStore";
+import { useEffect } from "react";
 import VideoCard from "./VideoCard";
+import { PremiumGate } from "./PremiumGate";
 import { Spinner } from "../ui/Spinner";
-import { createLogger } from "../utils/logger";
+import { useCurated } from "../hooks/useCurated";
 import styles from "../styles/Dashboard.module.css";
-
-const logger = createLogger("dashboard");
 
 export const Dashboard = () => {
   const { t } = useTranslation();
-  const { user } = useAuth();
-  const [lastLikedVideo, setLastLikedVideo] = useState(null);
-  const [videoLoading, setVideoLoading] = useState(true);
-  const [videoError, setVideoError] = useState(null);
+  const { user, isPremium } = useAuth();
+  const [gateOpen, setGateOpen] = useState(false);
 
   const {
     videos,
@@ -30,19 +27,7 @@ export const Dashboard = () => {
     changeRegion,
   } = useTrendingStore();
 
-  const fetchLastLikedVideo = async () => {
-    try {
-      setVideoLoading(true);
-      setVideoError(null);
-      const video = await getLastLikedVideo();
-      setLastLikedVideo(video);
-    } catch (error) {
-      logger.error("Failed to fetch last liked video", error);
-      setVideoError(error.response?.data?.detail || "Failed to fetch last liked video");
-    } finally {
-      setVideoLoading(false);
-    }
-  };
+  const { videos: curated, loading: curatedLoading, error: curatedError } = useCurated();
 
   useEffect(() => {
     if (videos.length === 0) {
@@ -50,148 +35,125 @@ export const Dashboard = () => {
     }
   }, [fetchTrending, region, videos.length]);
 
-  useEffect(() => {
-    if (user?.auth_method === "google" || user?.auth_method === "both") {
-      fetchLastLikedVideo();
-    } else {
-      setVideoLoading(false);
-      setVideoError(t('dashboard.googleOnly'));
-    }
-  }, [user]);
-
   return (
     <div className={styles.dashboardContainer}>
       <main className={styles.dashboardBody}>
         <div className={styles.dashboardGreeting}>
-          <h2>{t('dashboard.welcome', { name: user.first_name })}</h2>
+          <h2>{t("dashboard.welcome", { name: user.first_name })}</h2>
           <p>{user.email}</p>
         </div>
 
-        {/* Trending Videos */}
-        <div className={styles.trendingSection}>
-          <div className={styles.trendingHeader}>
-            <h3><Flame size={18} /> {t('dashboard.trendingVideos')}</h3>
-            <div className={styles.filters}>
-              <label>
-                {t('dashboard.regionLabel')}:
+        {/* ── Trending ── */}
+        <div className={styles.section}>
+          <div className={styles.sectionHeader}>
+            <h3><Flame size={18} /> {t("dashboard.trendingVideos")}</h3>
+            <div className={styles.sectionHeaderRight}>
+              <label className={styles.regionLabel}>
+                {t("dashboard.regionLabel")}:
                 <select
                   value={region}
                   onChange={(e) => changeRegion(e.target.value)}
                   className={styles.regionSelect}
                 >
-                  <option value="US">{t('dashboard.regionUS')}</option>
-                  <option value="GB">{t('dashboard.regionGB')}</option>
-                  <option value="CA">{t('dashboard.regionCA')}</option>
-                  <option value="AU">{t('dashboard.regionAU')}</option>
-                  <option value="DE">{t('dashboard.regionDE')}</option>
-                  <option value="FR">{t('dashboard.regionFR')}</option>
-                  <option value="JP">{t('dashboard.regionJP')}</option>
-                  <option value="KR">{t('dashboard.regionKR')}</option>
-                  <option value="IN">{t('dashboard.regionIN')}</option>
-                  <option value="BR">{t('dashboard.regionBR')}</option>
+                  <option value="US">{t("dashboard.regionUS")}</option>
+                  <option value="GB">{t("dashboard.regionGB")}</option>
+                  <option value="CA">{t("dashboard.regionCA")}</option>
+                  <option value="AU">{t("dashboard.regionAU")}</option>
+                  <option value="DE">{t("dashboard.regionDE")}</option>
+                  <option value="FR">{t("dashboard.regionFR")}</option>
+                  <option value="JP">{t("dashboard.regionJP")}</option>
+                  <option value="KR">{t("dashboard.regionKR")}</option>
+                  <option value="IN">{t("dashboard.regionIN")}</option>
+                  <option value="BR">{t("dashboard.regionBR")}</option>
                 </select>
               </label>
+              <Link to="/trending" className={styles.seeAll}>
+                {t("dashboard.seeAll")} <ArrowRight size={14} />
+              </Link>
             </div>
           </div>
 
           {loading && videos.length === 0 && (
             <div className={styles.loadingMessage}>
               <Spinner size={24} />
-              <span>{t('dashboard.loadingTrending')}</span>
+              <span>{t("dashboard.loadingTrending")}</span>
             </div>
           )}
 
           {error && (
-            <div className={styles.errorMessage}>
-              <p>{error}</p>
-            </div>
+            <div className={styles.errorMessage}><p>{error}</p></div>
           )}
 
           {videos.length > 0 && (
             <>
               <div className={styles.videoGrid}>
-                {videos.map((video) => (
+                {videos.slice(0, 8).map((video) => (
                   <VideoCard key={video.video_id} video={video} />
                 ))}
               </div>
-              {hasMore && (
-                <button
-                  className={styles.loadMoreButton}
-                  onClick={loadMore}
-                  disabled={loading}
-                >
-                  {loading ? (
-                    <><Spinner size={16} /> {t('dashboard.loading')}</>
-                  ) : (
-                    t('dashboard.loadMore')
-                  )}
-                </button>
-              )}
+              <Link to="/trending" className={styles.viewAllBtn}>
+                {t("dashboard.viewAllTrending")} <ArrowRight size={15} />
+              </Link>
             </>
           )}
         </div>
 
-        {/* Last Liked Video (Google users only) */}
-        {(user.auth_method === "google" || user.auth_method === "both") && (
-          <div className={styles.videoSection}>
-            <h3>{t('dashboard.lastLikedVideo')}</h3>
-
-            {videoLoading && (
-              <div className={styles.loadingMessage}>
-                <Spinner size={24} />
-                <span>{t('dashboard.loadingLastLiked')}</span>
-              </div>
-            )}
-
-            {videoError && (
-              <div className={styles.errorMessage}>
-                <p>{videoError}</p>
-                {user.auth_method !== "google" && user.auth_method !== "both" && (
-                  <button className={styles.googleSigninButton} onClick={googleLogin}>
-                    {t('dashboard.signInForYouTube')}
-                  </button>
-                )}
-              </div>
-            )}
-
-            {lastLikedVideo && (
-              <div className={styles.videoContent}>
-                {lastLikedVideo.thumbnails?.medium?.url && (
-                  <img
-                    src={lastLikedVideo.thumbnails.medium.url}
-                    alt={lastLikedVideo.title}
-                    className={styles.videoThumbnail}
-                  />
-                )}
-                <div className={styles.videoDetails}>
-                  <h4>{lastLikedVideo.title}</h4>
-                  <p className={styles.videoDescription}>
-                    {lastLikedVideo.description?.substring(0, 200) ?? t('dashboard.noDescription')}...
-                  </p>
-                  <a
-                    href={`https://www.youtube.com/watch?v=${lastLikedVideo.video_id}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={styles.youtubeLink}
-                  >
-                    <Play size={13} /> {t('dashboard.watchOnYouTube')}
-                  </a>
-                </div>
-              </div>
-            )}
-
-            {!videoLoading && !videoError && !lastLikedVideo && (
-              <p className={styles.emptyText}>{t('dashboard.noLikedVideos')}</p>
-            )}
-
-            {lastLikedVideo && (
-              <button className={styles.refreshButton} onClick={fetchLastLikedVideo}>
-                <RefreshCw size={14} /> {t('dashboard.refresh')}
-              </button>
-            )}
+        {/* ── For You ── */}
+        <div className={styles.section}>
+          <div className={styles.sectionHeader}>
+            <h3>
+              <Sparkles size={18} /> {t("dashboard.forYou")}
+              {!isPremium && <span className={styles.premiumBadge}>Premium</span>}
+            </h3>
           </div>
-        )}
+
+          {isPremium ? (
+            <>
+              {curatedLoading && (
+                <div className={styles.loadingMessage}>
+                  <Spinner size={24} />
+                  <span>{t("dashboard.loadingForYou")}</span>
+                </div>
+              )}
+              {curatedError && (
+                <div className={styles.errorMessage}><p>{curatedError}</p></div>
+              )}
+              {curated.length > 0 && (
+                <div className={styles.videoGrid}>
+                  {curated.map((video) => (
+                    <VideoCard key={video.video_id} video={video} />
+                  ))}
+                </div>
+              )}
+            </>
+          ) : (
+            <div className={styles.teaserGrid}>
+              {[0, 1, 2].map((i) => (
+                <button
+                  key={i}
+                  className={styles.lockedCard}
+                  onClick={() => setGateOpen(true)}
+                  aria-label={t("premium.unlockForYou")}
+                >
+                  <div className={styles.lockedThumb}>
+                    <Lock size={22} />
+                  </div>
+                  <div className={styles.lockedInfo}>
+                    <span className={styles.lockedBadge}>
+                      <Sparkles size={11} /> Premium
+                    </span>
+                    <span className={styles.lockedLabel}>
+                      {t("premium.teaserLabel")}
+                    </span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </main>
+
+      {gateOpen && <PremiumGate onClose={() => setGateOpen(false)} />}
     </div>
   );
 };

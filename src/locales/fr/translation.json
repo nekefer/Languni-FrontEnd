@@ -21,6 +21,8 @@
     "login": "Connexion",
     "getStarted": "Commencer",
     "appDashboard": "Tableau de bord",
+    "appTrending": "Tendances",
+    "appForYou": "Pour vous",
     "appLibrary": "Ma bibliothèque",
     "appVocabulary": "Mon vocabulaire",
     "appSettings": "Paramètres",
@@ -302,6 +304,10 @@
     "loadingTrending": "Chargement des vidéos tendance...",
     "loadMore": "Charger plus",
     "loading": "Chargement...",
+    "forYou": "Pour vous",
+    "loadingForYou": "Personnalisation de votre feed...",
+    "seeAll": "Voir tout",
+    "viewAllTrending": "Voir toutes les tendances",
     "lastLikedVideo": "Votre dernière vidéo aimée",
     "loadingLastLiked": "Chargement de votre dernière vidéo aimée...",
     "signInForYouTube": "Connectez-vous avec Google pour voir vos données YouTube",
@@ -436,6 +442,27 @@
     "videoRemoved": "Vidéo retirée de la bibliothèque",
     "videoSaved": "Vidéo sauvegardée dans la bibliothèque",
     "saveFailed": "Échec de la mise à jour de la bibliothèque"
+  },
+  "premium": {
+    "gateTitle": "Débloquez l'apprentissage personnalisé",
+    "gateSubtitle": "Obtenez un feed de vidéos en {{lang}} adapté à votre niveau et vos intérêts — mis à jour chaque semaine.",
+    "gateSubtitleLevel": "Vidéos sélectionnées pour votre niveau {{level}}",
+    "benefit1": "Vidéos hebdomadaires adaptées à votre niveau",
+    "benefit2": "Filtrées selon vos centres d'intérêt",
+    "benefit3": "Vidéos illimitées par jour",
+    "benefit4": "Support prioritaire",
+    "yearlyNote": "ou 50 $/an — économisez 2 mois",
+    "upgradeBtn": "Passer Premium — 5 $/mois",
+    "laterBtn": "Peut-être plus tard",
+    "unlockForYou": "Débloquez votre feed personnalisé",
+    "teaserLabel": "Premium"
+  },
+  "trending": {
+    "subtitle": "Ce que le monde regarde en ce moment"
+  },
+  "recommended": {
+    "subtitle": "Vidéos en {{lang}} choisies pour votre niveau et vos intérêts",
+    "refreshNote": "Actualisé chaque semaine"
   },
   "notFound": {
     "title": "Page introuvable",

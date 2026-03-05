@@ -21,6 +21,8 @@
     "login": "Iniciar sesión",
     "getStarted": "Comenzar",
     "appDashboard": "Panel",
+    "appTrending": "Tendencias",
+    "appForYou": "Para ti",
     "appLibrary": "Mi biblioteca",
     "appVocabulary": "Mi vocabulario",
     "appSettings": "Configuración",
@@ -302,6 +304,10 @@
     "loadingTrending": "Cargando videos en tendencia...",
     "loadMore": "Cargar más",
     "loading": "Cargando...",
+    "forYou": "Para ti",
+    "loadingForYou": "Personalizando tu feed...",
+    "seeAll": "Ver todo",
+    "viewAllTrending": "Ver todo lo que es tendencia",
     "lastLikedVideo": "Tu último video con 'Me gusta'",
     "loadingLastLiked": "Cargando tu último video con 'Me gusta'...",
     "signInForYouTube": "Inicia sesión con Google para ver tus datos de YouTube",
@@ -436,6 +442,27 @@
     "videoRemoved": "Video eliminado de la biblioteca",
     "videoSaved": "Video guardado en la biblioteca",
     "saveFailed": "Error al actualizar la biblioteca"
+  },
+  "premium": {
+    "gateTitle": "Desbloquea el aprendizaje personalizado",
+    "gateSubtitle": "Obtén un feed de videos en {{lang}} adaptados a tu nivel e intereses — actualizado cada semana.",
+    "gateSubtitleLevel": "Videos seleccionados para tu nivel {{level}}",
+    "benefit1": "Videos semanales adaptados a tu nivel",
+    "benefit2": "Filtrados según tus intereses",
+    "benefit3": "Videos ilimitados por día",
+    "benefit4": "Soporte prioritario",
+    "yearlyNote": "o $50/año — ahorra 2 meses",
+    "upgradeBtn": "Actualizar a Premium — $5/mes",
+    "laterBtn": "Quizás más tarde",
+    "unlockForYou": "Desbloquea tu feed personalizado",
+    "teaserLabel": "Premium"
+  },
+  "trending": {
+    "subtitle": "Lo que el mundo está viendo ahora mismo"
+  },
+  "recommended": {
+    "subtitle": "Videos en {{lang}} elegidos para tu nivel e intereses",
+    "refreshNote": "Se actualiza semanalmente"
   },
   "notFound": {
     "title": "Página no encontrada",
