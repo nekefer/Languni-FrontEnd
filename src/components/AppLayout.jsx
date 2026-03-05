@@ -6,6 +6,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { useTheme } from "../contexts/ThemeContext";
 import { useOnboarding } from "../contexts/OnboardingContext";
 import { VerificationBanner } from "./VerificationBanner";
+import { getUserInitials } from "../utils/avatar";
 import styles from "../styles/AppLayout.module.css";
 import languni from "../assets/Languni.png";
 import languniDark from "../assets/Languni dark.png";
@@ -27,12 +28,7 @@ export function AppLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  const initials = user
-    ? (
-        (user.first_name?.[0] ?? "") +
-        (user.last_name?.[0]  ?? "")
-      ).toUpperCase() || user.email?.[0]?.toUpperCase() || "?"
-    : "?";
+  const initials = getUserInitials(user);
 
   const handleLogout = async () => {
     setDropdownOpen(false);

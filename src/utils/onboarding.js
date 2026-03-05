@@ -3,9 +3,9 @@
  */
 
 export const LANGUAGES = [
-  { code: 'en', name: 'English', flag: '🇬🇧' },
-  { code: 'fr', name: 'French', flag: '🇫🇷' },
-  { code: 'es', name: 'Spanish', flag: '🇪🇸' },
+  { code: 'en', name: 'English',  nativeName: 'English',  flag: '🇬🇧' },
+  { code: 'fr', name: 'French',   nativeName: 'Français', flag: '🇫🇷' },
+  { code: 'es', name: 'Spanish',  nativeName: 'Español',  flag: '🇪🇸' },
 ];
 
 export const TOPICS = [

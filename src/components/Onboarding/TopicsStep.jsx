@@ -19,11 +19,9 @@ export const TopicsStep = ({ value = [], onChange }) => {
       <p className="step-description">
         {t('onboarding.topics.subtitle')}
       </p>
-      {value.length > 0 && (
-        <div className="selection-count">
-          {t('onboarding.topics.selected', { count: value.length })}
-        </div>
-      )}
+      <div className="selection-count">
+        {t('onboarding.topics.selected', { count: value.length })}
+      </div>
       <div className="topics-grid">
         {TOPICS.map((topic) => (
           <button
