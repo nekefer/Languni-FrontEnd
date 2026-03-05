@@ -27,8 +27,8 @@ export const AuthProvider = ({ children }) => {
 
   // Check if user is authenticated on app start.
   // Token refresh is handled transparently by the axios interceptor.
-  const checkAuth = useCallback(async () => {
-    setLoading(true);
+  const checkAuth = useCallback(async (silent = false) => {
+    if (!silent) setLoading(true);
     setError(null);
 
     try {
@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }) => {
       setUser(null);
       return null;
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   }, []);
 
@@ -81,7 +81,7 @@ export const AuthProvider = ({ children }) => {
   // so the verification banner disappears automatically after clicking the email link in another tab
   useEffect(() => {
     if (!user || user.is_verified) return;
-    const handleFocus = () => checkAuth();
+    const handleFocus = () => checkAuth(true);
     window.addEventListener("focus", handleFocus);
     return () => window.removeEventListener("focus", handleFocus);
   }, [user, checkAuth]);

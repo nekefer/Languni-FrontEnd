@@ -6,7 +6,7 @@ import { OnboardingProvider } from "./contexts/OnboardingContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import "./styles/app.css";
 
-const router = createRouter({ routeTree });
+const router = createRouter({ routeTree, defaultPreload: "intent" });
 
 export default function App() {
   return (

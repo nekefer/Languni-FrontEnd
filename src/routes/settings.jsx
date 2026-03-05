@@ -1,6 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { lazy, Suspense } from "react";
 import { ProtectedRoute } from "../components/ProtectedRoute";
-import Settings from "../components/Settings";
+import PageLoader from "../components/PageLoader";
+
+const Settings = lazy(() => import("../components/Settings"));
 
 export const Route = createFileRoute("/settings")({
   component: SettingsPage,
@@ -9,7 +12,9 @@ export const Route = createFileRoute("/settings")({
 function SettingsPage() {
   return (
     <ProtectedRoute>
-      <Settings />
+      <Suspense fallback={<PageLoader />}>
+        <Settings />
+      </Suspense>
     </ProtectedRoute>
   );
 }

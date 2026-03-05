@@ -1,5 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ResetPassword } from "../components/ResetPassword";
+import { lazy, Suspense } from "react";
+import PageLoader from "../components/PageLoader";
+
+const ResetPassword = lazy(() =>
+  import("../components/ResetPassword").then((m) => ({ default: m.ResetPassword }))
+);
 
 export const Route = createFileRoute("/reset-password")({
   validateSearch: (search) => ({
@@ -7,6 +12,10 @@ export const Route = createFileRoute("/reset-password")({
   }),
   component: function ResetPasswordRoute() {
     const { token } = Route.useSearch();
-    return <ResetPassword token={token} />;
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <ResetPassword token={token} />
+      </Suspense>
+    );
   },
 });

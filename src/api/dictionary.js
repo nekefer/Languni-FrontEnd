@@ -1,4 +1,3 @@
-import expandContractions from "@stdlib/nlp-expand-contractions";
 import config from "../config";
 
 const API_URL = config.apiUrl;
@@ -79,9 +78,6 @@ class DictionaryService {
     }
 
     if (/[''‹›`´]/.test(word)) {
-      expandContractions(word);
-
-      console.log(expandContractions(word))
       return { valid: true, type: "contraction", word: word };
     }
 

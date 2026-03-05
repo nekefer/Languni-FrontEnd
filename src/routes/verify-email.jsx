@@ -1,5 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { VerifyEmail } from "../components/VerifyEmail";
+import { lazy, Suspense } from "react";
+import PageLoader from "../components/PageLoader";
+
+const VerifyEmail = lazy(() =>
+  import("../components/VerifyEmail").then((m) => ({ default: m.VerifyEmail }))
+);
 
 export const Route = createFileRoute("/verify-email")({
   validateSearch: (search) => ({
@@ -7,6 +12,10 @@ export const Route = createFileRoute("/verify-email")({
   }),
   component: function VerifyEmailRoute() {
     const { token } = Route.useSearch();
-    return <VerifyEmail token={token} />;
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <VerifyEmail token={token} />
+      </Suspense>
+    );
   },
 });

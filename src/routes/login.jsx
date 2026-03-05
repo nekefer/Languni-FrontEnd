@@ -1,6 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Login } from "../components/Login";
+import { lazy, Suspense } from "react";
+import PageLoader from "../components/PageLoader";
+
+const Login = lazy(() =>
+  import("../components/Login").then((m) => ({ default: m.Login }))
+);
 
 export const Route = createFileRoute("/login")({
-  component: Login,
+  component: () => (
+    <Suspense fallback={<PageLoader />}>
+      <Login />
+    </Suspense>
+  ),
 });

@@ -1,7 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { lazy, Suspense } from "react";
 import { ProtectedRoute } from "../../components/ProtectedRoute";
 import { RequireOnboarding } from "../../components/RequireOnboarding";
-import { WordDetail } from "../../components/WordDetail";
+import PageLoader from "../../components/PageLoader";
+
+const WordDetail = lazy(() =>
+  import("../../components/WordDetail").then((m) => ({ default: m.WordDetail }))
+);
 
 export const Route = createFileRoute("/word/$wordId")({
   component: WordDetailRoute,
@@ -13,7 +18,9 @@ function WordDetailRoute() {
   return (
     <ProtectedRoute>
       <RequireOnboarding>
-        <WordDetail word={decodeURIComponent(wordId)} />
+        <Suspense fallback={<PageLoader />}>
+          <WordDetail word={decodeURIComponent(wordId)} />
+        </Suspense>
       </RequireOnboarding>
     </ProtectedRoute>
   );
