@@ -296,7 +296,7 @@ export default function Welcome() {
               </div>
               <ul className={s.pList}>
                 <li className={s.pYes}>{t('landing.premiumFeat1')}</li>
-                <li className={s.pYes}>{t('landing.premiumFeat2')}<span className={s.pSoon}>{t('landing.comingSoon')}</span></li>
+                <li className={s.pYes}>{t('landing.premiumFeat2')}</li>
                 <li className={s.pYes}>{t('landing.premiumFeat3')}<span className={s.pSoon}>{t('landing.comingSoon')}</span></li>
                 <li className={s.pYes}>{t('landing.premiumFeat4')}<span className={s.pSoon}>{t('landing.comingSoon')}</span></li>
                 <li className={s.pYes}>{t('landing.premiumFeat5')}</li>

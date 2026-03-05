@@ -6,7 +6,8 @@ import { Zap } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { updateProfile, changePassword, deleteAccount } from "../api/user";
 import preferencesService from "../api/preferences";
-import { createPortal, getSubscription } from "../api/billing";
+import { createPortal, getSubscription, createCheckout } from "../api/billing";
+import config from "../config";
 import { getUserInitials } from "../utils/avatar";
 import { LANGUAGES, LEVELS, TOPICS } from "../utils/onboarding";
 import styles from "../styles/Settings.module.css";
@@ -49,6 +50,9 @@ export default function Settings() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
+  // ── Checkout ──
+  const [checkoutLoading, setCheckoutLoading] = useState(null);
+
   useEffect(() => {
     Promise.all([
       preferencesService.getPreferences(),
@@ -81,6 +85,10 @@ export default function Settings() {
 
   const handlePrefsSave = async () => {
     if (!prefs) return;
+    if (prefs.native_language === prefs.learning_language) {
+      toast.error("Native language and language to learn can't be the same.");
+      return;
+    }
     setPrefsSaving(true);
     try {
       await preferencesService.updatePreferences(prefs);
@@ -117,6 +125,23 @@ export default function Settings() {
       window.location.href = url;
     } catch {
       toast.error("Could not open billing portal");
+    }
+  };
+
+  const handleUpgrade = async (billing = "monthly") => {
+    const variantId = billing === "yearly" ? config.lsYearlyVariantId : config.lsMonthlyVariantId;
+    if (!variantId) return;
+    try {
+      setCheckoutLoading(billing);
+      const checkoutUrl = await createCheckout(variantId);
+      window.location.href = checkoutUrl;
+    } catch (err) {
+      setCheckoutLoading(null);
+      if (err?.response?.status === 403) {
+        toast.error("Please verify your email address before upgrading.");
+      } else {
+        toast.error("Could not start checkout. Please try again.");
+      }
     }
   };
 
@@ -212,7 +237,7 @@ export default function Settings() {
             <div className={styles.prefRow}>
               <label className={styles.label}>Language to learn</label>
               <div className={styles.chipGroup}>
-                {LANGUAGES.filter((l) => l.code !== prefs.native_language).map(({ code, nativeName }) => (
+                {LANGUAGES.map(({ code, nativeName }) => (
                   <button
                     key={code}
                     type="button"
@@ -339,8 +364,12 @@ export default function Settings() {
             Manage subscription
           </button>
         ) : (
-          <button className={styles.upgradeBtn} onClick={() => navigate({ to: "/" })}>
-            <Zap size={14} /> Upgrade to Premium
+          <button
+            className={styles.upgradeBtn}
+            onClick={() => handleUpgrade("monthly")}
+            disabled={checkoutLoading !== null}
+          >
+            <Zap size={14} /> {checkoutLoading ? "Loading…" : "Upgrade to Premium"}
           </button>
         )}
       </section>
