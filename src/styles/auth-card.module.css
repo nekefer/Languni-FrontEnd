@@ -1,0 +1,235 @@
+/* ============================================
+   AUTH CARD MODULE — ForgotPassword, ResetPassword,
+   VerifyEmail, VerifyEmailPending
+   ============================================ */
+
+.acPage {
+  min-height: 100vh;
+  background: var(--pri-faint);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  font-family: var(--body);
+  position: relative;
+  overflow: hidden;
+}
+
+.acPage::before {
+  content: '';
+  position: fixed;
+  width: 500px;
+  height: 500px;
+  top: -200px;
+  right: -200px;
+  background: rgba(42, 176, 144, 0.06);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.acPage::after {
+  content: '';
+  position: fixed;
+  width: 360px;
+  height: 360px;
+  bottom: -160px;
+  left: -160px;
+  background: rgba(42, 176, 144, 0.05);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.acCard {
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 52px 44px;
+  max-width: 460px;
+  width: 100%;
+  text-align: center;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+  position: relative;
+  z-index: 1;
+  animation: acCardIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes acCardIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.acLogo {
+  font-family: var(--heading);
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--txt);
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: 28px;
+}
+
+.acLogo span {
+  color: var(--pri);
+}
+
+.acIcon {
+  font-size: 3rem;
+  margin-bottom: 16px;
+  line-height: 1;
+  display: block;
+}
+
+.acTitle {
+  font-family: var(--heading);
+  font-size: 1.55rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--txt);
+  margin: 0 0 10px;
+}
+
+.acSubtitle {
+  font-size: 0.95rem;
+  color: var(--txt2);
+  line-height: 1.65;
+  margin: 0 0 28px;
+}
+
+.acForm {
+  text-align: left;
+  margin-top: 4px;
+}
+
+.acLabel {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--txt);
+  margin-bottom: 7px;
+}
+
+.acInput {
+  display: block;
+  width: 100%;
+  font-family: var(--body);
+  font-size: 0.92rem;
+  color: var(--txt);
+  background: var(--pri-faint);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 13px 16px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+  margin-bottom: 16px;
+}
+
+.acInput:focus {
+  border-color: var(--pri);
+  box-shadow: 0 0 0 3px rgba(42, 176, 144, 0.12);
+}
+
+.acInput::placeholder {
+  color: var(--txt3);
+}
+
+.acError {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--red);
+  background: var(--red-bg);
+  border: 1px solid rgba(239, 68, 68, 0.12);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  text-align: left;
+  margin-bottom: 14px;
+}
+
+.acBtn {
+  display: block;
+  width: 100%;
+  font-family: var(--body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #fff;
+  background: var(--pri);
+  border: none;
+  border-radius: var(--radius);
+  padding: 14px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.15s;
+  box-sizing: border-box;
+}
+
+.acBtn:hover:not(:disabled) {
+  background: var(--pri-dark);
+  transform: translateY(-1px);
+  color: #fff;
+}
+
+.acBtn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.acBtnInline {
+  display: inline-block;
+  width: auto;
+  padding: 13px 30px;
+}
+
+.acBackLink {
+  display: inline-block;
+  margin-top: 20px;
+  font-size: 0.88rem;
+  color: var(--txt3);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.acBackLink:hover {
+  color: var(--pri);
+}
+
+.acHint {
+  font-size: 0.85rem;
+  color: var(--txt3);
+  margin: 0 0 24px;
+  line-height: 1.5;
+}
+
+.acLinkBtn {
+  background: none;
+  border: none;
+  font-family: var(--body);
+  font-size: 0.88rem;
+  color: var(--txt3);
+  cursor: pointer;
+  text-decoration: underline;
+  margin-top: 8px;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.acLinkBtn:hover {
+  color: var(--txt2);
+}
+
+.acDivider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 24px 0;
+}
+
+@media (max-width: 480px) {
+  .acCard {
+    padding: 36px 24px;
+  }
+
+  .acTitle {
+    font-size: 1.35rem;
+  }
+}

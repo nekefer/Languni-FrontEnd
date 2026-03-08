@@ -1,0 +1,986 @@
+
+/* ===========================================
+   DESIGN 5 — Whimsical Storybook
+   Timeline struggles · zigzag how-it-works · floating bubbles · illustrated cards
+   Inspired by /3 but more storybook-like
+   =========================================== */
+
+.page {
+  --terra: #c45d3e;
+  --terra-dark: #a84c31;
+  --terra-light: #fceee9;
+  --sage: #7d9b76;
+  --sage-light: #edf4eb;
+  --mustard: #e5a100;
+  --mustard-light: #fef7e0;
+  --cream: #faf5eb;
+  --plum: #2d1b3d;
+  --plum-light: #f0ecf2;
+  --txt: #2d1b3d;
+  --txt2: #6e5c7a;
+  --txt3: #a496b0;
+  --border: #e8ddd0;
+  --heading: 'Fraunces', Georgia, serif;
+  --body: 'Nunito', system-ui, sans-serif;
+
+  font-family: var(--body);
+  background: #fff;
+  color: var(--txt);
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.65;
+}
+
+/* ───── HEADER ───── */
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(250, 245, 235, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 2px solid transparent;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.headerScrolled {
+  border-bottom-color: var(--border);
+  box-shadow: 0 2px 20px rgba(45, 27, 61, 0.05);
+}
+
+.headerInner {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 0 32px;
+  height: 68px;
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  font-family: var(--heading);
+  font-size: 1.45rem;
+  font-weight: 600;
+  color: var(--txt);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logoIcon {
+  font-size: 1.2rem;
+}
+
+.nav {
+  display: flex;
+  gap: 28px;
+  margin-left: 48px;
+}
+
+.navLink {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--txt2);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.navLink:hover {
+  color: var(--txt);
+}
+
+.headerBtns {
+  margin-left: auto;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.logBtn {
+  font-family: var(--body);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--txt2);
+  background: none;
+  border: none;
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.logBtn:hover { color: var(--txt); }
+
+.tryBtn {
+  font-family: var(--body);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #fff;
+  background: var(--terra);
+  border: none;
+  border-radius: 50px;
+  padding: 10px 24px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+}
+
+.tryBtn:hover {
+  background: var(--terra-dark);
+  transform: translateY(-1px);
+}
+
+/* ───── HERO ───── */
+
+.hero {
+  padding: 160px 32px 100px;
+  background: var(--cream);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  scroll-margin-top: 68px;
+}
+
+/* Decorative shapes */
+.deco1 {
+  position: absolute;
+  width: 320px;
+  height: 320px;
+  top: -80px;
+  right: -60px;
+  background: var(--terra-light);
+  border-radius: 50%;
+  opacity: 0.5;
+}
+
+.deco2 {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  bottom: 40px;
+  left: -40px;
+  background: var(--sage-light);
+  border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+  opacity: 0.6;
+  animation: decoFloat 10s ease-in-out infinite;
+}
+
+.deco3 {
+  position: absolute;
+  width: 140px;
+  height: 140px;
+  top: 30%;
+  left: 10%;
+  background: var(--mustard-light);
+  border-radius: 50%;
+  opacity: 0.4;
+  animation: decoFloat 14s ease-in-out infinite reverse;
+}
+
+@keyframes decoFloat {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  50% { transform: translate(10px, -15px) rotate(5deg); }
+}
+
+.heroInner {
+  max-width: 700px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+/* Floating bubbles */
+.heroBubbles {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 36px;
+}
+
+.bubble {
+  display: inline-block;
+  background: #fff;
+  border: 2px dashed var(--border);
+  border-radius: 50px;
+  padding: 8px 22px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--txt);
+  animation: bubbleFloat 4s ease-in-out infinite;
+  animation-delay: var(--d);
+}
+
+@keyframes bubbleFloat {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(var(--x), var(--y)); }
+  75% { transform: translate(calc(var(--x) * -0.5), calc(var(--y) * -0.5)); }
+}
+
+.heroH1 {
+  font-family: var(--heading);
+  font-size: 3.6rem;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 24px;
+}
+
+.heroScript {
+  font-style: italic;
+  color: var(--terra);
+  font-weight: 800;
+}
+
+.heroP {
+  font-size: 1.1rem;
+  color: var(--txt2);
+  max-width: 520px;
+  margin: 0 auto 36px;
+  line-height: 1.8;
+}
+
+.heroBtn {
+  font-family: var(--body);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #fff;
+  background: var(--terra);
+  border: none;
+  border-radius: 50px;
+  padding: 18px 44px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 6px 28px rgba(196, 93, 62, 0.22);
+}
+
+.heroBtn:hover {
+  background: var(--terra-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 40px rgba(196, 93, 62, 0.28);
+}
+
+/* Hero cards */
+.heroCards {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 56px;
+}
+
+.hCard {
+  background: #fff;
+  border: 2px solid var(--border);
+  border-radius: 20px;
+  padding: 28px 24px;
+  width: 160px;
+  text-align: center;
+  transform: rotate(var(--rot));
+  animation: cardPop 0.5s ease-out both;
+  animation-delay: var(--delay);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.hCard:hover {
+  transform: rotate(0deg) translateY(-6px);
+  box-shadow: 0 12px 32px rgba(45, 27, 61, 0.08);
+}
+
+.hCardEmoji {
+  font-size: 2rem;
+  margin-bottom: 12px;
+}
+
+.hCardText {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--txt);
+}
+
+@keyframes cardPop {
+  from { opacity: 0; transform: rotate(var(--rot)) scale(0.8) translateY(20px); }
+  to   { opacity: 1; transform: rotate(var(--rot)) scale(1) translateY(0); }
+}
+
+/* ───── STRUGGLE — Timeline ───── */
+
+.struggle {
+  padding: 100px 32px;
+  background: #fff;
+  scroll-margin-top: 68px;
+}
+
+.sectionInner {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.badge {
+  display: inline-flex;
+  font-size: 0.74rem;
+  font-weight: 800;
+  color: var(--terra);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  background: var(--terra-light);
+  border: 1px dashed rgba(196, 93, 62, 0.3);
+  padding: 6px 18px;
+  border-radius: 50px;
+  margin: 0 auto 20px;
+  display: flex;
+  width: fit-content;
+  justify-content: center;
+}
+
+.sectionH2 {
+  font-family: var(--heading);
+  font-size: 2.6rem;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin-bottom: 56px;
+}
+
+.sectionP {
+  text-align: center;
+  font-size: 1.05rem;
+  color: var(--txt2);
+  max-width: 480px;
+  margin: -32px auto 56px;
+  line-height: 1.7;
+}
+
+/* Timeline */
+.timeline {
+  position: relative;
+  padding: 0 0 40px;
+}
+
+.tlLine {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--border) 0px,
+    var(--border) 8px,
+    transparent 8px,
+    transparent 16px
+  );
+  transform: translateX(-50%);
+}
+
+.tlItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  margin-bottom: 48px;
+  padding-right: calc(50% + 40px);
+  position: relative;
+}
+
+.tlRight {
+  padding-right: 0;
+  padding-left: calc(50% + 40px);
+  flex-direction: row-reverse;
+}
+
+.tlDot {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  z-index: 2;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.tlItem:hover .tlDot {
+  border-color: var(--terra);
+  transform: translateX(-50%) scale(1.1);
+}
+
+.tlCard {
+  background: var(--cream);
+  border-radius: 20px;
+  padding: 28px 24px;
+  border: 1px solid var(--border);
+  flex: 1;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.tlItem:hover .tlCard {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(45, 27, 61, 0.05);
+}
+
+.tlCard h3 {
+  font-family: var(--heading);
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.tlCard p {
+  font-size: 0.88rem;
+  color: var(--txt2);
+  line-height: 1.7;
+}
+
+/* Fix banner */
+.fixBanner {
+  background: var(--terra);
+  border-radius: 24px;
+  padding: 40px 36px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  color: #fff;
+  margin-top: 24px;
+}
+
+.fixArrow {
+  font-size: 2.4rem;
+  flex-shrink: 0;
+  animation: arrowBounce 1.5s ease-in-out infinite;
+}
+
+@keyframes arrowBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(6px); }
+}
+
+.fixBanner h3 {
+  font-family: var(--heading);
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.fixBanner p {
+  font-size: 0.95rem;
+  opacity: 0.85;
+}
+
+/* ───── HOW IT WORKS — Zigzag ───── */
+
+.how {
+  padding: 100px 32px;
+  background: var(--cream);
+  scroll-margin-top: 68px;
+}
+
+.how .sectionInner {
+  max-width: 1000px;
+}
+
+.zigzag {
+  display: flex;
+  flex-direction: column;
+  gap: 64px;
+}
+
+.zigRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 56px;
+  align-items: center;
+}
+
+.zigRowReverse {
+  direction: rtl;
+}
+
+.zigRowReverse > * {
+  direction: ltr;
+}
+
+.zigVisual {
+  /* wrapper */
+}
+
+.zigScreen {
+  background: #fff;
+  border: 2px solid var(--border);
+  border-radius: 24px;
+  padding: 32px 28px;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 14px;
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.zigScreen:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 36px rgba(45, 27, 61, 0.06);
+}
+
+.zigThumbRow {
+  display: flex;
+  gap: 12px;
+}
+
+.zigThumb {
+  flex: 1;
+  height: 72px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+}
+
+.zigLabel {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--txt3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.zigCaption {
+  font-size: 0.95rem;
+  color: var(--txt);
+  padding: 12px 16px;
+  background: var(--cream);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  line-height: 1.7;
+}
+
+.zigHL {
+  color: var(--terra);
+  background: var(--terra-light);
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-weight: 700;
+}
+
+.zigPopup {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  box-shadow: 0 4px 16px rgba(45, 27, 61, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 200px;
+}
+
+.zigPopup strong {
+  font-size: 0.9rem;
+}
+
+.zigPopup em {
+  font-size: 0.8rem;
+  color: var(--txt2);
+}
+
+.zigWordCloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.zigWordCloud span {
+  font-family: var(--heading);
+  font-size: calc(var(--s) * 1.3rem);
+  font-weight: 700;
+  padding: 8px 18px;
+  background: var(--cream);
+  border-radius: 50px;
+  border: 2px dashed var(--border);
+  transition: transform 0.2s;
+}
+
+.zigWordCloud span:hover {
+  transform: scale(1.08) rotate(-2deg);
+}
+
+.zigText {
+  /* wrapper */
+}
+
+.zigNum {
+  font-family: var(--heading);
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--terra);
+  opacity: 0.15;
+  line-height: 1;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.zigText h3 {
+  font-family: var(--heading);
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.zigText p {
+  font-size: 0.92rem;
+  color: var(--txt2);
+  line-height: 1.8;
+}
+
+/* ───── PRICING ───── */
+
+.pricing {
+  padding: 100px 32px;
+  background: #fff;
+  position: relative;
+  overflow: hidden;
+  scroll-margin-top: 68px;
+}
+
+.pricingBlob {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  bottom: -200px;
+  left: -150px;
+  background: var(--plum-light);
+  border-radius: 44% 56% 62% 38% / 52% 38% 62% 48%;
+  opacity: 0.35;
+}
+
+.priceRow {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  max-width: 700px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.priceCard {
+  background: var(--cream);
+  border: 2px solid var(--border);
+  border-radius: 28px;
+  padding: 44px 28px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.priceCard:hover {
+  transform: translateY(-6px) rotate(-0.5deg);
+  box-shadow: 0 16px 48px rgba(45, 27, 61, 0.07);
+}
+
+.pcFree { transform: rotate(-1.5deg); }
+.pcPremium { transform: rotate(1.5deg); }
+.pcFree:hover { transform: rotate(-1.5deg) translateY(-6px); }
+.pcPremium:hover { transform: rotate(1.5deg) translateY(-6px); }
+
+.pcPro {
+  border-color: var(--terra);
+  background: #fff;
+  box-shadow: 0 8px 32px rgba(196, 93, 62, 0.08);
+  z-index: 2;
+}
+
+.pcFeatured {
+  position: absolute;
+  top: -13px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #fff;
+  background: var(--terra);
+  padding: 5px 22px;
+  border-radius: 50px;
+  white-space: nowrap;
+}
+
+.pcEmoji {
+  font-size: 2.2rem;
+  margin-bottom: 12px;
+}
+
+.priceCard h3 {
+  font-family: var(--heading);
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.pcPrice {
+  font-family: var(--heading);
+  font-size: 2.8rem;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.pcPrice span {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--txt2);
+}
+
+.pcNote {
+  font-size: 0.8rem;
+  color: var(--txt3);
+  margin-bottom: 4px;
+}
+
+.priceCard ul {
+  list-style: none;
+  padding: 0;
+  width: 100%;
+  text-align: left;
+  margin: 24px 0 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  flex: 1;
+}
+
+.priceCard li {
+  font-size: 0.86rem;
+  padding-left: 28px;
+  position: relative;
+  line-height: 1.5;
+  color: var(--txt);
+}
+
+.priceCard li::before {
+  content: '✓';
+  position: absolute;
+  left: 2px;
+  color: var(--sage);
+  font-weight: 800;
+  font-size: 0.85rem;
+}
+
+.pSoon {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--txt3);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  padding: 1px 7px;
+  margin-left: 6px;
+  vertical-align: middle;
+  letter-spacing: 0.02em;
+}
+
+.pcBtnOutline {
+  font-family: var(--body);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--txt);
+  background: #fff;
+  border: 2px solid var(--border);
+  border-radius: 50px;
+  padding: 14px 28px;
+  cursor: pointer;
+  width: 100%;
+  transition: border-color 0.2s;
+}
+
+.pcBtnOutline:hover {
+  border-color: var(--txt);
+}
+
+.pcBtnFill {
+  font-family: var(--body);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #fff;
+  background: var(--terra);
+  border: none;
+  border-radius: 50px;
+  padding: 14px 28px;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.2s, transform 0.15s;
+  box-shadow: 0 4px 16px rgba(196, 93, 62, 0.18);
+}
+
+.pcBtnFill:hover {
+  background: var(--terra-dark);
+  transform: translateY(-1px);
+}
+
+.pcBtnGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.pcBtnFill:disabled,
+.pcBtnOutline:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ───── FOOTER ───── */
+
+.footer {
+  position: relative;
+}
+
+.footerStripe {
+  height: 6px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--terra) 0px,
+    var(--terra) 60px,
+    var(--sage) 60px,
+    var(--sage) 120px,
+    var(--mustard) 120px,
+    var(--mustard) 180px,
+    var(--plum) 180px,
+    var(--plum) 240px
+  );
+}
+
+.footerBody {
+  background: var(--plum);
+  padding: 56px 32px 0;
+}
+
+.footerInner {
+  max-width: 960px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 40px;
+  padding-bottom: 48px;
+}
+
+.footerLogo {
+  font-family: var(--heading);
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #fff;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.footerBrand p {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.45);
+  line-height: 1.6;
+}
+
+.footerCol {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footerCol h4 {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.35);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 4px;
+}
+
+.footerCol a {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footerCol a:hover { color: #fff; }
+
+.footerBottom {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 20px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.3);
+  text-align: center;
+}
+
+/* ───── ANIMATIONS ───── */
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ───── RESPONSIVE ───── */
+
+@media (max-width: 1024px) {
+  .zigRow { grid-template-columns: 1fr; gap: 32px; }
+  .zigRowReverse { direction: ltr; }
+}
+
+@media (max-width: 768px) {
+  .nav { display: none; }
+  .heroH1 { font-size: 2.4rem; }
+  .sectionH2 { font-size: 2rem; }
+  .heroCards { flex-direction: column; align-items: center; }
+  .hCard { transform: rotate(0deg) !important; }
+
+  .tlItem, .tlRight {
+    padding-left: 64px !important;
+    padding-right: 0 !important;
+    flex-direction: row !important;
+  }
+  .tlDot {
+    left: 0 !important;
+    transform: none !important;
+  }
+  .tlItem:hover .tlDot {
+    transform: scale(1.1) !important;
+  }
+  .tlLine { left: 23px; }
+
+  .priceRow { grid-template-columns: 1fr; max-width: 380px; }
+  .pcFree, .pcPremium { transform: none !important; }
+  .pcFree:hover, .pcPremium:hover { transform: translateY(-6px) !important; }
+
+  .footerInner {
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+  }
+
+  .heroBubbles { flex-wrap: wrap; }
+}
+
+@media (max-width: 480px) {
+  .hero { padding: 130px 20px 60px; }
+  .struggle, .how, .pricing { padding: 64px 20px; }
+  .headerInner { padding: 0 16px; }
+  .heroH1 { font-size: 2rem; }
+  .footerInner { grid-template-columns: 1fr; }
+  .fixBanner { flex-direction: column; text-align: center; padding: 28px 22px; }
+}

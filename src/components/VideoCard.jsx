@@ -1,64 +1,95 @@
 import React from "react";
+import posthog from "posthog-js";
 import { useNavigate } from "@tanstack/react-router";
-import "../styles/VideoCard.css";
+import { Bookmark, BookmarkCheck } from "lucide-react";
+import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
+import savedVideosService from "../api/savedVideos.js";
+import { useOptimisticToggle } from "../hooks/useOptimisticToggle.js";
+import styles from "../styles/VideoCard.module.css";
 
-/**
- * VideoCard Component
- * Displays a single trending video with thumbnail, title, channel, and metadata.
- */
 const VideoCard = ({ video, onClick }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { video_id, title, thumbnails, channel_title, published_at } = video;
 
-  // Get the best available thumbnail
+  const { isSaved, checking, toggle } = useOptimisticToggle({
+    id: video_id,
+    fetchSaved: () => savedVideosService.isVideoSaved(video_id),
+    onSave: async () => {
+      await savedVideosService.saveVideo(video_id);
+      posthog.capture("video_saved", { video_id, title, source: "card" });
+      toast.success(t("videoCard.videoSaved"));
+    },
+    onUnsave: async () => {
+      await savedVideosService.deleteSavedVideo(video_id);
+      posthog.capture("video_unsaved", { video_id, title, source: "card" });
+      toast.success(t("videoCard.videoRemoved"));
+    },
+    onError: (error) => {
+      toast.error(error.message || t("videoCard.saveFailed"));
+    },
+  });
+
+  const handleSaveToggle = (e) => {
+    e.stopPropagation();
+    toggle();
+  };
+
   const thumbnail =
     thumbnails?.high?.url ||
     thumbnails?.medium?.url ||
     thumbnails?.default?.url;
 
-  // Format published date
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const now = new Date();
-    const diffMs = now - date;
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    const diffDays = Math.floor((now - date) / (1000 * 60 * 60 * 24));
 
-    if (diffDays === 0) return "Today";
-    if (diffDays === 1) return "Yesterday";
-    if (diffDays < 7) return `${diffDays} days ago`;
-    if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
-    if (diffDays < 365) return `${Math.floor(diffDays / 30)} months ago`;
-    return `${Math.floor(diffDays / 365)} years ago`;
+    if (diffDays === 0) return t("videoCard.today");
+    if (diffDays === 1) return t("videoCard.yesterday");
+    if (diffDays < 7) return t("videoCard.daysAgo", { count: diffDays });
+    if (diffDays < 30) return t("videoCard.weeksAgo", { count: Math.floor(diffDays / 7) });
+    if (diffDays < 365) return t("videoCard.monthsAgo", { count: Math.floor(diffDays / 30) });
+    return t("videoCard.yearsAgo", { count: Math.floor(diffDays / 365) });
   };
 
   const handleClick = () => {
+    posthog.capture("video_clicked", { video_id, title });
     if (onClick) {
       onClick(video);
     } else {
-      // Navigate to player page (prepare for Milestone 3)
       navigate({ to: `/player/${video_id}` });
     }
   };
 
   return (
     <div
-      className="video-card"
+      className={styles.videoCard}
       onClick={handleClick}
       role="button"
       tabIndex={0}
     >
-      <div className="video-thumbnail">
+      <div className={styles.videoThumbnail}>
         <img src={thumbnail} alt={title} loading="lazy" />
-        <div className="video-duration-overlay">
-          {/* Could add duration here if available */}
-        </div>
+        <div className={styles.videoDurationOverlay} />
       </div>
-      <div className="video-info">
-        <h3 className="video-title" title={title}>
-          {title}
-        </h3>
-        <p className="video-channel">{channel_title}</p>
-        <p className="video-metadata">{formatDate(published_at)}</p>
+      <div className={styles.videoInfo}>
+        <div className={styles.videoInfoHeader}>
+          <h3 className={styles.videoTitle} title={title}>
+            {title}
+          </h3>
+          <button
+            className={`${styles.saveBtn}${isSaved ? ` ${styles.saved}` : ""}`}
+            onClick={handleSaveToggle}
+            disabled={checking}
+            title={isSaved ? t("videoCard.removeFromLibrary") : t("videoCard.saveToLibrary")}
+          >
+            {checking ? "·" : isSaved ? <BookmarkCheck size={16} /> : <Bookmark size={16} />}
+          </button>
+        </div>
+        <p className={styles.videoChannel}>{channel_title}</p>
+        <p className={styles.videoMetadata}>{formatDate(published_at)}</p>
       </div>
     </div>
   );

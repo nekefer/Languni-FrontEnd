@@ -1,0 +1,562 @@
+/* ============================================
+   MY VOCABULARY — Editorial Premium
+   ============================================ */
+
+.vocabularyPage {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 32px 32px 64px;
+  min-height: 100vh;
+  font-family: var(--body);
+}
+
+/* ── Page header ── */
+
+.vocabularyControls {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.vocabularyStats h3 {
+  font-family: var(--heading);
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--txt);
+  margin: 0 0 4px;
+}
+
+.statsText {
+  font-size: 0.88rem;
+  color: var(--txt2);
+  margin: 0;
+}
+
+.controlsSection {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.searchSection {
+  position: relative;
+  flex: 1;
+  min-width: 260px;
+}
+
+.searchInput {
+  width: 100%;
+  font-family: var(--body);
+  font-size: 0.88rem;
+  color: var(--txt);
+  padding: 10px 14px 10px 40px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--pri-faint);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.searchInput:focus {
+  border-color: var(--pri);
+  box-shadow: 0 0 0 3px rgba(42, 176, 144, 0.1);
+  background: var(--surface);
+}
+
+.searchInput::placeholder {
+  color: var(--txt3);
+}
+
+.searchIcon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--txt3);
+  font-size: 1rem;
+  pointer-events: none;
+}
+
+.sortSelect {
+  font-family: var(--body);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--txt);
+  padding: 10px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--pri-faint);
+  cursor: pointer;
+  min-width: 140px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.sortSelect:focus {
+  border-color: var(--pri);
+}
+
+/* ── Vocabulary grid ── */
+
+.vocabularyGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+/* ── Word cards ── */
+
+.wordCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.wordCard:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--pri-light);
+}
+
+.wordHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.wordTitle {
+  margin: 0;
+  font-family: var(--heading);
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--txt);
+  flex: 1;
+}
+
+.wordActions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.btnIcon {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  transition: background 0.15s, transform 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--txt3);
+}
+
+.videoBtn:hover {
+  background: var(--pri-light);
+  color: var(--pri);
+  transform: scale(1.1);
+}
+
+.deleteBtn:hover {
+  background: var(--red-bg);
+  color: var(--red);
+  transform: scale(1.1);
+}
+
+.wordMeta {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.saveDate {
+  color: var(--txt3);
+  font-size: 0.78rem;
+  background: var(--pri-faint);
+  padding: 3px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+}
+
+.videoBadge {
+  color: var(--pri);
+  font-size: 0.78rem;
+  background: var(--pri-light);
+  padding: 3px 10px;
+  border-radius: 20px;
+  border: 1px solid rgba(42, 176, 144, 0.2);
+}
+
+/* Definition content */
+
+.wordContent {
+  margin-bottom: 12px;
+}
+
+.definitionLoading {
+  color: var(--txt3);
+  font-size: 0.85rem;
+  font-style: italic;
+  padding: 8px 0;
+}
+
+.definitionPreview {
+  margin-bottom: 10px;
+}
+
+.definitionPreview p {
+  margin: 0 0 4px;
+  font-size: 0.88rem;
+  color: var(--txt2);
+  line-height: 1.55;
+}
+
+.phonetic {
+  display: inline-block;
+  background: var(--pri-faint);
+  color: var(--txt2);
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  margin-bottom: 6px;
+  border: 1px solid var(--border);
+}
+
+.loadDefinitionBtn,
+.detailsToggle {
+  background: none;
+  border: 1.5px solid var(--border);
+  color: var(--pri);
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: var(--body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  transition: all 0.15s;
+}
+
+.loadDefinitionBtn:hover,
+.detailsToggle:hover {
+  border-color: var(--pri);
+  background: var(--pri-faint);
+}
+
+/* Expanded details */
+
+.wordDetails {
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+  margin-top: 12px;
+}
+
+.meaningSection {
+  margin-bottom: 12px;
+}
+
+.partOfSpeech {
+  display: inline-block;
+  background: var(--pri);
+  color: #fff;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-bottom: 8px;
+}
+
+.definitions {
+  margin-left: 8px;
+}
+
+.definitionItem {
+  margin-bottom: 8px;
+}
+
+.definitionItem p {
+  margin: 0 0 3px;
+  font-size: 0.88rem;
+  color: var(--txt2);
+  line-height: 1.5;
+}
+
+.example {
+  color: var(--txt3);
+  font-size: 0.82rem;
+  font-style: italic;
+  margin-left: 10px;
+}
+
+/* ── States ── */
+
+.vocabularyLoading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 24px;
+  gap: 12px;
+  color: var(--txt3);
+  font-size: 0.9rem;
+}
+
+.vocabularyError {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+  background: var(--red-bg);
+  border-radius: 14px;
+  border: 1px solid rgba(239, 68, 68, 0.12);
+  margin: 16px 0;
+}
+
+.vocabularyError h3 {
+  color: var(--red);
+  margin: 0 0 8px;
+  font-family: var(--heading);
+}
+
+.vocabularyError p {
+  color: var(--red);
+  opacity: 0.8;
+  margin: 0 0 20px;
+  font-size: 0.9rem;
+}
+
+.vocabularyEmpty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 24px;
+  text-align: center;
+  background: var(--surface);
+  border-radius: 16px;
+  border: 2px dashed var(--border);
+}
+
+.emptyIcon {
+  font-size: 3.5rem;
+  margin-bottom: 16px;
+  line-height: 1;
+}
+
+.vocabularyEmpty h3 {
+  font-family: var(--heading);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--txt);
+  margin: 0 0 8px;
+}
+
+.vocabularyEmpty p {
+  color: var(--txt2);
+  margin: 0 0 24px;
+  max-width: 380px;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+/* ── Buttons ── */
+
+.btnPrimary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--pri);
+  color: #fff;
+  border: none;
+  padding: 11px 22px;
+  border-radius: var(--radius);
+  font-family: var(--body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.15s;
+}
+
+.btnPrimary:hover {
+  background: var(--pri-dark);
+  transform: translateY(-1px);
+  color: #fff;
+}
+
+/* ── Pagination ── */
+
+.paginationContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin: 24px 0;
+  padding: 20px;
+  background: var(--surface);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+
+.pageInfo {
+  color: var(--txt2);
+  font-size: 0.88rem;
+  font-weight: 500;
+  min-width: 180px;
+  text-align: center;
+}
+
+.paginationButton {
+  padding: 9px 20px;
+  font-family: var(--body);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--pri);
+  background: var(--pri-faint);
+  border: 1.5px solid var(--pri-light);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.paginationButton:hover:not(:disabled) {
+  background: var(--pri-light);
+  border-color: var(--pri);
+}
+
+.paginationButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.searchResultsInfo {
+  text-align: center;
+  color: var(--txt3);
+  font-size: 0.85rem;
+  font-style: italic;
+  padding: 12px;
+  background: var(--pri-faint);
+  border-radius: var(--radius);
+  margin-top: 16px;
+}
+
+/* Legacy pagination classes (kept for compatibility) */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 24px 0;
+  margin-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.paginationBtn {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  color: var(--txt2);
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: var(--body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.15s;
+}
+
+.paginationBtn:hover:not(:disabled) {
+  border-color: var(--pri);
+  color: var(--pri);
+}
+
+.paginationBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pageNumbers {
+  display: flex;
+  gap: 4px;
+}
+
+.pageBtn {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  color: var(--txt2);
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: var(--body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  min-width: 38px;
+  transition: all 0.15s;
+}
+
+.pageBtn:hover {
+  border-color: var(--pri);
+  color: var(--pri);
+}
+
+.pageBtn.active {
+  background: var(--pri);
+  border-color: var(--pri);
+  color: #fff;
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 768px) {
+  .vocabularyPage {
+    padding: 20px 16px 48px;
+  }
+
+  .vocabularyControls {
+    padding: 20px;
+  }
+
+  .controlsSection {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .searchSection {
+    min-width: 100%;
+  }
+
+  .vocabularyGrid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .paginationContainer {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .paginationButton {
+    width: 100%;
+    text-align: center;
+  }
+}

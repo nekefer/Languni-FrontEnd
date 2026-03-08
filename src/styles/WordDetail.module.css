@@ -1,0 +1,368 @@
+/* ============================================
+   WORD DETAIL MODULE — Editorial Premium
+   ============================================ */
+
+.wordPage {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--txt);
+  padding: 2rem 1rem;
+  font-family: var(--body);
+}
+
+.wordContainer {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+/* Loading & Error States */
+
+.loadingState,
+.errorState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  text-align: center;
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--border);
+  border-top-color: var(--pri);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loadingState p {
+  color: var(--txt3);
+  font-size: 0.95rem;
+}
+
+.errorIcon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.errorState h2 {
+  font-family: var(--heading);
+  color: var(--txt);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+}
+
+.errorState p {
+  color: var(--txt2);
+  margin: 0 0 1.5rem;
+}
+
+.errorState button {
+  background: var(--pri);
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius);
+  font-family: var(--body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.errorState button:hover {
+  background: var(--pri-dark);
+}
+
+/* Navigation */
+
+.wordNav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.navBack {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  color: var(--pri);
+  font-family: var(--body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.5rem 0;
+  transition: opacity 0.2s;
+}
+
+.navBack:hover {
+  opacity: 0.75;
+}
+
+.navBack span {
+  font-size: 1.1rem;
+}
+
+.navRemove {
+  background: none;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: var(--red);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-family: var(--body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.navRemove:hover {
+  background: var(--red-bg);
+}
+
+/* Cards */
+
+.wordCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow-sm);
+}
+
+.wordHeaderCard {
+  padding: 2rem;
+  text-align: center;
+}
+
+.wordMain h1 {
+  font-family: var(--heading);
+  font-size: 2.75rem;
+  font-weight: 800;
+  color: var(--txt);
+  margin: 0 0 0.75rem;
+  letter-spacing: -0.03em;
+}
+
+.wordMeta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.phonetic {
+  color: var(--txt2);
+  font-size: 1.15rem;
+  font-style: italic;
+}
+
+.audioBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: var(--pri-faint);
+  color: var(--pri);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.audioBtn:hover:not(:disabled) {
+  background: var(--pri-light);
+}
+
+.audioBtn.playing {
+  background: var(--pri);
+  color: #fff;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.05); }
+}
+
+/* Meaning Cards */
+
+.meaningCard {
+  padding: 1.5rem 1.75rem;
+}
+
+.posBadge {
+  display: inline-block;
+  background: var(--pri);
+  color: #fff;
+  padding: 0.3rem 0.9rem;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: lowercase;
+  letter-spacing: 0.3px;
+  margin-bottom: 1rem;
+}
+
+.definitions {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.definitions li {
+  margin-bottom: 1rem;
+  color: var(--txt2);
+}
+
+.definitions li::marker {
+  color: var(--pri);
+  font-weight: 600;
+}
+
+.defText {
+  font-size: 1rem;
+  line-height: 1.65;
+  margin: 0;
+  color: var(--txt);
+}
+
+.defExample {
+  color: var(--txt3);
+  font-size: 0.93rem;
+  font-style: italic;
+  margin: 0.5rem 0 0;
+  padding-left: 0.75rem;
+  border-left: 2px solid var(--pri-light);
+}
+
+/* Word Links */
+
+.wordLinksSection {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.linksLabel {
+  display: block;
+  color: var(--txt3);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.5rem;
+}
+
+.wordLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.wordLinks button {
+  background: var(--pri-faint);
+  border: 1px solid var(--pri-light);
+  color: var(--pri);
+  padding: 0.35rem 0.8rem;
+  border-radius: 8px;
+  font-family: var(--body);
+  font-size: 0.83rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.wordLinks button:hover {
+  background: var(--pri-light);
+  border-color: var(--pri);
+}
+
+/* Related Card */
+
+.relatedCard h3 {
+  font-family: var(--heading);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--txt);
+  margin: 0 0 1rem;
+}
+
+.relatedGroup {
+  margin-bottom: 1rem;
+}
+
+.relatedGroup:last-child {
+  margin-bottom: 0;
+}
+
+.relatedLabel {
+  display: block;
+  color: var(--txt3);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.5rem;
+}
+
+.relatedChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.relatedChips button {
+  background: var(--pri-faint);
+  border: 1px solid var(--pri-light);
+  color: var(--pri);
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  font-family: var(--body);
+  font-size: 0.83rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.relatedChips button:hover {
+  background: var(--pri-light);
+  transform: translateY(-1px);
+}
+
+/* Responsive */
+
+@media (max-width: 640px) {
+  .wordPage {
+    padding: 1rem 0.75rem;
+  }
+
+  .wordCard {
+    border-radius: 12px;
+    padding: 1.25rem;
+  }
+
+  .wordHeaderCard {
+    padding: 1.5rem;
+  }
+
+  .wordMain h1 {
+    font-size: 2.1rem;
+  }
+
+  .meaningCard {
+    padding: 1.25rem;
+  }
+}

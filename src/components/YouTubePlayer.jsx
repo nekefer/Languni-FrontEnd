@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import styles from "../styles/YouTubePlayer.module.css";
 
 function YouTubePlayer({ videoId, onTimeUpdate, onPlayerReady }) {
   const playerRef = useRef(null);
@@ -91,8 +92,8 @@ function YouTubePlayer({ videoId, onTimeUpdate, onPlayerReady }) {
   }, [videoId, onTimeUpdate, onPlayerReady]);
 
   return (
-    <div className="youtube-player-container">
-      <div id="youtube-player" className="youtube-player"></div>
+    <div className={styles.playerContainer}>
+      <div id="youtube-player" className={styles.playerDiv}></div>
     </div>
   );
 }

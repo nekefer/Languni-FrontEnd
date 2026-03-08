@@ -1,8 +1,9 @@
 import axios from "axios";
+import config from "../config";
 
-const API_URL = "http://localhost:8000";
+const API_URL = config.apiUrl;
 
-// ✅ Configure axios to send cookies automatically
+// Configure axios to send cookies automatically
 axios.defaults.withCredentials = true;
 
 export const registerUser = async (form) => {
@@ -45,5 +46,29 @@ export const logoutUser = async () => {
 // ✅ Add refresh token function
 export const refreshToken = async () => {
   const response = await axios.post(`${API_URL}/auth/refresh`);
+  return response.data;
+};
+
+export const verifyEmail = async (token) => {
+  const response = await axios.get(`${API_URL}/auth/verify-email`, { params: { token } });
+  return response.data;
+};
+
+export const resendVerification = async (email) => {
+  const response = await axios.post(`${API_URL}/auth/resend-verification`, { email });
+  return response.data;
+};
+
+export const forgotPassword = async (email) => {
+  const response = await axios.post(`${API_URL}/auth/forgot-password`, { email });
+  return response.data;
+};
+
+export const resetPassword = async (token, new_password, new_password_confirm) => {
+  const response = await axios.post(`${API_URL}/auth/reset-password`, {
+    token,
+    new_password,
+    new_password_confirm,
+  });
   return response.data;
 };

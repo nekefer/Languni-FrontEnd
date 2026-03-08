@@ -9,22 +9,81 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WordsRouteImport } from './routes/words'
+import { Route as VerifyEmailPendingRouteImport } from './routes/verify-email-pending'
+import { Route as VerifyEmailRouteImport } from './routes/verify-email'
+import { Route as TrendingRouteImport } from './routes/trending'
+import { Route as TermsRouteImport } from './routes/terms'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RegisterRouteImport } from './routes/register'
-import { Route as MyVocabularyRouteImport } from './routes/my-vocabulary'
+import { Route as RecommendedRouteImport } from './routes/recommended'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as LibraryRouteImport } from './routes/library'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as ContactRouteImport } from './routes/contact'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as WordWordIdRouteImport } from './routes/word/$wordId'
+import { Route as PricingSuccessRouteImport } from './routes/pricing/success'
+import { Route as PricingCancelRouteImport } from './routes/pricing/cancel'
 import { Route as PlayerVideoIdRouteImport } from './routes/player/$videoId'
 
+const WordsRoute = WordsRouteImport.update({
+  id: '/words',
+  path: '/words',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VerifyEmailPendingRoute = VerifyEmailPendingRouteImport.update({
+  id: '/verify-email-pending',
+  path: '/verify-email-pending',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VerifyEmailRoute = VerifyEmailRouteImport.update({
+  id: '/verify-email',
+  path: '/verify-email',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TrendingRoute = TrendingRouteImport.update({
+  id: '/trending',
+  path: '/trending',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
   getParentRoute: () => rootRouteImport,
 } as any)
-const MyVocabularyRoute = MyVocabularyRouteImport.update({
-  id: '/my-vocabulary',
-  path: '/my-vocabulary',
+const RecommendedRoute = RecommendedRouteImport.update({
+  id: '/recommended',
+  path: '/recommended',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -32,9 +91,24 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LibraryRoute = LibraryRouteImport.update({
+  id: '/library',
+  path: '/library',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -47,6 +121,16 @@ const WordWordIdRoute = WordWordIdRouteImport.update({
   path: '/word/$wordId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PricingSuccessRoute = PricingSuccessRouteImport.update({
+  id: '/pricing/success',
+  path: '/pricing/success',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PricingCancelRoute = PricingCancelRouteImport.update({
+  id: '/pricing/cancel',
+  path: '/pricing/cancel',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PlayerVideoIdRoute = PlayerVideoIdRouteImport.update({
   id: '/player/$videoId',
   path: '/player/$videoId',
@@ -55,74 +139,221 @@ const PlayerVideoIdRoute = PlayerVideoIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/library': typeof LibraryRoute
   '/login': typeof LoginRoute
-  '/my-vocabulary': typeof MyVocabularyRoute
+  '/onboarding': typeof OnboardingRoute
+  '/privacy': typeof PrivacyRoute
+  '/recommended': typeof RecommendedRoute
   '/register': typeof RegisterRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/settings': typeof SettingsRoute
+  '/terms': typeof TermsRoute
+  '/trending': typeof TrendingRoute
+  '/verify-email': typeof VerifyEmailRoute
+  '/verify-email-pending': typeof VerifyEmailPendingRoute
+  '/words': typeof WordsRoute
   '/player/$videoId': typeof PlayerVideoIdRoute
+  '/pricing/cancel': typeof PricingCancelRoute
+  '/pricing/success': typeof PricingSuccessRoute
   '/word/$wordId': typeof WordWordIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/library': typeof LibraryRoute
   '/login': typeof LoginRoute
-  '/my-vocabulary': typeof MyVocabularyRoute
+  '/onboarding': typeof OnboardingRoute
+  '/privacy': typeof PrivacyRoute
+  '/recommended': typeof RecommendedRoute
   '/register': typeof RegisterRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/settings': typeof SettingsRoute
+  '/terms': typeof TermsRoute
+  '/trending': typeof TrendingRoute
+  '/verify-email': typeof VerifyEmailRoute
+  '/verify-email-pending': typeof VerifyEmailPendingRoute
+  '/words': typeof WordsRoute
   '/player/$videoId': typeof PlayerVideoIdRoute
+  '/pricing/cancel': typeof PricingCancelRoute
+  '/pricing/success': typeof PricingSuccessRoute
   '/word/$wordId': typeof WordWordIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/library': typeof LibraryRoute
   '/login': typeof LoginRoute
-  '/my-vocabulary': typeof MyVocabularyRoute
+  '/onboarding': typeof OnboardingRoute
+  '/privacy': typeof PrivacyRoute
+  '/recommended': typeof RecommendedRoute
   '/register': typeof RegisterRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/settings': typeof SettingsRoute
+  '/terms': typeof TermsRoute
+  '/trending': typeof TrendingRoute
+  '/verify-email': typeof VerifyEmailRoute
+  '/verify-email-pending': typeof VerifyEmailPendingRoute
+  '/words': typeof WordsRoute
   '/player/$videoId': typeof PlayerVideoIdRoute
+  '/pricing/cancel': typeof PricingCancelRoute
+  '/pricing/success': typeof PricingSuccessRoute
   '/word/$wordId': typeof WordWordIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/contact'
     | '/dashboard'
+    | '/forgot-password'
+    | '/library'
     | '/login'
-    | '/my-vocabulary'
+    | '/onboarding'
+    | '/privacy'
+    | '/recommended'
     | '/register'
+    | '/reset-password'
+    | '/settings'
+    | '/terms'
+    | '/trending'
+    | '/verify-email'
+    | '/verify-email-pending'
+    | '/words'
     | '/player/$videoId'
+    | '/pricing/cancel'
+    | '/pricing/success'
     | '/word/$wordId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/contact'
     | '/dashboard'
+    | '/forgot-password'
+    | '/library'
     | '/login'
-    | '/my-vocabulary'
+    | '/onboarding'
+    | '/privacy'
+    | '/recommended'
     | '/register'
+    | '/reset-password'
+    | '/settings'
+    | '/terms'
+    | '/trending'
+    | '/verify-email'
+    | '/verify-email-pending'
+    | '/words'
     | '/player/$videoId'
+    | '/pricing/cancel'
+    | '/pricing/success'
     | '/word/$wordId'
   id:
     | '__root__'
     | '/'
+    | '/contact'
     | '/dashboard'
+    | '/forgot-password'
+    | '/library'
     | '/login'
-    | '/my-vocabulary'
+    | '/onboarding'
+    | '/privacy'
+    | '/recommended'
     | '/register'
+    | '/reset-password'
+    | '/settings'
+    | '/terms'
+    | '/trending'
+    | '/verify-email'
+    | '/verify-email-pending'
+    | '/words'
     | '/player/$videoId'
+    | '/pricing/cancel'
+    | '/pricing/success'
     | '/word/$wordId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ContactRoute: typeof ContactRoute
   DashboardRoute: typeof DashboardRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
+  LibraryRoute: typeof LibraryRoute
   LoginRoute: typeof LoginRoute
-  MyVocabularyRoute: typeof MyVocabularyRoute
+  OnboardingRoute: typeof OnboardingRoute
+  PrivacyRoute: typeof PrivacyRoute
+  RecommendedRoute: typeof RecommendedRoute
   RegisterRoute: typeof RegisterRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
+  SettingsRoute: typeof SettingsRoute
+  TermsRoute: typeof TermsRoute
+  TrendingRoute: typeof TrendingRoute
+  VerifyEmailRoute: typeof VerifyEmailRoute
+  VerifyEmailPendingRoute: typeof VerifyEmailPendingRoute
+  WordsRoute: typeof WordsRoute
   PlayerVideoIdRoute: typeof PlayerVideoIdRoute
+  PricingCancelRoute: typeof PricingCancelRoute
+  PricingSuccessRoute: typeof PricingSuccessRoute
   WordWordIdRoute: typeof WordWordIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/words': {
+      id: '/words'
+      path: '/words'
+      fullPath: '/words'
+      preLoaderRoute: typeof WordsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/verify-email-pending': {
+      id: '/verify-email-pending'
+      path: '/verify-email-pending'
+      fullPath: '/verify-email-pending'
+      preLoaderRoute: typeof VerifyEmailPendingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/verify-email': {
+      id: '/verify-email'
+      path: '/verify-email'
+      fullPath: '/verify-email'
+      preLoaderRoute: typeof VerifyEmailRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/trending': {
+      id: '/trending'
+      path: '/trending'
+      fullPath: '/trending'
+      preLoaderRoute: typeof TrendingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/register': {
       id: '/register'
       path: '/register'
@@ -130,11 +361,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/my-vocabulary': {
-      id: '/my-vocabulary'
-      path: '/my-vocabulary'
-      fullPath: '/my-vocabulary'
-      preLoaderRoute: typeof MyVocabularyRouteImport
+    '/recommended': {
+      id: '/recommended'
+      path: '/recommended'
+      fullPath: '/recommended'
+      preLoaderRoute: typeof RecommendedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -144,11 +389,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/library': {
+      id: '/library'
+      path: '/library'
+      fullPath: '/library'
+      preLoaderRoute: typeof LibraryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard': {
       id: '/dashboard'
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -165,6 +431,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WordWordIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pricing/success': {
+      id: '/pricing/success'
+      path: '/pricing/success'
+      fullPath: '/pricing/success'
+      preLoaderRoute: typeof PricingSuccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricing/cancel': {
+      id: '/pricing/cancel'
+      path: '/pricing/cancel'
+      fullPath: '/pricing/cancel'
+      preLoaderRoute: typeof PricingCancelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/player/$videoId': {
       id: '/player/$videoId'
       path: '/player/$videoId'
@@ -177,11 +457,25 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ContactRoute: ContactRoute,
   DashboardRoute: DashboardRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
+  LibraryRoute: LibraryRoute,
   LoginRoute: LoginRoute,
-  MyVocabularyRoute: MyVocabularyRoute,
+  OnboardingRoute: OnboardingRoute,
+  PrivacyRoute: PrivacyRoute,
+  RecommendedRoute: RecommendedRoute,
   RegisterRoute: RegisterRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
+  SettingsRoute: SettingsRoute,
+  TermsRoute: TermsRoute,
+  TrendingRoute: TrendingRoute,
+  VerifyEmailRoute: VerifyEmailRoute,
+  VerifyEmailPendingRoute: VerifyEmailPendingRoute,
+  WordsRoute: WordsRoute,
   PlayerVideoIdRoute: PlayerVideoIdRoute,
+  PricingCancelRoute: PricingCancelRoute,
+  PricingSuccessRoute: PricingSuccessRoute,
   WordWordIdRoute: WordWordIdRoute,
 }
 export const routeTree = rootRouteImport

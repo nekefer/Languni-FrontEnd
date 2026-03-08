@@ -1,0 +1,161 @@
+/* ============================================
+   VIDEO PLAYER — Design system theme
+   ============================================ */
+
+.videoPlayerPage {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg);
+  font-family: var(--body);
+}
+
+/* ── Nav ── */
+
+.playerNav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  height: 56px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+.backButton {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--txt2);
+  padding: 0.4rem 0.875rem;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-family: var(--body);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+
+.backButton:hover {
+  background: var(--pri-faint);
+  border-color: var(--pri);
+  color: var(--txt);
+}
+
+.videoTitle {
+  margin: 0;
+  font-size: 0.925rem;
+  font-weight: 600;
+  font-family: var(--body);
+  color: var(--txt);
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.playerSaveBtn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--txt2);
+  padding: 0.4rem 0.875rem;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-family: var(--body);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.playerSaveBtn:hover {
+  border-color: var(--pri);
+  color: var(--pri);
+  background: var(--pri-faint);
+}
+
+.saved {
+  border-color: var(--pri) !important;
+  color: var(--pri) !important;
+  background: var(--pri-light) !important;
+}
+
+.playerSaveBtn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ── Layout ── */
+
+.videoPlayerLayout {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  height: calc(100vh - 56px);
+  min-height: 0;
+  overflow: hidden;
+}
+
+.playerSection {
+  background: #000;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+  position: relative;
+  box-shadow: var(--shadow-md);
+}
+
+.captionSection {
+  background: var(--surface);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+  box-shadow: var(--shadow-sm);
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 768px) {
+  .videoPlayerLayout {
+    grid-template-columns: 1fr;
+    grid-template-rows: 56vw 1fr;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    height: calc(100vh - 56px);
+  }
+
+  .playerNav {
+    padding: 0 1rem;
+  }
+
+  .videoTitle {
+    font-size: 0.85rem;
+  }
+
+  .captionSection {
+    height: 100%;
+    max-height: none;
+  }
+}
+
+@media (max-width: 1024px) and (min-width: 769px) {
+  .videoPlayerLayout {
+    grid-template-columns: 1.5fr 1fr;
+  }
+}

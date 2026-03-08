@@ -1,5 +1,13 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
-import { fetchUserInfo, logoutUser, refreshToken } from "../api/auth";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
+import posthog from "posthog-js";
+import { fetchUserInfo, logoutUser } from "../api/auth";
+import { authLogger } from "../utils/logger";
 
 const AuthContext = createContext();
 
@@ -18,53 +26,61 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Check if user is authenticated on app start
-  const checkAuth = useCallback(async () => {
-    setLoading(true);
+  // Check if user is authenticated on app start.
+  // Token refresh is handled transparently by the axios interceptor.
+  const checkAuth = useCallback(async (silent = false) => {
+    if (!silent) setLoading(true);
     setError(null);
 
     try {
-      console.log("🔍 Checking authentication...");
+      authLogger.debug("Checking authentication...");
       const userData = await fetchUserInfo();
-      console.log("✅ User authenticated:", userData);
+      authLogger.debug("User authenticated", { email: userData.email });
       setUser(userData);
-    } catch (error) {
-      console.log("❌ Not authenticated:", error.response?.status);
-
-      // If 401, try to refresh token
-      if (error.response?.status === 401) {
-        try {
-          console.log("🔄 Trying to refresh token...");
-          await refreshToken();
-          // Retry getting user info
-          const userData = await fetchUserInfo();
-          setUser(userData);
-          console.log("✅ Token refreshed, user authenticated");
-        } catch (refreshError) {
-          console.log("❌ Token refresh failed", refreshError);
-          setUser(null);
-        }
-      } else {
-        setUser(null);
-      }
+      posthog.identify(userData.id, {
+        email: userData.email,
+        plan: userData.subscription_plan ?? "free",
+      });
+      return userData;
+    } catch {
+      // Not logged in, or refresh also failed — stay on landing page
+      setUser(null);
+      return null;
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   }, []);
 
   const login = (userData) => {
     setUser(userData);
     setError(null);
+    posthog.identify(userData.id, {
+      email: userData.email,
+      plan: userData.subscription_plan ?? "free",
+    });
+    authLogger.info("User logged in", { method: userData.auth_method });
+  };
+
+  const register = (userData) => {
+    setUser(userData);
+    setError(null);
+    posthog.identify(userData.id, {
+      email: userData.email,
+      plan: userData.subscription_plan ?? "free",
+    });
+    posthog.capture("signed_up", { method: userData.auth_method });
+    authLogger.info("User registered", { method: userData.auth_method });
   };
 
   const logout = async () => {
     try {
       await logoutUser();
     } catch (error) {
-      console.error("Logout error:", error);
+      authLogger.error("Logout failed", error);
     } finally {
       setUser(null);
       setError(null);
+      posthog.reset();
     }
   };
 
@@ -73,12 +89,37 @@ export const AuthProvider = ({ children }) => {
     checkAuth();
   }, [checkAuth]);
 
+  // Re-check auth on window focus when user is unverified
+  // so the verification banner disappears automatically after clicking the email link in another tab
+  useEffect(() => {
+    if (!user || user.is_verified) return;
+    const handleFocus = () => checkAuth(true);
+    window.addEventListener("focus", handleFocus);
+    return () => window.removeEventListener("focus", handleFocus);
+  }, [user, checkAuth]);
+
+  // Interceptor fires this when a refresh fails mid-session
+  useEffect(() => {
+    const handleSessionExpired = () => {
+      if (!user) return; // not logged in — ignore
+      authLogger.info("Session expired, logging out");
+      setUser(null);
+      setError(null);
+    };
+
+    window.addEventListener("auth:sessionExpired", handleSessionExpired);
+    return () => window.removeEventListener("auth:sessionExpired", handleSessionExpired);
+  }, [user]);
+
   const value = {
     user,
     loading,
     error,
     isAuthenticated: !!user,
+    isVerified: !!user?.is_verified,
+    isPremium: user?.subscription_plan === 'premium',
     login,
+    register,
     logout,
     checkAuth,
   };

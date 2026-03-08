@@ -1,53 +1,22 @@
 import React, { useState, useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "@tanstack/react-router";
+import { Video, Trash2, Tv, XCircle, BookOpen } from "lucide-react";
+import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import vocabularyService from "../api/vocabulary.js";
 import dictionaryService from "../api/dictionary.js";
-import styles from "./MyVocabulary.module.css";
+import { createLogger } from "../utils/logger";
+import { Spinner } from "../ui/Spinner.jsx";
+import styles from "../styles/MyVocabulary.module.css";
 
-const WORDS_PER_PAGE = 20;
+const logger = createLogger("vocabulary");
 
-// Search and sort controls component
-const VocabularyControls = ({
-  searchTerm,
-  onSearchChange,
-  sortBy,
-  onSortChange,
-  totalWords,
-}) => (
-  <div className={styles.vocabularyControls}>
-    <div className={styles.vocabularyStats}>
-      <h3>📚 My Vocabulary</h3>
-      <p className={styles.statsText}>{totalWords} words saved</p>
-    </div>
-
-    <div className={styles.controlsSection}>
-      <div className={styles.searchSection}>
-        <input
-          type="text"
-          placeholder="Search your vocabulary..."
-          value={searchTerm}
-          onChange={(e) => onSearchChange(e.target.value)}
-          className={styles.searchInput}
-        />
-        <span className={styles.searchIcon}>🔍</span>
-      </div>
-
-      <select
-        value={sortBy}
-        onChange={(e) => onSortChange(e.target.value)}
-        className={styles.sortSelect}
-      >
-        <option value="date_desc">Newest First</option>
-        <option value="date_asc">Oldest First</option>
-        <option value="word_asc">A to Z</option>
-        <option value="word_desc">Z to A</option>
-      </select>
-    </div>
-  </div>
-);
+const WORDS_PER_PAGE = 12;
 
 // Individual word card component
-const WordCard = ({ wordData, onDelete, onViewVideo, onViewDetails }) => {
+const WordCard = ({ wordData, onDelete, onViewDetails }) => {
+  const { t, i18n } = useTranslation();
   const [definition, setDefinition] = useState(null);
   const [loadingDefinition, setLoadingDefinition] = useState(false);
 
@@ -59,7 +28,7 @@ const WordCard = ({ wordData, onDelete, onViewVideo, onViewDetails }) => {
       const defData = await dictionaryService.getDefinition(wordData.word);
       setDefinition(defData);
     } catch (error) {
-      console.error("Failed to load definition:", error);
+      logger.error("Failed to load definition", error);
       setDefinition({ error: "Failed to load definition" });
     } finally {
       setLoadingDefinition(false);
@@ -72,11 +41,11 @@ const WordCard = ({ wordData, onDelete, onViewVideo, onViewDetails }) => {
     }
   };
 
-  const handleViewVideo = () => {
-    if (wordData.video_id) {
-      onViewVideo(wordData.video_id);
-    }
-  };
+  // const handleViewVideo = () => {
+  //   if (wordData.video_id) {
+  //     onViewVideo(wordData.video_id);
+  //   }
+  // };
 
   const getDefinitionPreview = () => {
     if (definition?.error) return definition.error;
@@ -87,7 +56,7 @@ const WordCard = ({ wordData, onDelete, onViewVideo, onViewDetails }) => {
   };
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
+    return new Date(dateString).toLocaleDateString(i18n.language, {
       month: "short",
       day: "numeric",
       year: "numeric",
@@ -99,37 +68,40 @@ const WordCard = ({ wordData, onDelete, onViewVideo, onViewDetails }) => {
       <div className={styles.wordHeader}>
         <h3 className={styles.wordTitle}>{wordData.word}</h3>
         <div className={styles.wordActions}>
-          {wordData.video_id && (
+          {/* {wordData.video_id && (
             <button
               className={`${styles.btnIcon} ${styles.videoBtn}`}
               onClick={handleViewVideo}
-              title="View in video"
+              title={t('vocabulary.viewInVideo')}
             >
-              📹
+              <Video size={16} />
             </button>
-          )}
+          )} */}
           <button
             className={`${styles.btnIcon} ${styles.deleteBtn}`}
             onClick={handleDelete}
-            title="Delete word"
+            title={t('vocabulary.deleteWord')}
           >
-            🗑️
+            <Trash2 size={16} />
           </button>
         </div>
       </div>
 
       <div className={styles.wordMeta}>
         <span className={styles.saveDate}>
-          Saved {formatDate(wordData.saved_at)}
+          {t('vocabulary.savedOn', { date: formatDate(wordData.saved_at) })}
         </span>
         {wordData.video_id && (
-          <span className={styles.videoBadge}>📺 From video</span>
+          <span className={styles.videoBadge}><Tv size={13} /> {t('vocabulary.fromVideo')}</span>
         )}
       </div>
 
       <div className={styles.wordContent}>
         {loadingDefinition ? (
-          <div className={styles.definitionLoading}>Loading definition...</div>
+          <div className={styles.definitionLoading}>
+            <Spinner size={16} />
+            <span>{t('vocabulary.loadingDefinition')}</span>
+          </div>
         ) : definition ? (
           <div className={styles.definitionPreview}>
             <p>{getDefinitionPreview()}</p>
@@ -144,12 +116,12 @@ const WordCard = ({ wordData, onDelete, onViewVideo, onViewDetails }) => {
               className={styles.detailsToggle}
               onClick={() => onViewDetails(wordData.word)}
             >
-              View Details →
+              {t('vocabulary.viewDetails')}
             </button>
           </div>
         ) : (
           <button className={styles.loadDefinitionBtn} onClick={loadDefinition}>
-            Show Definition
+            {t('vocabulary.showDefinition')}
           </button>
         )}
       </div>
@@ -166,11 +138,13 @@ const VocabularyGrid = ({
   loading,
   error,
 }) => {
+  const { t } = useTranslation();
+
   if (loading) {
     return (
       <div className={styles.vocabularyLoading}>
-        <div className={styles.loadingSpinner}></div>
-        <p>Loading your vocabulary...</p>
+        <Spinner size={32} />
+        <p>{t('vocabulary.loading')}</p>
       </div>
     );
   }
@@ -178,13 +152,13 @@ const VocabularyGrid = ({
   if (error) {
     return (
       <div className={styles.vocabularyError}>
-        <h3>❌ Error Loading Vocabulary</h3>
+        <h3><XCircle size={20} /> {t('vocabulary.errorTitle')}</h3>
         <p>{error}</p>
         <button
           className={styles.btnPrimary}
           onClick={() => window.location.reload()}
         >
-          Try Again
+          {t('common.tryAgain')}
         </button>
       </div>
     );
@@ -193,11 +167,11 @@ const VocabularyGrid = ({
   if (words.length === 0) {
     return (
       <div className={styles.vocabularyEmpty}>
-        <div className={styles.emptyIcon}>📚</div>
-        <h3>No saved words yet</h3>
-        <p>Start watching videos and saving words to build your vocabulary!</p>
+        <div className={styles.emptyIcon}><BookOpen size={48} /></div>
+        <h3>{t('vocabulary.emptyTitle')}</h3>
+        <p>{t('vocabulary.emptyDesc')}</p>
         <Link to="/dashboard" className={styles.btnPrimary}>
-          Browse Videos
+          {t('common.browseVideos')}
         </Link>
       </div>
     );
@@ -220,25 +194,27 @@ const VocabularyGrid = ({
 
 // Main MyVocabulary component
 export const MyVocabulary = () => {
+  const { t } = useTranslation();
   const [savedWords, setSavedWords] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [sortBy, setSortBy] = useState("date_desc");
   const [totalWords, setTotalWords] = useState(0);
+  const [page, setPage] = useState(1);
 
   const navigate = useNavigate();
+  const totalPages = Math.ceil(totalWords / WORDS_PER_PAGE);
 
-  // Load saved words
-  const loadSavedWords = async () => {
+  // Load saved words with pagination
+  const loadSavedWords = async (pageNum = 1) => {
     try {
       setLoading(true);
       setError(null);
 
-      const response = await vocabularyService.getSavedWords({
-        skip: 0,
-        limit: 1000, // Load all words for now
-      });
+      const skip = (pageNum - 1) * WORDS_PER_PAGE;
+      const response = await vocabularyService.getSavedWords(
+        skip,
+        WORDS_PER_PAGE,
+      );
 
       // Transform backend response to match frontend expectations
       const transformedWords =
@@ -252,10 +228,11 @@ export const MyVocabulary = () => {
         })) || [];
 
       setSavedWords(transformedWords);
-      setTotalWords(response.total || transformedWords.length);
+      setTotalWords(response.total || 0);
     } catch (error) {
-      console.error("Failed to load vocabulary:", error);
+      logger.error("Failed to load vocabulary", error);
       setError(error.message || "Failed to load your vocabulary");
+      toast.error(t('vocabulary.loadFailed'));
       setSavedWords([]);
     } finally {
       setLoading(false);
@@ -266,12 +243,36 @@ export const MyVocabulary = () => {
   const handleDeleteWord = async (word) => {
     try {
       await vocabularyService.deleteSavedWord(word);
-      // Remove the word from current list
-      setSavedWords((prev) => prev.filter((w) => w.word !== word));
+
+      // Optimistically remove from UI
+      const newWords = savedWords.filter((w) => w.word !== word);
+      setSavedWords(newWords);
       setTotalWords((prev) => prev - 1);
+
+      toast.success(t('vocabulary.removed', { word }));
+
+      // If deleting last word on page and not on first page, go to previous page
+      if (newWords.length === 0 && page > 1) {
+        setPage(page - 1);
+      } else {
+        // Reload to get accurate count
+        loadSavedWords(page);
+      }
     } catch (error) {
-      console.error("Failed to delete word:", error);
-      alert("Failed to delete word. Please try again.");
+      logger.error("Failed to delete word", error);
+
+      // Handle different error types
+      if (!error.response) {
+        toast.error(t('common.networkError'));
+      } else if (error.response?.status === 401) {
+        toast.error(t('vocabulary.loginToDelete'));
+      } else if (error.response?.status === 404) {
+        toast.error(t('vocabulary.notFound'));
+        // Reload to sync state
+        loadSavedWords(page);
+      } else {
+        toast.error(t('vocabulary.deleteFailed'));
+      }
     }
   };
 
@@ -288,57 +289,41 @@ export const MyVocabulary = () => {
     });
   };
 
-  // Handle search (client-side for now)
-  const getFilteredWords = () => {
-    let filtered = [...savedWords];
+  // Load words on component mount and page change
+  useEffect(() => {
+    loadSavedWords(page);
+  }, [page]);
 
-    // Apply search filter
-    if (searchTerm.trim()) {
-      const search = searchTerm.toLowerCase();
-      filtered = filtered.filter((word) =>
-        word.word.toLowerCase().includes(search)
-      );
+  // Handle page navigation
+  const handleNextPage = () => {
+    if (page < totalPages) {
+      setPage(page + 1);
     }
-
-    // Apply sorting
-    switch (sortBy) {
-      case "word_asc":
-        filtered.sort((a, b) => a.word.localeCompare(b.word));
-        break;
-      case "word_desc":
-        filtered.sort((a, b) => b.word.localeCompare(a.word));
-        break;
-      case "date_asc":
-        filtered.sort((a, b) => new Date(a.saved_at) - new Date(b.saved_at));
-        break;
-      case "date_desc":
-      default:
-        filtered.sort((a, b) => new Date(b.saved_at) - new Date(a.saved_at));
-        break;
-    }
-
-    return filtered;
   };
 
-  // Load words on component mount
-  useEffect(() => {
-    loadSavedWords();
-  }, []);
-
-  const filteredWords = getFilteredWords();
+  const handlePrevPage = () => {
+    if (page > 1) {
+      setPage(page - 1);
+    }
+  };
 
   return (
     <div className={styles.vocabularyPage}>
-      <VocabularyControls
-        searchTerm={searchTerm}
-        onSearchChange={setSearchTerm}
-        sortBy={sortBy}
-        onSortChange={setSortBy}
-        totalWords={totalWords}
-      />
+      <Helmet>
+        <title>Vocabulary | Languni</title>
+        <meta name="robots" content="noindex,nofollow" />
+      </Helmet>
+      <div className={styles.vocabularyControls}>
+        <div className={styles.vocabularyStats}>
+          <h3><BookOpen size={20} /> {t('vocabulary.title')}</h3>
+          <p className={styles.statsText}>
+            {t('vocabulary.wordsSaved', { count: totalWords })}
+          </p>
+        </div>
+      </div>
 
       <VocabularyGrid
-        words={filteredWords}
+        words={savedWords}
         onDelete={handleDeleteWord}
         onViewVideo={handleViewVideo}
         onViewDetails={handleViewDetails}
@@ -346,9 +331,26 @@ export const MyVocabulary = () => {
         error={error}
       />
 
-      {searchTerm && (
-        <div className={styles.searchResultsInfo}>
-          Found {filteredWords.length} word(s) matching "{searchTerm}"
+      {/* Pagination Controls */}
+      {totalWords > 0 && (
+        <div className={styles.paginationContainer}>
+          <button
+            onClick={handlePrevPage}
+            disabled={page === 1 || loading}
+            className={styles.paginationButton}
+          >
+            {t('vocabulary.prevPage')}
+          </button>
+          <span className={styles.pageInfo}>
+            {t('vocabulary.pageInfo', { page, total: totalPages || 1, count: totalWords })}
+          </span>
+          <button
+            onClick={handleNextPage}
+            disabled={page >= totalPages || loading}
+            className={styles.paginationButton}
+          >
+            {t('vocabulary.nextPage')}
+          </button>
         </div>
       )}
     </div>

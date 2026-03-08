@@ -35,6 +35,34 @@
   background: #555;
 }
 
+.player-save-btn {
+  background: #333;
+  border: 1px solid #555;
+  color: #ccc;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.player-save-btn:hover {
+  border-color: #3b82f6;
+  color: #3b82f6;
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.player-save-btn.saved {
+  border-color: #3b82f6;
+  color: #3b82f6;
+  background: rgba(59, 130, 246, 0.15);
+}
+
+.player-save-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .video-title {
   margin: 0;
   font-size: 1.2rem;
@@ -118,7 +146,8 @@
   margin-bottom: 0.5rem;
   border-radius: 6px;
   border: 1px solid transparent;
-  transition: all 0.2s ease;
+  /* Only transition transform - NOT background/border to prevent double active */
+  transition: transform 0.2s ease;
   cursor: pointer;
   position: relative;
 }
@@ -142,12 +171,14 @@
 .caption-item:hover {
   background: #333;
   border-color: #555;
+  transform: translateX(4px);
 }
 
 .caption-item.active {
   background: #2563eb;
   border-color: #3b82f6;
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+  /* No transition - instant visual feedback */
 }
 
 .caption-timestamp {

@@ -1,0 +1,35 @@
+/* ============================================
+   YOUTUBE PLAYER — fills parent flex/grid cell
+   ============================================ */
+
+/*
+ * The YT IFrame API *replaces* the target div with an <iframe>,
+ * so the class on the inner div is lost after init.
+ * We keep a stable outer container and target iframe directly.
+ */
+
+.playerContainer {
+  flex: 1;
+  position: relative;
+  background: #000;
+  width: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* The placeholder div before YT API fires (also used as a fallback) */
+.playerDiv {
+  width: 100%;
+  height: 100%;
+}
+
+/* The <iframe> injected by YT IFrame API — must fill the container */
+.playerContainer iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+  border: none;
+  display: block;
+}

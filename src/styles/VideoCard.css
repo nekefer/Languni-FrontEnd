@@ -79,6 +79,39 @@
     margin: 0;
 }
 
+.video-info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
+.save-btn {
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: #9ca3af;
+    padding: 0;
+    line-height: 1;
+    flex-shrink: 0;
+    transition: color 0.2s, transform 0.2s;
+}
+
+.save-btn:hover {
+    color: #3b82f6;
+    transform: scale(1.2);
+}
+
+.save-btn.saved {
+    color: #3b82f6;
+}
+
+.save-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 @media (max-width: 768px) {
     .video-card {
         max-width: 400px;

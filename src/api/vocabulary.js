@@ -1,9 +1,11 @@
 import axios from "axios";
 import dictionaryService from "./dictionary.js";
+import config from "../config";
+import { vocabularyLogger } from "../utils/logger";
 
-const API_URL = "http://localhost:8000";
+const API_URL = config.apiUrl;
 
-// ✅ Configure axios to send cookies automatically
+// Configure axios to send cookies automatically
 axios.defaults.withCredentials = true;
 
 class VocabularyService {
@@ -105,10 +107,10 @@ class VocabularyService {
         word,
         captions,
         currentIndex,
-        currentTime
+        currentTime,
       );
 
-      // Get dictionary definition
+      // Get dictionary definition — language is determined server-side from user profile
       const definition = await dictionaryService.getDefinition(word);
 
       if (!definition) {
@@ -121,11 +123,11 @@ class VocabularyService {
         definition: definition,
       };
 
-      console.log("Vocabulary data processed successfully:", vocabularyData);
+      vocabularyLogger.debug("Vocabulary data processed", { word: vocabularyData.word });
 
       return vocabularyData;
     } catch (error) {
-      console.error("Vocabulary processing error:", error);
+      vocabularyLogger.error("Failed to process vocabulary", error, { word });
       throw error;
     }
   }
@@ -136,20 +138,24 @@ class VocabularyService {
    * @param {string} videoId - ID of the video where the word was encountered
    * @returns {Promise<Object>} Save result
    */
-  async saveWord(word, videoId) {
+  async saveWord(word, videoId, { translation, nativeLanguage, definition } = {}) {
     try {
-      // No validation needed - word is already validated when modal opened
+      const cleanWord = word.toLowerCase().trim();
+
       const saveData = {
-        word: word.toLowerCase().trim(),
-        video_id: videoId,
+        word: cleanWord,
+        youtube_video_id: videoId || null,
+        translation: translation || null,
+        native_language: nativeLanguage || null,
+        definition: definition || null,
       };
 
       const response = await axios.post(`${API_URL}/vocabulary/save`, saveData);
 
-      console.log("Word saved successfully:", response.data);
+      vocabularyLogger.debug("Word saved", { word: cleanWord });
       return response.data;
     } catch (error) {
-      console.error("Save word error:", error);
+      vocabularyLogger.error("Failed to save word", error, { word });
       const errorMessage =
         error.response?.data?.detail || error.message || "Failed to save word";
       throw new Error(errorMessage);
@@ -163,17 +169,17 @@ class VocabularyService {
    */
   async isWordSaved(word) {
     try {
-      if (!word) return false;
+      if (!word) return { saved: false };
 
       const cleanWord = word.toLowerCase().trim();
       const response = await axios.get(
-        `${API_URL}/vocabulary/check/${encodeURIComponent(cleanWord)}`
+        `${API_URL}/vocabulary/check/${encodeURIComponent(cleanWord)}`,
       );
 
-      return response.data.saved || false;
+      return response.data; // { word, saved, definition, translation, native_language }
     } catch (error) {
-      console.error("Check word saved error:", error);
-      return false;
+      vocabularyLogger.error("Failed to check word status", error, { word });
+      return { saved: false };
     }
   }
 
@@ -191,7 +197,7 @@ class VocabularyService {
 
       return response.data;
     } catch (error) {
-      console.error("Get saved words error:", error);
+      vocabularyLogger.error("Failed to get saved words", error);
       const errorMessage =
         error.response?.data?.detail ||
         error.message ||
@@ -209,12 +215,12 @@ class VocabularyService {
     try {
       const cleanWord = word.toLowerCase().trim();
       const response = await axios.delete(
-        `${API_URL}/vocabulary/${encodeURIComponent(cleanWord)}`
+        `${API_URL}/vocabulary/${encodeURIComponent(cleanWord)}`,
       );
 
       return response.data;
     } catch (error) {
-      console.error("Delete word error:", error);
+      vocabularyLogger.error("Failed to delete word", error, { word });
       const errorMessage =
         error.response?.data?.detail ||
         error.message ||
