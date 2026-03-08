@@ -405,6 +405,36 @@
   margin-bottom: 24px;
 }
 
+.modalPasswordField {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+
+.modalPasswordLabel {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--txt2);
+}
+
+.modalPasswordInput {
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-family: var(--body);
+  color: var(--txt);
+  background: var(--bg);
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.modalPasswordInput:focus {
+  border-color: var(--pri);
+}
+
 .modalActions {
   display: flex;
   gap: 12px;

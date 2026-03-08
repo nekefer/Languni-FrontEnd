@@ -10,6 +10,7 @@ const PASSWORD_RULES = {
   requireUppercase: true,
   requireLowercase: true,
   requireDigit: true,
+  requireSpecial: true,
 };
 
 // Name validation regex (from RegisterUserRequest)
@@ -62,13 +63,19 @@ export const validatePassword = (password) => {
     errors.push("Password must contain at least one digit");
   }
 
+  const hasSpecial = /[!@#$%^&*(),.?":{}|<>\-_=+\[\]\\;'`~/]/.test(password);
+  if (!hasSpecial) {
+    errors.push("Password must contain at least one special character");
+  }
+
   // Determine strength
   let strength = "weak";
   if (
     password.length >= PASSWORD_RULES.minLength &&
     hasUppercase &&
     hasLowercase &&
-    hasDigit
+    hasDigit &&
+    hasSpecial
   ) {
     strength = password.length >= 12 ? "strong" : "medium";
   }

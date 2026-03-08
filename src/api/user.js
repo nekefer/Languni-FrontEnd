@@ -18,6 +18,6 @@ export async function changePassword({ current_password, new_password, new_passw
   });
 }
 
-export async function deleteAccount() {
-  await axios.delete(`${API_URL}/api/user`);
+export async function deleteAccount(password = null) {
+  await axios.delete(`${API_URL}/api/user`, { data: { password } });
 }

@@ -50,6 +50,7 @@ export default function Settings() {
   // ── Delete ──
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [deletePassword, setDeletePassword] = useState("");
 
   // ── Checkout ──
   const [checkoutLoading, setCheckoutLoading] = useState(null);
@@ -149,13 +150,19 @@ export default function Settings() {
   const handleDeleteAccount = async () => {
     setDeleting(true);
     try {
-      await deleteAccount();
+      await deleteAccount(user?.auth_method !== "google" ? deletePassword : null);
       await logout();
       navigate({ to: "/" });
-    } catch {
-      toast.error("Failed to delete account");
+    } catch (err) {
+      const msg = err?.response?.data?.detail || "Failed to delete account";
+      toast.error(msg);
       setDeleting(false);
     }
+  };
+
+  const handleOpenDeleteModal = () => {
+    setDeletePassword("");
+    setShowDeleteModal(true);
   };
 
   const toggleTopic = (id) =>
@@ -385,7 +392,7 @@ export default function Settings() {
         <p className={styles.dangerDesc}>
           Permanently delete your account and all your data. This cannot be undone.
         </p>
-        <button className={styles.deleteBtn} onClick={() => setShowDeleteModal(true)}>
+        <button className={styles.deleteBtn} onClick={handleOpenDeleteModal}>
           Delete account
         </button>
       </section>
@@ -399,6 +406,19 @@ export default function Settings() {
               All your data — vocabulary, saved videos, and preferences — will be permanently deleted.
               This action cannot be undone.
             </p>
+            {user?.auth_method !== "google" && (
+              <div className={styles.modalPasswordField}>
+                <label className={styles.modalPasswordLabel}>Confirm your password</label>
+                <input
+                  type="password"
+                  className={styles.modalPasswordInput}
+                  placeholder="Enter your password"
+                  value={deletePassword}
+                  onChange={(e) => setDeletePassword(e.target.value)}
+                  disabled={deleting}
+                />
+              </div>
+            )}
             <div className={styles.modalActions}>
               <button
                 className={styles.secondaryBtn}
@@ -407,7 +427,11 @@ export default function Settings() {
               >
                 Cancel
               </button>
-              <button className={styles.modalDeleteBtn} onClick={handleDeleteAccount} disabled={deleting}>
+              <button
+                className={styles.modalDeleteBtn}
+                onClick={handleDeleteAccount}
+                disabled={deleting || (user?.auth_method !== "google" && !deletePassword)}
+              >
                 {deleting ? "Deleting…" : "Yes, delete my account"}
               </button>
             </div>

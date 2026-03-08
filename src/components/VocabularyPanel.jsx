@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import posthog from "posthog-js";
 import { toast } from "sonner";
-import { Search, Loader, CheckCircle, XCircle, Bookmark, Volume2, Volume1, X, BookOpen, Globe, ArrowRight } from "lucide-react";
+import { Search, Loader, CheckCircle, XCircle, Bookmark, X, BookOpen, Globe, ArrowRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import vocabularyService from "../api/vocabulary.js";
 import translationService from "../api/translation.js";
@@ -13,8 +13,6 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
   const { t } = useTranslation();
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("definition");
-  const [audioPlaying, setAudioPlaying] = useState(false);
-  const audioRef = useRef(null);
   const modalRef = useRef(null);
 
   // Save word functionality
@@ -67,7 +65,6 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
   useEffect(() => {
     if (isOpen) {
       setActiveTab("definition");
-      setAudioPlaying(false);
       setSaveState("checking");
       setSaveError(null);
       setTranslationData(null);
@@ -108,34 +105,6 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
         });
     }
   }, [isOpen, vocabularyData?.word, saveState]);
-
-  // Audio playback for the header pronunciation button
-  const playPronunciation = async () => {
-    const audioUrl = vocabularyData?.definition?.audio;
-    if (!audioUrl || audioPlaying) return;
-
-    try {
-      setAudioPlaying(true);
-
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current.currentTime = 0;
-      }
-
-      audioRef.current = new Audio(audioUrl);
-      posthog.capture("word_pronunciation_played", { word: vocabularyData?.definition?.word || vocabularyData?.word });
-      audioRef.current.onended = () => setAudioPlaying(false);
-      audioRef.current.onerror = () => {
-        setAudioPlaying(false);
-        vocabularyLogger.warn("Audio playback failed");
-      };
-
-      await audioRef.current.play();
-    } catch (error) {
-      vocabularyLogger.error("Audio playback error", error);
-      setAudioPlaying(false);
-    }
-  };
 
   const formatPhonetic = (phonetic) => {
     if (!phonetic) return "";
@@ -233,16 +202,6 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
                 <span className={styles.phoneticText}>
                   {formatPhonetic(vocabularyData.definition.phonetic)}
                 </span>
-                {vocabularyData.definition?.audio && (
-                  <button
-                    className={`${styles.audioBtn} ${audioPlaying ? styles.playing : ""}`}
-                    onClick={playPronunciation}
-                    disabled={audioPlaying}
-                    title="Play pronunciation"
-                  >
-                    {audioPlaying ? <Volume2 size={18} /> : <Volume1 size={18} />}
-                  </button>
-                )}
               </div>
             )}
           </div>
