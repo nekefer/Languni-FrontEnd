@@ -13,10 +13,12 @@ import { Route as WordsRouteImport } from './routes/words'
 import { Route as VerifyEmailPendingRouteImport } from './routes/verify-email-pending'
 import { Route as VerifyEmailRouteImport } from './routes/verify-email'
 import { Route as TrendingRouteImport } from './routes/trending'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as RecommendedRouteImport } from './routes/recommended'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LibraryRouteImport } from './routes/library'
@@ -48,6 +50,11 @@ const TrendingRoute = TrendingRouteImport.update({
   path: '/trending',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -66,6 +73,11 @@ const RegisterRoute = RegisterRouteImport.update({
 const RecommendedRoute = RecommendedRouteImport.update({
   id: '/recommended',
   path: '/recommended',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OnboardingRoute = OnboardingRouteImport.update({
@@ -126,10 +138,12 @@ export interface FileRoutesByFullPath {
   '/library': typeof LibraryRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
+  '/privacy': typeof PrivacyRoute
   '/recommended': typeof RecommendedRoute
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
   '/settings': typeof SettingsRoute
+  '/terms': typeof TermsRoute
   '/trending': typeof TrendingRoute
   '/verify-email': typeof VerifyEmailRoute
   '/verify-email-pending': typeof VerifyEmailPendingRoute
@@ -146,10 +160,12 @@ export interface FileRoutesByTo {
   '/library': typeof LibraryRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
+  '/privacy': typeof PrivacyRoute
   '/recommended': typeof RecommendedRoute
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
   '/settings': typeof SettingsRoute
+  '/terms': typeof TermsRoute
   '/trending': typeof TrendingRoute
   '/verify-email': typeof VerifyEmailRoute
   '/verify-email-pending': typeof VerifyEmailPendingRoute
@@ -167,10 +183,12 @@ export interface FileRoutesById {
   '/library': typeof LibraryRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
+  '/privacy': typeof PrivacyRoute
   '/recommended': typeof RecommendedRoute
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
   '/settings': typeof SettingsRoute
+  '/terms': typeof TermsRoute
   '/trending': typeof TrendingRoute
   '/verify-email': typeof VerifyEmailRoute
   '/verify-email-pending': typeof VerifyEmailPendingRoute
@@ -189,10 +207,12 @@ export interface FileRouteTypes {
     | '/library'
     | '/login'
     | '/onboarding'
+    | '/privacy'
     | '/recommended'
     | '/register'
     | '/reset-password'
     | '/settings'
+    | '/terms'
     | '/trending'
     | '/verify-email'
     | '/verify-email-pending'
@@ -209,10 +229,12 @@ export interface FileRouteTypes {
     | '/library'
     | '/login'
     | '/onboarding'
+    | '/privacy'
     | '/recommended'
     | '/register'
     | '/reset-password'
     | '/settings'
+    | '/terms'
     | '/trending'
     | '/verify-email'
     | '/verify-email-pending'
@@ -229,10 +251,12 @@ export interface FileRouteTypes {
     | '/library'
     | '/login'
     | '/onboarding'
+    | '/privacy'
     | '/recommended'
     | '/register'
     | '/reset-password'
     | '/settings'
+    | '/terms'
     | '/trending'
     | '/verify-email'
     | '/verify-email-pending'
@@ -250,10 +274,12 @@ export interface RootRouteChildren {
   LibraryRoute: typeof LibraryRoute
   LoginRoute: typeof LoginRoute
   OnboardingRoute: typeof OnboardingRoute
+  PrivacyRoute: typeof PrivacyRoute
   RecommendedRoute: typeof RecommendedRoute
   RegisterRoute: typeof RegisterRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SettingsRoute: typeof SettingsRoute
+  TermsRoute: typeof TermsRoute
   TrendingRoute: typeof TrendingRoute
   VerifyEmailRoute: typeof VerifyEmailRoute
   VerifyEmailPendingRoute: typeof VerifyEmailPendingRoute
@@ -294,6 +320,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TrendingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings': {
       id: '/settings'
       path: '/settings'
@@ -320,6 +353,13 @@ declare module '@tanstack/react-router' {
       path: '/recommended'
       fullPath: '/recommended'
       preLoaderRoute: typeof RecommendedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/onboarding': {
@@ -402,10 +442,12 @@ const rootRouteChildren: RootRouteChildren = {
   LibraryRoute: LibraryRoute,
   LoginRoute: LoginRoute,
   OnboardingRoute: OnboardingRoute,
+  PrivacyRoute: PrivacyRoute,
   RecommendedRoute: RecommendedRoute,
   RegisterRoute: RegisterRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SettingsRoute: SettingsRoute,
+  TermsRoute: TermsRoute,
   TrendingRoute: TrendingRoute,
   VerifyEmailRoute: VerifyEmailRoute,
   VerifyEmailPendingRoute: VerifyEmailPendingRoute,
