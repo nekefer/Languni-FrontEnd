@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import posthog from "posthog-js";
 import { toast } from "sonner";
 import { Search, Loader, CheckCircle, XCircle, Bookmark, Volume2, Volume1, X, BookOpen, Globe, ArrowRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -122,6 +123,7 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
       }
 
       audioRef.current = new Audio(audioUrl);
+      posthog.capture("word_pronunciation_played", { word: vocabularyData?.definition?.word || vocabularyData?.word });
       audioRef.current.onended = () => setAudioPlaying(false);
       audioRef.current.onerror = () => {
         setAudioPlaying(false);
@@ -157,6 +159,7 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
           ? JSON.stringify(vocabularyData.definition)
           : null,
       });
+      posthog.capture("word_saved", { word: wordText, video_id: videoId });
       toast.success(t('vocPanel.saveSuccess', { word: wordText }));
     } catch (error) {
       vocabularyLogger.error("Failed to save word", error);

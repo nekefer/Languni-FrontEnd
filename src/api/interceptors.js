@@ -33,12 +33,14 @@ axios.interceptors.response.use(
     const isRetry = original._retry;
     const isRefreshEndpoint = original.url?.includes("/auth/refresh");
     const isLoginEndpoint = original.url?.includes("/auth/token");
+    const isRegisterEndpoint = original.url?.includes("/auth/") && original.method === "post" && !original.url?.includes("/auth/logout");
 
     if (
       error.response?.status !== 401 ||
       isRetry ||
       isRefreshEndpoint ||
-      isLoginEndpoint
+      isLoginEndpoint ||
+      isRegisterEndpoint
     ) {
       return Promise.reject(error);
     }

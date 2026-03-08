@@ -5,6 +5,7 @@ import React, {
   useEffect,
   useCallback,
 } from "react";
+import posthog from "posthog-js";
 import { fetchUserInfo, logoutUser } from "../api/auth";
 import { authLogger } from "../utils/logger";
 
@@ -36,6 +37,10 @@ export const AuthProvider = ({ children }) => {
       const userData = await fetchUserInfo();
       authLogger.debug("User authenticated", { email: userData.email });
       setUser(userData);
+      posthog.identify(userData.id, {
+        email: userData.email,
+        plan: userData.subscription_plan ?? "free",
+      });
       return userData;
     } catch {
       // Not logged in, or refresh also failed — stay on landing page
@@ -49,14 +54,21 @@ export const AuthProvider = ({ children }) => {
   const login = (userData) => {
     setUser(userData);
     setError(null);
-
+    posthog.identify(userData.id, {
+      email: userData.email,
+      plan: userData.subscription_plan ?? "free",
+    });
     authLogger.info("User logged in", { method: userData.auth_method });
   };
 
   const register = (userData) => {
     setUser(userData);
     setError(null);
-
+    posthog.identify(userData.id, {
+      email: userData.email,
+      plan: userData.subscription_plan ?? "free",
+    });
+    posthog.capture("signed_up", { method: userData.auth_method });
     authLogger.info("User registered", { method: userData.auth_method });
   };
 
@@ -68,7 +80,7 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setUser(null);
       setError(null);
-
+      posthog.reset();
     }
   };
 

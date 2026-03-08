@@ -1,5 +1,6 @@
 import React, { useState, useRef, useCallback, useEffect } from "react";
 import { useNavigate } from "@tanstack/react-router";
+import posthog from "posthog-js";
 import { ArrowLeft, Bookmark, BookmarkCheck } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
@@ -29,8 +30,10 @@ function VideoPlayer({ videoId }) {
 
   // Check daily video limit on mount
   useEffect(() => {
+    posthog.capture("video_opened", { video_id: videoId });
     startWatching(videoId).catch((err) => {
       if (err?.response?.data?.detail?.code === "DAILY_LIMIT_REACHED") {
+        posthog.capture("daily_limit_reached", { video_id: videoId });
         setShowUpgradeModal(true);
       }
     });
@@ -41,10 +44,12 @@ function VideoPlayer({ videoId }) {
     fetchSaved: () => savedVideosService.isVideoSaved(videoId),
     onSave: async () => {
       await savedVideosService.saveVideo(videoId);
+      posthog.capture("video_saved", { video_id: videoId, source: "player" });
       toast.success(t("videoCard.videoSaved"));
     },
     onUnsave: async () => {
       await savedVideosService.deleteSavedVideo(videoId);
+      posthog.capture("video_unsaved", { video_id: videoId, source: "player" });
       toast.success(t("videoCard.videoRemoved"));
     },
     onError: (error) => {
@@ -99,12 +104,8 @@ function VideoPlayer({ videoId }) {
   };
 
   const handleWordClick = (vocabularyData) => {
-    // Handle word click from CaptionPanel
-    // Pause video when vocabulary panel opens
-    // Added optional chaining to avoid errors if playerRef is null
-    // because we can get the captions before the player is ready
-    // the user can still click on words before the video loads
     playerRef?.pauseVideo();
+    posthog.capture("word_clicked", { word: vocabularyData.word, video_id: videoId });
     setVocabularyData(vocabularyData);
     setIsVocabularyPanelOpen(true);
   };

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
+import posthog from "posthog-js";
 import s from "../styles/Welcome.module.css";
 import languni from "../assets/Languni.webp";
 import thumbEn from "../assets/En_landing_pic.webp";
@@ -123,10 +124,10 @@ export default function Welcome() {
             <a href="#pricing" className={s.navLink}>{t('nav.pricing')}</a>
           </nav>
           <div className={s.headerRight}>
-            <button onClick={() => navigate({ to: "/login" })} className={s.loginBtn}>
+            <button onClick={() => { posthog.capture("landing_cta_clicked", { location: "header_login" }); navigate({ to: "/login" }); }} className={s.loginBtn}>
               {t('nav.login')}
             </button>
-            <button onClick={() => navigate({ to: "/register" })} className={s.startBtn}>
+            <button onClick={() => { posthog.capture("landing_cta_clicked", { location: "header_register" }); navigate({ to: "/register" }); }} className={s.startBtn}>
               {t('nav.getStarted')}
             </button>
           </div>
@@ -150,7 +151,7 @@ export default function Welcome() {
               {t('landing.heroDesc')}
             </p>
             <div className={s.heroCtas}>
-              <button onClick={() => navigate({ to: "/register" })} className={s.ctaPrimary}>
+              <button onClick={() => { posthog.capture("landing_cta_clicked", { location: "hero" }); navigate({ to: "/register" }); }} className={s.ctaPrimary}>
                 {t('landing.ctaPrimary')}
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                   <path d="M4 9h10M10 5l4 4-4 4" />
@@ -350,7 +351,7 @@ export default function Welcome() {
                 <li className={s.pYes}>{t('landing.freeFeat4')}</li>
                 <li className={s.pYes}>{t('landing.freeFeat5')}</li>
               </ul>
-              <button onClick={() => navigate({ to: "/register" })} className={s.pBtnLight}>
+              <button onClick={() => { posthog.capture("landing_cta_clicked", { location: "pricing_free" }); navigate({ to: "/register" }); }} className={s.pBtnLight}>
                 {t('nav.getStarted')}
               </button>
             </div>
@@ -373,7 +374,7 @@ export default function Welcome() {
                 <li className={s.pYes}>{t('landing.premiumFeat5')}</li>
               </ul>
               <button
-                onClick={() => handleUpgrade("monthly")}
+                onClick={() => { posthog.capture("upgrade_clicked", { source: "landing_pricing", plan: "monthly" }); handleUpgrade("monthly"); }}
                 className={s.pBtnSolid}
                 disabled={checkoutLoading !== null}
               >
@@ -390,7 +391,7 @@ export default function Welcome() {
           <div className={s.footerTop}>
             <div className={s.footerCta}>
               <h2 className={s.footerH2}>{t('landing.footerCta')}</h2>
-              <button onClick={() => navigate({ to: "/register" })} className={s.ctaPrimary}>
+              <button onClick={() => { posthog.capture("landing_cta_clicked", { location: "footer" }); navigate({ to: "/register" }); }} className={s.ctaPrimary}>
                 {t('landing.ctaPrimary')}
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                   <path d="M4 9h10M10 5l4 4-4 4" />

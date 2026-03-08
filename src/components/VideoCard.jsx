@@ -1,4 +1,5 @@
 import React from "react";
+import posthog from "posthog-js";
 import { useNavigate } from "@tanstack/react-router";
 import { Bookmark, BookmarkCheck } from "lucide-react";
 import { toast } from "sonner";
@@ -17,10 +18,12 @@ const VideoCard = ({ video, onClick }) => {
     fetchSaved: () => savedVideosService.isVideoSaved(video_id),
     onSave: async () => {
       await savedVideosService.saveVideo(video_id);
+      posthog.capture("video_saved", { video_id, title, source: "card" });
       toast.success(t("videoCard.videoSaved"));
     },
     onUnsave: async () => {
       await savedVideosService.deleteSavedVideo(video_id);
+      posthog.capture("video_unsaved", { video_id, title, source: "card" });
       toast.success(t("videoCard.videoRemoved"));
     },
     onError: (error) => {
@@ -52,6 +55,7 @@ const VideoCard = ({ video, onClick }) => {
   };
 
   const handleClick = () => {
+    posthog.capture("video_clicked", { video_id, title });
     if (onClick) {
       onClick(video);
     } else {

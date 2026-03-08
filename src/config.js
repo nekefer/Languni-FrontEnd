@@ -17,6 +17,10 @@ export const config = {
   // Lemon Squeezy variant IDs (not secret — safe to expose in frontend)
   lsMonthlyVariantId: import.meta.env.VITE_LS_MONTHLY_VARIANT_ID || "",
   lsYearlyVariantId: import.meta.env.VITE_LS_YEARLY_VARIANT_ID || "",
+
+  // PostHog
+  posthogKey: import.meta.env.VITE_PUBLIC_POSTHOG_KEY || "",
+  posthogHost: import.meta.env.VITE_PUBLIC_POSTHOG_HOST || "https://us.i.posthog.com",
 };
 
 export default config;

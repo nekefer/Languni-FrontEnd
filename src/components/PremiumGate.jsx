@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import posthog from "posthog-js";
 import { useTranslation } from "react-i18next";
 import { X, Sparkles, Check } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
@@ -18,10 +19,15 @@ export function PremiumGate({ onClose }) {
     return () => document.removeEventListener("keydown", handler);
   }, [onClose]);
 
+  useEffect(() => {
+    posthog.capture("premium_gate_viewed");
+  }, []);
+
   const handleUpgrade = async () => {
     if (!config.lsMonthlyVariantId) return;
     try {
       setLoading(true);
+      posthog.capture("upgrade_clicked", { source: "premium_gate", plan: "monthly" });
       const url = await createCheckout(config.lsMonthlyVariantId);
       window.location.href = url;
     } catch {

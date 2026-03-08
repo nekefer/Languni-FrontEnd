@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import posthog from "posthog-js";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
@@ -57,6 +58,7 @@ export const OnboardingFlow = () => {
       toast.error(t('onboarding.completeStep'));
       return;
     }
+    posthog.capture("onboarding_step_completed", { step: currentStep });
     if (currentStep < TOTAL_STEPS) {
       setCurrentStep(currentStep + 1);
     }
@@ -97,6 +99,12 @@ export const OnboardingFlow = () => {
       logger.info("Onboarding completed", {
         learning_language: preferences.learning_language,
         level: preferences.level,
+      });
+      posthog.capture("onboarding_completed", {
+        learning_language: preferences.learning_language,
+        native_language: preferences.native_language,
+        level: preferences.level,
+        topics_count: preferences.topics.length,
       });
 
       // Update auth context to reflect completed onboarding
