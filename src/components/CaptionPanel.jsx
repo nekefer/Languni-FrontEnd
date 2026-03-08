@@ -75,12 +75,15 @@ function CaptionPanel({
   getCurrentTime,
   onCaptionsLoaded,
   onSeek,
-  onWordClick
+  onWordClick,
+  pauseVideo,
+  resumeVideo,
 }) {
   const { t } = useTranslation();
   const [captions, setCaptions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [isLookingUp, setIsLookingUp] = useState(false);
   const listRef = useListRef();
   const scrollTimeoutRef = useRef(null);
   const lastScrolledIndexRef = useRef(-1);
@@ -162,7 +165,10 @@ function CaptionPanel({
     async (word, captionIndex) => {
       const cleanWord = word.replace(/[^\w''-]/g, "").toLowerCase();
 
-      if (!cleanWord) return;
+      if (!cleanWord || isLookingUp) return;
+
+      setIsLookingUp(true);
+      pauseVideo?.();
 
       try {
         const expanded = expandContractions(cleanWord);
@@ -186,9 +192,12 @@ function CaptionPanel({
       } catch (error) {
         playerLogger.error("Word processing failed", error);
         toast.error(t('player.noDefinition', { word: cleanWord }));
+        resumeVideo?.();
+      } finally {
+        setIsLookingUp(false);
       }
     },
-    [captions, getCurrentTime, onWordClick, t],
+    [captions, getCurrentTime, onWordClick, pauseVideo, resumeVideo, isLookingUp, t],
   );
 
   const rowProps = useMemo(
@@ -231,7 +240,7 @@ function CaptionPanel({
   }
 
   return (
-    <div className={captionStyles.captionPanel}>
+    <div className={`${captionStyles.captionPanel}${isLookingUp ? ` ${captionStyles.captionPanelBusy}` : ""}`}>
       <div className={captionStyles.captionHeader}>
         <h3>{t('player.captions')}</h3>
         <p className={captionStyles.captionInfo}>

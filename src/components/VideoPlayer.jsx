@@ -104,7 +104,6 @@ function VideoPlayer({ videoId }) {
   };
 
   const handleWordClick = (vocabularyData) => {
-    playerRef?.pauseVideo();
     posthog.capture("word_clicked", { word: vocabularyData.word, video_id: videoId });
     setVocabularyData(vocabularyData);
     setIsVocabularyPanelOpen(true);
@@ -113,6 +112,7 @@ function VideoPlayer({ videoId }) {
   const handleCloseVocabularyPanel = () => {
     setIsVocabularyPanelOpen(false);
     setVocabularyData(null);
+    playerRef?.playVideo();
   };
 
   const handleBackToDashboard = () => {
@@ -165,6 +165,8 @@ function VideoPlayer({ videoId }) {
             onCaptionsLoaded={handleCaptionsLoaded}
             onSeek={handleSeek}
             onWordClick={handleWordClick}
+            pauseVideo={() => playerRef?.pauseVideo()}
+            resumeVideo={() => playerRef?.playVideo()}
           />
         </div>
       </div>

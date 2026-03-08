@@ -171,6 +171,14 @@
   background: rgba(42, 176, 144, 0.25);
 }
 
+.captionPanelBusy {
+  cursor: wait;
+}
+
+.captionPanelBusy .captionWord {
+  pointer-events: none;
+}
+
 /* ── Mobile ── */
 
 @media (max-width: 768px) {
