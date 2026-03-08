@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Video, Trash2, Tv, XCircle, BookOpen } from "lucide-react";
 import { toast } from "sonner";
@@ -308,6 +309,10 @@ export const MyVocabulary = () => {
 
   return (
     <div className={styles.vocabularyPage}>
+      <Helmet>
+        <title>Vocabulary | Languni</title>
+        <meta name="robots" content="noindex,nofollow" />
+      </Helmet>
       <div className={styles.vocabularyControls}>
         <div className={styles.vocabularyStats}>
           <h3><BookOpen size={20} /> {t('vocabulary.title')}</h3>

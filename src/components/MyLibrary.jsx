@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Clapperboard } from "lucide-react";
 import { toast } from "sonner";
@@ -203,6 +204,10 @@ export const MyLibrary = () => {
 
   return (
     <div className={styles.libraryPage}>
+      <Helmet>
+        <title>My Library | Languni</title>
+        <meta name="robots" content="noindex,nofollow" />
+      </Helmet>
       <div className={styles.libraryHeader}>
         <h3>{t('library.title')}</h3>
         <p className={styles.statsText}>

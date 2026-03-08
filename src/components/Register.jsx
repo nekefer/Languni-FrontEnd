@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 import { toast } from "sonner";
 import { registerUser, googleRegister, fetchUserInfo } from "../api/auth";
 import { useNavigate, useSearch } from "@tanstack/react-router";
@@ -18,7 +19,7 @@ import {
   getPasswordStrengthWidth,
 } from "../utils/validators";
 import styles from "../styles/Register.module.css";
-import languni from "../assets/Languni.png";
+import languni from "../assets/Languni.webp";
 
 const STRENGTH_KEYS = {
   weak: "auth.register.strengthWeak",
@@ -164,12 +165,16 @@ export const Register = () => {
 
   return (
     <GuestRoute>
+      <Helmet>
+        <title>Sign Up | Languni</title>
+        <meta name="robots" content="noindex,nofollow" />
+      </Helmet>
       <div className={styles.registerPage}>
         {/* Left panel — branding */}
         <div className={styles.registerBrand}>
           <div className={styles.registerBrandInner}>
             <a href="/" className={styles.registerLogo}>
-              <img src={languni} alt="Languni" height="40" />
+              <img src={languni} alt="Languni" width="155" height="40" />
             </a>
             <h1>
               <Trans i18nKey="auth.register.brandHeading" components={{ em: <em /> }} />

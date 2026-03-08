@@ -1,5 +1,6 @@
 import * as React from "react";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
+import { HelmetProvider } from "react-helmet-async";
 import { routeTree } from "./routeTree.gen";
 import { AuthProvider } from "./contexts/AuthContext";
 import { OnboardingProvider } from "./contexts/OnboardingContext";
@@ -10,12 +11,14 @@ const router = createRouter({ routeTree, defaultPreload: "intent" });
 
 export default function App() {
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <OnboardingProvider>
-          <RouterProvider router={router} />
-        </OnboardingProvider>
-      </AuthProvider>
-    </ThemeProvider>
+    <HelmetProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <OnboardingProvider>
+            <RouterProvider router={router} />
+          </OnboardingProvider>
+        </AuthProvider>
+      </ThemeProvider>
+    </HelmetProvider>
   );
 }

@@ -59,7 +59,7 @@ export function PremiumGate({ onClose }) {
         </ul>
 
         <div className={styles.pricing}>
-          <span className={styles.price}>$9<span className={styles.per}>/mo</span></span>
+          <span className={styles.price}>$5<span className={styles.per}>/mo</span></span>
           <span className={styles.yearly}>{t("premium.yearlyNote")}</span>
         </div>
 

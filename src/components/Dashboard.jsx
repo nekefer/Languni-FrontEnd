@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { Flame, Sparkles, Lock, ArrowRight } from "lucide-react";
@@ -37,6 +38,10 @@ export const Dashboard = () => {
 
   return (
     <div className={styles.dashboardContainer}>
+      <Helmet>
+        <title>Dashboard | Languni</title>
+        <meta name="robots" content="noindex,nofollow" />
+      </Helmet>
       <main className={styles.dashboardBody}>
         <div className={styles.dashboardGreeting}>
           <h2>{t("dashboard.welcome", { name: user.first_name })}</h2>

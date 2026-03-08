@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /library
+Disallow: /words
+Disallow: /settings
+Disallow: /onboarding
+Disallow: /player/
+Disallow: /word/
+Disallow: /verify-email
+Disallow: /verify-email-pending
+Disallow: /pricing/success
+Disallow: /pricing/cancel
+
+Sitemap: https://languni.dev/sitemap.xml

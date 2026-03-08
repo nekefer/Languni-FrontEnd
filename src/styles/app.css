@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700;8..60,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+@import '@fontsource-variable/source-serif-4';
+@import '@fontsource-variable/plus-jakarta-sans';
 
 /* ============================================
    LANGUNI — Global CSS Reset & Base
@@ -17,8 +18,8 @@
   --surface:    #ffffff;
   --red:        #ef4444;
   --red-bg:     #fef2f2;
-  --heading:    'Source Serif 4', Georgia, serif;
-  --body:       'Plus Jakarta Sans', system-ui, sans-serif;
+  --heading:    'Source Serif 4 Variable', Georgia, serif;
+  --body:       'Plus Jakarta Sans Variable', system-ui, sans-serif;
   --radius:     10px;
   --shadow-sm:  0 1px 4px rgba(15, 26, 20, 0.06);
   --shadow-md:  0 4px 16px rgba(15, 26, 20, 0.10);

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 import { toast } from "sonner";
 import { loginUser, googleLogin, fetchUserInfo } from "../api/auth";
 import { useNavigate, useSearch } from "@tanstack/react-router";
@@ -9,7 +10,7 @@ import { Spinner } from "../ui/Spinner";
 import { useTranslation } from "react-i18next";
 import { Trans } from "react-i18next";
 import styles from "../styles/Login.module.css";
-import languni from "../assets/Languni.png";
+import languni from "../assets/Languni.webp";
 
 export const Login = () => {
   const { t } = useTranslation();
@@ -81,12 +82,16 @@ export const Login = () => {
 
   return (
     <GuestRoute>
+      <Helmet>
+        <title>Log In | Languni</title>
+        <meta name="robots" content="noindex,nofollow" />
+      </Helmet>
       <div className={styles.loginPage}>
         {/* Left panel — branding */}
         <div className={styles.loginBrand}>
           <div className={styles.loginBrandInner}>
             <a href="/" className={styles.loginLogo}>
-              <img src={languni} alt="Languni" height="40" />
+              <img src={languni} alt="Languni" width="155" height="40" />
             </a>
             <h1>
               <Trans i18nKey="auth.brandHeading" components={{ em: <em /> }} />

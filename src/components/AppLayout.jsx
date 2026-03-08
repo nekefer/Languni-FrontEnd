@@ -9,8 +9,8 @@ import { VerificationBanner } from "./VerificationBanner";
 import { PremiumGate } from "./PremiumGate";
 import { getUserInitials } from "../utils/avatar";
 import styles from "../styles/AppLayout.module.css";
-import languni from "../assets/Languni.png";
-import languniDark from "../assets/Languni dark.png";
+import languni from "../assets/Languni.webp";
+import languniDark from "../assets/Languni dark.webp";
 
 export function AppLayout({ children }) {
   const { t } = useTranslation();
@@ -60,7 +60,7 @@ export function AppLayout({ children }) {
       <aside className={`${styles.sidebar} ${sidebarOpen ? styles.sidebarOpen : ""}`}>
         <div className={styles.sidebarTop}>
           <Link to="/dashboard" className={styles.logo} onClick={closeSidebar}>
-            <img src={isDark ? languniDark : languni} alt="Languni" height="36" />
+            <img src={isDark ? languniDark : languni} alt="Languni" width="139" height="36" />
           </Link>
         </div>
 
@@ -157,7 +157,7 @@ export function AppLayout({ children }) {
           </button>
 
           <Link to="/dashboard" className={styles.topBarLogo}>
-            <img src={isDark ? languniDark : languni} alt="Languni" height="36" />
+            <img src={isDark ? languniDark : languni} alt="Languni" width="139" height="36" />
           </Link>
 
           <div className={styles.topBarSpacer} />

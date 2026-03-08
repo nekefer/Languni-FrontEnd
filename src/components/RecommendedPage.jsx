@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { Sparkles, RefreshCw } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
@@ -19,6 +20,10 @@ export function RecommendedPage() {
   if (!isPremium) {
     return (
       <div className={styles.page}>
+        <Helmet>
+          <title>For You | Languni</title>
+          <meta name="robots" content="noindex,nofollow" />
+        </Helmet>
         <div className={styles.lockedPage}>
           <Sparkles size={40} className={styles.lockedIcon} />
           <h2>{t("premium.gateTitle")}</h2>
@@ -34,6 +39,10 @@ export function RecommendedPage() {
 
   return (
     <div className={styles.page}>
+      <Helmet>
+        <title>For You | Languni</title>
+        <meta name="robots" content="noindex,nofollow" />
+      </Helmet>
       <div className={styles.header}>
         <div>
           <h1><Sparkles size={22} /> {t("nav.appForYou")}</h1>

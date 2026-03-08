@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -170,6 +171,10 @@ export default function Settings() {
 
   return (
     <div className={styles.page}>
+      <Helmet>
+        <title>Settings | Languni</title>
+        <meta name="robots" content="noindex,nofollow" />
+      </Helmet>
       <h1 className={styles.pageTitle}>Settings</h1>
 
       {/* ── Profile ── */}

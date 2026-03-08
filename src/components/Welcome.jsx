@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import s from "../styles/Welcome.module.css";
-import languni from "../assets/Languni.png";
+import languni from "../assets/Languni.webp";
 import { useAuth } from "../contexts/AuthContext";
 import { createCheckout } from "../api/billing";
 import config from "../config";
@@ -13,10 +14,47 @@ const LANG_OPTIONS = [
   { code: "es", label: "ES" },
 ];
 
+const HERO_CARD = {
+  en: {
+    line1Before: "The world is an",
+    line1HL: "incredible",
+    line1After: "place to explore",
+    line2Before: "Every",
+    line2HL: "language",
+    line2After: "opens a new door",
+    word: "language",
+    def: "language (noun)",
+    ctx: '"Every language opens a new door"',
+  },
+  fr: {
+    line1Before: "Le monde est un endroit",
+    line1HL: "incroyable",
+    line1After: "à explorer",
+    line2Before: "Chaque",
+    line2HL: "langue",
+    line2After: "ouvre une nouvelle porte",
+    word: "langue",
+    def: "language (nom)",
+    ctx: '"Chaque langue ouvre une nouvelle porte"',
+  },
+  es: {
+    line1Before: "El mundo es un lugar",
+    line1HL: "increíble",
+    line1After: "para explorar",
+    line2Before: "Cada",
+    line2HL: "idioma",
+    line2After: "abre una nueva puerta",
+    word: "idioma",
+    def: "language (noun)",
+    ctx: '"Cada idioma abre una nueva puerta"',
+  },
+};
+
 export default function Welcome() {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const { isAuthenticated } = useAuth();
+  const card = HERO_CARD[i18n.language] ?? HERO_CARD.en;
   const [scrolled, setScrolled] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState(null); // 'monthly' | 'yearly' | null
 
@@ -44,11 +82,29 @@ export default function Welcome() {
 
   return (
     <div className={s.page}>
+      <Helmet>
+        <title>Languni — Learn Languages Through Videos</title>
+        <meta name="description" content="Learn English, Spanish, or French through real YouTube videos. Click any word for an instant definition. Save vocabulary. Free to start." />
+        <link rel="canonical" href="https://languni.dev/" />
+        {/* Open Graph */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://languni.dev/" />
+        <meta property="og:title" content="Languni — Learn Languages Through Videos" />
+        <meta property="og:description" content="Learn English, Spanish, or French through real YouTube videos. Click any word for an instant definition. Save vocabulary. Free to start." />
+        <meta property="og:image" content="https://languni.dev/og-image.png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Languni — Learn Languages Through Videos" />
+        <meta name="twitter:description" content="Learn English, Spanish, or French through real YouTube videos. Click any word for an instant definition. Save vocabulary. Free to start." />
+        <meta name="twitter:image" content="https://languni.dev/og-image.png" />
+      </Helmet>
       {/* ===== HEADER ===== */}
       <header className={`${s.header} ${scrolled ? s.headerScrolled : ""}`}>
         <div className={s.headerInner}>
           <a href="/" className={s.logo}>
-            <img src={languni} alt="Languni" height="32" />
+            <img src={languni} alt="Languni" width="124" height="32" />
           </a>
           <nav className={s.nav}>
             <a href="#hero" className={s.navLink}>{t('nav.home')}</a>
@@ -128,19 +184,21 @@ export default function Welcome() {
                 <div className={s.hcCaptions}>
                   <div className={s.hcCapLine}>
                     <span className={s.hcTime}>1:24</span>
-                    El mundo es un lugar{" "}
-                    <span className={s.hcHL}>increible</span> para explorar
+                    {card.line1Before}{" "}
+                    <span className={s.hcHL}>{card.line1HL}</span>{" "}
+                    {card.line1After}
                   </div>
                   <div className={`${s.hcCapLine} ${s.hcCapActive}`}>
                     <span className={s.hcTime}>1:27</span>
-                    Cada{" "}
-                    <span className={s.hcHL}>idioma</span> abre una nueva puerta
+                    {card.line2Before}{" "}
+                    <span className={s.hcHL}>{card.line2HL}</span>{" "}
+                    {card.line2After}
                   </div>
                 </div>
                 <div className={s.hcPopup}>
-                  <div className={s.hcPopupWord}>idioma</div>
-                  <div className={s.hcPopupDef}>language (noun)</div>
-                  <div className={s.hcPopupCtx}>"Cada idioma abre una nueva puerta"</div>
+                  <div className={s.hcPopupWord}>{card.word}</div>
+                  <div className={s.hcPopupDef}>{card.def}</div>
+                  <div className={s.hcPopupCtx}>{card.ctx}</div>
                   <div className={s.hcPopupBtn}>{t('landing.heroCardSave')}</div>
                 </div>
               </div>
@@ -332,7 +390,7 @@ export default function Welcome() {
 
           <div className={s.footerBottom}>
             <a href="/" className={s.footerLogo}>
-              <img src={languni} alt="Languni" height="28" />
+              <img src={languni} alt="Languni" width="108" height="28" />
             </a>
             <div className={s.footerLinks}>
               <a href="#benefits">{t('landing.footerFeatLink')}</a>

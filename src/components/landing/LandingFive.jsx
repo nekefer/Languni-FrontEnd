@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import s from "../../styles/LandingFive.module.css";
-import languni from "../../assets/Languni.png";
+import languni from "../../assets/Languni.webp";
 import { useAuth } from "../../contexts/AuthContext";
 import { createCheckout } from "../../api/billing";
 import config from "../../config";
@@ -40,7 +40,7 @@ export default function LandingFive() {
       <header className={`${s.header} ${scrolled ? s.headerScrolled : ""}`}>
         <div className={s.headerInner}>
           <a href="/5" className={s.logo}>
-            <img src={languni} alt="Languni" height="32" />
+            <img src={languni} alt="Languni" width="124" height="32" />
           </a>
           <nav className={s.nav}>
             <a href="#hero" className={s.navLink}>Home</a>
@@ -313,7 +313,7 @@ export default function LandingFive() {
           <div className={s.footerInner}>
             <div className={s.footerBrand}>
               <a href="/5" className={s.footerLogo}>
-                <img src={languni} alt="Languni" height="28" />
+                <img src={languni} alt="Languni" width="108" height="28" />
               </a>
               <p>Learn languages through real YouTube videos.</p>
             </div>

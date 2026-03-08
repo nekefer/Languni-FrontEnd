@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { Flame } from "lucide-react";
 import useTrendingStore from "../stores/trendingStore";
@@ -18,6 +19,10 @@ export function TrendingPage() {
 
   return (
     <div className={styles.page}>
+      <Helmet>
+        <title>Trending | Languni</title>
+        <meta name="robots" content="noindex,nofollow" />
+      </Helmet>
       <div className={styles.header}>
         <div className={styles.headerLeft}>
           <h1><Flame size={24} /> {t("dashboard.trendingVideos")}</h1>
