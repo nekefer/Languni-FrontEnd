@@ -409,6 +409,7 @@ export default function Welcome() {
             <div className={s.footerLinks}>
               <a href="#benefits">{t('landing.footerFeatLink')}</a>
               <a href="#pricing">{t('landing.footerPricingLink')}</a>
+              <a href="/contact">{t('landing.footerContact')}</a>
               <a href="/privacy">{t('landing.footerPrivacy')}</a>
               <a href="/terms">{t('landing.footerTerms')}</a>
             </div>

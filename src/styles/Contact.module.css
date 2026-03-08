@@ -1,0 +1,202 @@
+.body {
+  min-height: calc(100vh - 68px);
+  background: var(--bg);
+  padding: 5.25rem 1.25rem 5rem;
+}
+
+.container {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.hero {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.title {
+  font-family: var(--heading);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--txt);
+  margin: 0 0 0.75rem;
+}
+
+.subtitle {
+  font-size: 0.9375rem;
+  color: var(--txt2);
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* ── Form ── */
+.form {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--txt2);
+}
+
+.input,
+.select,
+.textarea {
+  height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-family: var(--body);
+  color: var(--txt);
+  background: var(--bg);
+  outline: none;
+  transition: border-color 0.15s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.input:focus,
+.select:focus,
+.textarea:focus {
+  border-color: var(--pri);
+  background: #fff;
+}
+
+.select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2397a59e' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+  cursor: pointer;
+}
+
+.textarea {
+  height: auto;
+  padding: 12px 14px;
+  resize: vertical;
+  min-height: 160px;
+}
+
+.charCount {
+  font-size: 0.75rem;
+  color: var(--txt3);
+  text-align: right;
+  margin-top: 2px;
+}
+
+.formFooter {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.submitBtn {
+  height: 44px;
+  padding: 0 28px;
+  background: var(--pri);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  font-family: var(--body);
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.submitBtn:hover:not(:disabled) { opacity: 0.88; }
+.submitBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ── Email fallback ── */
+.emailFallback {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.emailFallback a {
+  font-size: 1rem;
+  color: var(--pri);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.emailFallback a:hover { text-decoration: underline; }
+
+/* ── Success state ── */
+.success {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 3rem 2rem;
+  text-align: center;
+}
+
+.successIcon {
+  width: 56px;
+  height: 56px;
+  background: var(--pri-light);
+  color: var(--pri);
+  border-radius: 50%;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.25rem;
+  font-weight: 700;
+}
+
+.success h2 {
+  font-family: var(--heading);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--txt);
+  margin: 0 0 0.5rem;
+}
+
+.success p {
+  color: var(--txt2);
+  font-size: 0.9375rem;
+  margin: 0 0 1.5rem;
+}
+
+.backBtn {
+  height: 40px;
+  padding: 0 20px;
+  background: var(--pri);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  font-family: var(--body);
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.backBtn:hover { opacity: 0.88; }
+
+@media (max-width: 640px) {
+  .body { padding: 5.25rem 1.25rem 4rem; }
+  .row { grid-template-columns: 1fr; }
+  .form { padding: 1.5rem; }
+}
