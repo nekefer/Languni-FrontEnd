@@ -4,6 +4,9 @@ import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import s from "../styles/Welcome.module.css";
 import languni from "../assets/Languni.webp";
+import thumbEn from "../assets/En_landing_pic.webp";
+import thumbEs from "../assets/Es_landing_pic.webp";
+import thumbFr from "../assets/Fr_landing_pic.webp";
 import { useAuth } from "../contexts/AuthContext";
 import { createCheckout } from "../api/billing";
 import config from "../config";
@@ -13,6 +16,12 @@ const LANG_OPTIONS = [
   { code: "fr", label: "FR" },
   { code: "es", label: "ES" },
 ];
+
+const HERO_THUMBNAIL = {
+  en: thumbEn,
+  es: thumbEs,
+  fr: thumbFr,
+};
 
 const HERO_CARD = {
   en: {
@@ -55,6 +64,7 @@ export default function Welcome() {
   const { t, i18n } = useTranslation();
   const { isAuthenticated } = useAuth();
   const card = HERO_CARD[i18n.language] ?? HERO_CARD.en;
+  const thumbnail = HERO_THUMBNAIL[i18n.language] ?? HERO_THUMBNAIL.en;
   const [scrolled, setScrolled] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState(null); // 'monthly' | 'yearly' | null
 
@@ -91,14 +101,14 @@ export default function Welcome() {
         <meta property="og:url" content="https://languni.dev/" />
         <meta property="og:title" content="Languni — Learn Languages Through Videos" />
         <meta property="og:description" content="Learn English, Spanish, or French through real YouTube videos. Click any word for an instant definition. Save vocabulary. Free to start." />
-        <meta property="og:image" content="https://languni.dev/og-image.png" />
+        <meta property="og:image" content="https://languni.dev/og-image.jpg" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Languni — Learn Languages Through Videos" />
         <meta name="twitter:description" content="Learn English, Spanish, or French through real YouTube videos. Click any word for an instant definition. Save vocabulary. Free to start." />
-        <meta name="twitter:image" content="https://languni.dev/og-image.png" />
+        <meta name="twitter:image" content="https://languni.dev/og-image.jpg" />
       </Helmet>
       {/* ===== HEADER ===== */}
       <header className={`${s.header} ${scrolled ? s.headerScrolled : ""}`}>
@@ -176,10 +186,13 @@ export default function Welcome() {
               </div>
               <div className={s.hcBody}>
                 <div className={s.hcVideo}>
-                  <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                    <circle cx="16" cy="16" r="16" fill="rgba(42,176,144,0.12)" />
-                    <polygon points="13,10 23,16 13,22" fill="#2AB090" />
-                  </svg>
+                  <img src={thumbnail} alt="" className={s.hcThumb} fetchpriority="high" />
+                  <div className={s.hcPlay}>
+                    <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+                      <circle cx="16" cy="16" r="16" fill="rgba(0,0,0,0.45)" />
+                      <polygon points="13,10 23,16 13,22" fill="#fff" />
+                    </svg>
+                  </div>
                 </div>
                 <div className={s.hcCaptions}>
                   <div className={s.hcCapLine}>
