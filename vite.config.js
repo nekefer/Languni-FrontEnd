@@ -8,13 +8,16 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          'vendor-react': ['react', 'react-dom'],
-          'vendor-router': ['@tanstack/react-router'],
-          'vendor-i18n': ['react-i18next', 'i18next', 'i18next-browser-languagedetector'],
-          'vendor-ui': ['axios', 'zustand', 'sonner'],
-          'vendor-icons': ['lucide-react'],
-          'vendor-misc': ['react-window'],
+        manualChunks(id) {
+          if (!id.includes('node_modules')) return;
+          if (id.includes('posthog'))                         return 'vendor-analytics';
+          if (id.includes('lucide-react'))                    return 'vendor-icons';
+          if (id.includes('i18next') || id.includes('react-i18next')) return 'vendor-i18n';
+          if (id.includes('@tanstack/react-router'))          return 'vendor-router';
+          if (id.includes('react-helmet-async'))              return 'vendor-seo';
+          if (id.includes('axios') || id.includes('zustand') || id.includes('sonner')) return 'vendor-ui';
+          if (id.includes('react-window'))                    return 'vendor-misc';
+          if (id.includes('react-dom') || id.includes('/react/')) return 'vendor-react';
         },
       },
     },
