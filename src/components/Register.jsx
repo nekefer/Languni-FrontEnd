@@ -192,6 +192,9 @@ export const Register = () => {
         {/* Right panel — form */}
         <div className={styles.registerContainer}>
           <form className={styles.registerForm} onSubmit={handleSubmit}>
+            <div className={styles.registerMobileLogo}>
+              <a href="/"><img src={languni} alt="Languni" width="130" height="34" /></a>
+            </div>
             <h2 className={styles.registerFormTitle}>{t('auth.register.title')}</h2>
             <p className={styles.registerFormSub}>{t('auth.register.subtitle')}</p>
 

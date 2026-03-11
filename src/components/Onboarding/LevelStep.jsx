@@ -20,7 +20,7 @@ export const LevelStep = ({ value, onChange }) => {
             onClick={() => onChange(level.id)}
           >
             <div className="level-header">
-              <span className="level-icon">{level.icon}</span>
+              <level.icon className="level-icon" size={32} strokeWidth={1.5} />
               <span className="level-name">{t(`onboarding.levels.${level.id}.name`)}</span>
             </div>
             <p className="level-description">{t(`onboarding.levels.${level.id}.description`)}</p>

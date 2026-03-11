@@ -368,6 +368,10 @@
 
 /* Responsive */
 
+.registerMobileLogo {
+  display: none;
+}
+
 @media (max-width: 768px) {
   .registerPage {
     grid-template-columns: 1fr;
@@ -379,6 +383,12 @@
 
   .registerContainer {
     padding: 24px;
+  }
+
+  .registerMobileLogo {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 32px;
   }
 
   .registerFormTitle {

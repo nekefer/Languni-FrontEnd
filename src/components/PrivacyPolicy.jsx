@@ -116,7 +116,9 @@ export default function PrivacyPolicy() {
           <ul>
             <li>
               <strong>Google OAuth & YouTube</strong> — {t("privacy.s4GoogleDesc")}{" "}
-              <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">{t("privacy.s4GoogleLink")}</a>.
+              <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">{t("privacy.s4GoogleLink")}</a>.{" "}
+              {t("privacy.s4YouTubeTos")}{" "}
+              <a href="https://www.youtube.com/t/terms" target="_blank" rel="noopener noreferrer">{t("privacy.s4YouTubeTosLink")}</a>.
             </li>
             <li>
               <strong>Lemon Squeezy</strong> — {t("privacy.s4LemonDesc")}{" "}
@@ -136,10 +138,6 @@ export default function PrivacyPolicy() {
         <div className={s.section} id="s5">
           <h2>{t("privacy.s5Title")}</h2>
           <p>{t("privacy.s5p1")}</p>
-          <ul>
-            <li><strong>access_token</strong> — {t("privacy.s5AccessDesc")}</li>
-            <li><strong>refresh_token</strong> — {t("privacy.s5RefreshDesc")}</li>
-          </ul>
           <p>{t("privacy.s5p2")}</p>
           <p>{t("privacy.s5p3")}</p>
         </div>

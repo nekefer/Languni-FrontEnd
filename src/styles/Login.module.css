@@ -282,6 +282,10 @@
 
 /* Responsive */
 
+.loginMobileLogo {
+  display: none;
+}
+
 @media (max-width: 768px) {
   .loginPage {
     grid-template-columns: 1fr;
@@ -293,6 +297,12 @@
 
   .loginContainer {
     padding: 24px;
+  }
+
+  .loginMobileLogo {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 32px;
   }
 
   .loginFormTitle {

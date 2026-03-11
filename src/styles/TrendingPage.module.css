@@ -120,6 +120,50 @@
 
 .errorMessage p { margin: 0; }
 
+.freeLimit {
+  text-align: center;
+  padding: 36px 24px;
+  border: 1.5px dashed var(--border);
+  border-radius: 14px;
+  background: var(--pri-faint);
+  margin-bottom: 32px;
+}
+
+.freeLimitTitle {
+  font-family: var(--heading);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--txt);
+  margin: 0 0 8px;
+}
+
+.freeLimitDesc {
+  font-size: 0.88rem;
+  color: var(--txt2);
+  margin: 0 0 20px;
+  max-width: 380px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+}
+
+.freeLimitBtn {
+  font-family: var(--body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #fff;
+  background: var(--pri);
+  border: none;
+  border-radius: 10px;
+  padding: 11px 28px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.freeLimitBtn:hover {
+  background: var(--pri-dark);
+}
+
 @media (max-width: 900px) {
   .page { padding: 24px 20px 48px; }
   .videoGrid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }

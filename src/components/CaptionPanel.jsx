@@ -83,7 +83,9 @@ function CaptionPanel({
   const [captions, setCaptions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [retryCount, setRetryCount] = useState(0);
   const [isLookingUp, setIsLookingUp] = useState(false);
+  const MAX_RETRIES = 2;
   const listRef = useListRef();
   const scrollTimeoutRef = useRef(null);
   const lastScrolledIndexRef = useRef(-1);
@@ -220,10 +222,19 @@ function CaptionPanel({
     return (
       <div className={captionStyles.captionPanel}>
         <div className={captionStyles.captionError}>
-          <p>{t('player.captionsFailed')}</p>
-          <button onClick={fetchCaptions} className={captionStyles.retryButton}>
-            {t('common.retry')}
-          </button>
+          {retryCount >= MAX_RETRIES ? (
+            <p>{t('player.captionsUnavailable')}</p>
+          ) : (
+            <>
+              <p>{t('player.captionsFailed')}</p>
+              <button
+                onClick={() => { setRetryCount((c) => c + 1); fetchCaptions(); }}
+                className={captionStyles.retryButton}
+              >
+                {t('common.retry')}
+              </button>
+            </>
+          )}
         </div>
       </div>
     );

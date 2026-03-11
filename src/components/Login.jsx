@@ -103,6 +103,9 @@ export const Login = () => {
         {/* Right panel — form */}
         <div className={styles.loginContainer}>
           <form className={styles.loginForm} onSubmit={handleSubmit}>
+            <div className={styles.loginMobileLogo}>
+              <a href="/"><img src={languni} alt="Languni" width="130" height="34" /></a>
+            </div>
             <h2 className={styles.loginFormTitle}>{t('auth.login.title')}</h2>
             <p className={styles.loginFormSub}>{t('auth.login.subtitle')}</p>
 
