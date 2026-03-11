@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { toast } from "sonner";
-import { loginUser, googleLogin, fetchUserInfo } from "../api/auth";
+import { loginUser, googleLogin, googleOneTap, fetchUserInfo } from "../api/auth";
 import { useNavigate, useSearch } from "@tanstack/react-router";
 import { useAuth } from "../contexts/AuthContext";
 import { useOnboarding } from "../contexts/OnboardingContext";
@@ -9,6 +9,7 @@ import { GuestRoute } from "./GuestRoute";
 import { Spinner } from "../ui/Spinner";
 import { useTranslation } from "react-i18next";
 import { Trans } from "react-i18next";
+import config from "../config";
 import styles from "../styles/Login.module.css";
 import languni from "../assets/Languni.webp";
 
@@ -22,6 +23,37 @@ export const Login = () => {
   const search = useSearch({ from: "/login" });
   const { login } = useAuth();
   const { checkOnboardingStatus } = useOnboarding();
+
+  // Google One Tap
+  useEffect(() => {
+    if (!config.googleClientId || !window.google) return;
+
+    window.google.accounts.id.initialize({
+      client_id: config.googleClientId,
+      callback: async ({ credential }) => {
+        try {
+          const userData = await googleOneTap(credential);
+          login(userData);
+          navigate({ to: "/dashboard" });
+          toast.success(t("auth.login.success"));
+        } catch (err) {
+          if (err?.response?.status === 403) {
+            toast.error(t("auth.login.googleFailed"));
+          } else {
+            toast.error(t("auth.login.googleFailed"));
+          }
+        }
+      },
+      auto_select: true,
+      cancel_on_tap_outside: false,
+    });
+
+    window.google.accounts.id.prompt();
+
+    return () => {
+      window.google?.accounts?.id?.cancel();
+    };
+  }, []);
 
   useEffect(() => {
     if (search?.error) {
