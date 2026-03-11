@@ -18,6 +18,9 @@ export const config = {
   lsMonthlyVariantId: import.meta.env.VITE_LS_MONTHLY_VARIANT_ID || "",
   lsYearlyVariantId: import.meta.env.VITE_LS_YEARLY_VARIANT_ID || "",
 
+  // Google
+  googleClientId: import.meta.env.VITE_GOOGLE_CLIENT_ID || "",
+
   // PostHog
   posthogKey: import.meta.env.VITE_PUBLIC_POSTHOG_KEY || "",
   posthogHost: import.meta.env.VITE_PUBLIC_POSTHOG_HOST || "https://us.i.posthog.com",

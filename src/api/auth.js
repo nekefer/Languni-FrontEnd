@@ -31,6 +31,12 @@ export const googleRegister = () => {
   window.location.href = `${API_URL}/auth/google/login`;
 };
 
+// Google One Tap — verifies credential JWT on the backend
+export const googleOneTap = async (credential) => {
+  const response = await axios.post(`${API_URL}/auth/google/one-tap`, { credential });
+  return response.data;
+};
+
 // ✅ Updated to use cookies instead of localStorage
 export const fetchUserInfo = async () => {
   const response = await axios.get(`${API_URL}/auth/me`);
