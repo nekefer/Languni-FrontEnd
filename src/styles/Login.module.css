@@ -5,7 +5,7 @@
 
 .loginPage {
   font-family: var(--body);
-  min-height: 100vh;
+  min-height: 100dvh;
   display: grid;
   grid-template-columns: 1fr 1fr;
   background: var(--surface);
@@ -97,7 +97,7 @@
   justify-content: center;
   align-items: center;
   padding: 40px;
-  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 .loginForm {
