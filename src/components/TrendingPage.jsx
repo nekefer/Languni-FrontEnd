@@ -1,15 +1,43 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { Flame } from "lucide-react";
+import { toast } from "sonner";
+import posthog from "posthog-js";
 import useTrendingStore from "../stores/trendingStore";
+import { useAuth } from "../contexts/AuthContext";
+import { createCheckout } from "../api/billing";
+import config from "../config";
 import VideoCard from "./VideoCard";
 import { Spinner } from "../ui/Spinner";
 import styles from "../styles/TrendingPage.module.css";
 
+const FREE_VIDEO_LIMIT = 50;
+
 export function TrendingPage() {
   const { t } = useTranslation();
+  const { isPremium } = useAuth();
   const { videos, loading, error, hasMore, region, fetchTrending, loadMore, changeRegion } = useTrendingStore();
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
+
+  const hitFreeLimit = !isPremium && videos.length >= FREE_VIDEO_LIMIT;
+
+  const handleUpgrade = async () => {
+    if (!config.lsMonthlyVariantId) return;
+    setCheckoutLoading(true);
+    try {
+      posthog.capture("upgrade_clicked", { source: "trending_free_limit", plan: "monthly" });
+      const url = await createCheckout(config.lsMonthlyVariantId);
+      window.location.href = url;
+    } catch (err) {
+      setCheckoutLoading(false);
+      if (err?.response?.status === 403) {
+        toast.error("Please verify your email address before upgrading.");
+      } else {
+        toast.error("Could not start checkout. Please try again.");
+      }
+    }
+  };
 
   useEffect(() => {
     if (videos.length === 0) {
@@ -69,7 +97,19 @@ export function TrendingPage() {
               <VideoCard key={video.video_id} video={video} />
             ))}
           </div>
-          {hasMore && (
+          {hitFreeLimit ? (
+            <div className={styles.freeLimit}>
+              <p className={styles.freeLimitTitle}>{t("trending.freeLimitTitle")}</p>
+              <p className={styles.freeLimitDesc}>{t("trending.freeLimitDesc")}</p>
+              <button
+                className={styles.freeLimitBtn}
+                onClick={handleUpgrade}
+                disabled={checkoutLoading}
+              >
+                {checkoutLoading ? <><Spinner size={14} /> Loading…</> : t("trending.freeLimitBtn")}
+              </button>
+            </div>
+          ) : hasMore && (
             <button
               className={styles.loadMoreBtn}
               onClick={loadMore}

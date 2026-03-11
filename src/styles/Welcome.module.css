@@ -938,6 +938,7 @@
   .hero { padding: 120px 20px 60px; }
   .problem, .benefits, .pricing { padding: 64px 20px; }
   .headerInner { padding: 0 16px; }
+  .loginBtn { display: none; }
   .heroH1 { font-size: 1.9rem; }
   .heroCtas { flex-direction: column; align-items: flex-start; }
   .problemItem { padding-left: 56px; }

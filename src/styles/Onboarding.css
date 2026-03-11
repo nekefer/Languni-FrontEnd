@@ -205,8 +205,11 @@
 }
 
 .option-icon {
-  font-size: 2.5rem;
-  line-height: 1;
+  width: 48px;
+  height: 36px;
+  object-fit: cover;
+  border-radius: 4px;
+  display: block;
 }
 
 .option-label {
@@ -258,9 +261,13 @@
   box-shadow: 0 3px 12px rgba(42, 176, 144, 0.18);
 }
 
+.topic-card.selected .topic-icon {
+  color: var(--pri-dark);
+}
+
 .topic-icon {
-  font-size: 2rem;
-  line-height: 1;
+  color: var(--pri);
+  flex-shrink: 0;
 }
 
 .topic-label {
@@ -332,8 +339,9 @@
 }
 
 .level-icon {
-  font-size: 2.2rem;
-  line-height: 1;
+  color: var(--pri);
+  flex-shrink: 0;
+  margin-bottom: 4px;
 }
 
 .level-name {
@@ -480,9 +488,12 @@
 }
 
 @media (max-width: 480px) {
-  .options-grid,
-  .topics-grid {
+  .options-grid {
     grid-template-columns: 1fr;
+  }
+
+  .topics-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .onboarding-card {

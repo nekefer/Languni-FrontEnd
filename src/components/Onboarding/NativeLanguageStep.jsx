@@ -19,7 +19,14 @@ export const NativeLanguageStep = ({ value, onChange }) => {
             className={`option-card ${value === language.code ? "selected" : ""}`}
             onClick={() => onChange(language.code)}
           >
-            <span className="option-icon">{language.flag}</span>
+            <img
+              className="option-icon"
+              src={`https://flagcdn.com/w40/${language.flagCode}.png`}
+              srcSet={`https://flagcdn.com/w80/${language.flagCode}.png 2x`}
+              alt={language.name}
+              width="40"
+              height="30"
+            />
             <span className="option-label">{t(`onboarding.language.${language.code}`)}</span>
           </button>
         ))}

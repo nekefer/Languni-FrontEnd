@@ -169,6 +169,7 @@ export default function TermsOfService() {
           <h2>{t("terms.s10Title")}</h2>
           <p>{t("terms.s10p1")}</p>
           <p>{t("terms.s10p2")}</p>
+          <p>{t("terms.s10p3")}</p>
         </div>
 
         <div className={s.section} id="s11">

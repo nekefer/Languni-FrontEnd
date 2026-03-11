@@ -1,12 +1,12 @@
 /* ============================================
-   VERIFICATION BANNER
+   VERIFICATION BANNER — Memberstack style
    ============================================ */
 
 .banner {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 32px;
+  padding: 11px 20px;
   background: var(--pri-light);
   border-bottom: 1px solid #b3e5d0;
   font-family: var(--body);
@@ -15,104 +15,78 @@
   flex-shrink: 0;
 }
 
-.icon {
-  font-size: 1rem;
+.banner > svg {
+  color: var(--pri);
   flex-shrink: 0;
 }
 
-.message {
-  margin: 0;
+.text {
   flex: 1;
-  line-height: 1.4;
   min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.message strong {
-  font-weight: 600;
-}
-
-.actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-shrink: 0;
+.text strong {
+  font-weight: 700;
 }
 
 .resendBtn {
   background: none;
-  border: 1.5px solid var(--pri);
-  color: var(--pri);
+  border: none;
   font-family: var(--body);
-  font-size: 0.82rem;
+  font-size: 0.875rem;
   font-weight: 600;
-  padding: 4px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s;
-  white-space: nowrap;
-}
-
-.resendBtn:hover:not(:disabled) {
-  background: var(--pri);
-  color: #fff;
-}
-
-.resendBtn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.helpLink {
-  font-size: 0.82rem;
-  font-weight: 500;
-  color: var(--txt2);
+  color: var(--txt);
   text-decoration: underline;
   text-underline-offset: 2px;
+  cursor: pointer;
+  padding: 0;
   white-space: nowrap;
+  flex-shrink: 0;
   transition: color 0.15s;
 }
 
-.helpLink:hover {
-  color: var(--pri);
-}
+.resendBtn:hover:not(:disabled) { color: var(--pri-dark); }
+.resendBtn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .dismissBtn {
   background: none;
   border: none;
   color: var(--txt3);
-  font-size: 0.85rem;
-  padding: 4px 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
   border-radius: 4px;
   cursor: pointer;
   flex-shrink: 0;
-  line-height: 1;
-  transition: background 0.15s, color 0.15s;
+  transition: color 0.15s;
+  margin-left: 4px;
 }
 
-.dismissBtn:hover {
-  background: var(--pri-faint);
-  color: var(--txt);
-}
+.dismissBtn:hover { color: var(--txt); }
 
-/* ── Responsive ── */
+/* ── Mobile ── */
 
-@media (max-width: 767px) {
+@media (max-width: 640px) {
   .banner {
-    padding: 10px 16px;
     flex-wrap: wrap;
-    gap: 8px;
+    padding: 10px 14px;
+    gap: 6px;
   }
 
-  .message {
+  .text {
     flex: 1 1 100%;
-    font-size: 0.82rem;
+    white-space: normal;
+    overflow: visible;
   }
 
-  .actions {
-    flex: 1;
-  }
-
-  .dismissBtn {
-    margin-left: auto;
-  }
+  .banner > svg { order: 1; }
+  .dismissBtn   { order: 2; margin-left: auto; }
+  .text         { order: 3; }
+  .resendBtn    { order: 4; }
 }

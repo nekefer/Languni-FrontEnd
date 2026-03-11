@@ -30,7 +30,7 @@ export const TopicsStep = ({ value = [], onChange }) => {
             className={`topic-card ${value.includes(topic.id) ? "selected" : ""}`}
             onClick={() => toggleTopic(topic.id)}
           >
-            <span className="topic-icon">{topic.icon}</span>
+            <topic.icon className="topic-icon" size={24} strokeWidth={1.75} />
             <span className="topic-label">{t(`onboarding.topicNames.${topic.id}`)}</span>
           </button>
         ))}
