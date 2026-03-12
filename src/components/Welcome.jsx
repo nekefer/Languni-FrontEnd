@@ -95,20 +95,20 @@ export default function Welcome() {
     <div className={s.page}>
       <Helmet>
         <title>Languni — Learn Languages Through Videos</title>
-        <meta name="description" content="Learn English, Spanish, or French through real YouTube videos. Click any word for an instant definition. Save vocabulary. Free to start." />
+        <meta name="description" content="Learn English, Spanish, or French through YouTube videos. Click any word for instant meaning and translation. Free to start." />
         <link rel="canonical" href="https://languni.dev/" />
         {/* Open Graph */}
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://languni.dev/" />
         <meta property="og:title" content="Languni — Learn Languages Through Videos" />
-        <meta property="og:description" content="Learn English, Spanish, or French through real YouTube videos. Click any word for an instant definition. Save vocabulary. Free to start." />
+        <meta property="og:description" content="Learn English, Spanish, or French through YouTube videos. Click any word for instant meaning and translation. Free to start." />
         <meta property="og:image" content="https://languni.dev/og-image.jpg" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Languni — Learn Languages Through Videos" />
-        <meta name="twitter:description" content="Learn English, Spanish, or French through real YouTube videos. Click any word for an instant definition. Save vocabulary. Free to start." />
+        <meta name="twitter:description" content="Learn English, Spanish, or French through YouTube videos. Click any word for instant meaning and translation. Free to start." />
         <meta name="twitter:image" content="https://languni.dev/og-image.jpg" />
       </Helmet>
       {/* ===== HEADER ===== */}
