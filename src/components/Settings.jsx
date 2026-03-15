@@ -266,14 +266,14 @@ export default function Settings() {
             <div className={styles.prefRow}>
               <label className={styles.label}>Level</label>
               <div className={styles.levelGroup}>
-                {LEVELS.map(({ id, icon, name, description }) => (
+                {LEVELS.map(({ id, icon: Icon, name, description }) => (
                   <button
                     key={id}
                     type="button"
                     className={`${styles.levelCard} ${prefs.level === id ? styles.chipActive : ""}`}
                     onClick={() => setPrefs((p) => ({ ...p, level: id }))}
                   >
-                    <span className={styles.levelIcon}>{icon}</span>
+                    <span className={styles.levelIcon}><Icon size={18} /></span>
                     <span className={styles.levelName}>{name}</span>
                     <span className={styles.levelDesc}>{description}</span>
                   </button>
@@ -290,14 +290,14 @@ export default function Settings() {
                 )}
               </div>
               <div className={styles.topicGroup}>
-                {TOPICS.map(({ id, icon, name }) => (
+                {TOPICS.map(({ id, icon: Icon, name }) => (
                   <button
                     key={id}
                     type="button"
                     className={`${styles.topicChip} ${prefs.topics.includes(id) ? styles.topicChipActive : ""}`}
                     onClick={() => toggleTopic(id)}
                   >
-                    <span>{icon}</span>
+                    <Icon size={16} />
                     {name}
                   </button>
                 ))}
