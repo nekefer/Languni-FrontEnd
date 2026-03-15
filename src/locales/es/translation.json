@@ -636,5 +636,18 @@
     "s14Title": "14. Contáctanos",
     "s14p1": "Si tienes preguntas sobre estos Términos, contáctanos:",
     "s14EmailLabel": "Correo electrónico"
+  },
+  "about": {
+    "pageTitle": "Acerca de — Languni",
+    "metaDescription": "Conoce a Daniel Kloutse, el fundador de Languni. Un ingeniero de software de Togo que se mudó a los Estados Unidos y construyó una aplicación de aprendizaje de idiomas con YouTube.",
+    "greeting": "Hola, soy Daniel Kloutse.",
+    "p1": "Soy de Togo y me mudé a los Estados Unidos hace casi 2 años sabiendo muy poco inglés. Cuando tuve la oportunidad de venir aquí empecé a trabajar en mi inglés y a practicar más. Lo que me ayudó mucho fue YouTube. Pasaba mucho tiempo viendo vlogs y videos en inglés para familiarizarme con el acento, la velocidad del habla y aprender nuevas palabras. Me llevó tiempo llegar a un nivel decente y sentirme cómodo hablando con la gente. YouTube tuvo un gran impacto en eso.",
+    "p2": "Era ingeniero de software en Togo antes de venir a los Estados Unidos y pensé que podía construir algo alrededor de YouTube para facilitar el aprendizaje de idiomas mientras se disfruta viendo cualquier video de YouTube. Me llevó tiempo hacerlo. Cuando te mudas a otro país e intentas establecerte, no es nada fácil. Pero encontré tiempo para construir este proyecto. Esta versión actual es un prototipo para probar si mi idea puede funcionar y ver si la gente la usará. Habrá más funciones próximamente. Tengo muchas ideas alrededor de mis funciones principales que pueden ayudar a todos a aprender diferentes idiomas mientras ven un video de YouTube. Por ahora me limito a 3. Inglés y francés que conozco y entiendo muy bien, y español también. Añadiré más idiomas en el futuro.",
+    "p3a": "es solo un nombre divertido que encontré para el proyecto. Al principio estaba pensando en Linguini, la pasta, como un nombre gracioso para el proyecto. Pero a la mitad lo cambié a",
+    "p3b": "para idiomas y",
+    "p3c": "para universal.",
+    "p4": "Este es un proyecto divertido. Lo construí solo para ver de lo que soy capaz y para divertirme. Si te gusta puedes contactarme en la página de contacto o por DM en Twitter o LinkedIn.",
+    "contact": "Contacto",
+    "photoAlt": "Daniel Kloutse, fundador de Languni"
   }
 }

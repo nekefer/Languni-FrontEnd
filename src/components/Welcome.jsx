@@ -5,6 +5,8 @@ import { useTranslation } from "react-i18next";
 import posthog from "posthog-js";
 import s from "../styles/Welcome.module.css";
 import languni from "../assets/Languni.webp";
+import PublicNavbar from "./PublicNavbar";
+import PublicFooter from "./PublicFooter";
 import thumbEn from "../assets/En_landing_pic.webp";
 import thumbEs from "../assets/Es_landing_pic.webp";
 import thumbFr from "../assets/Fr_landing_pic.webp";
@@ -111,28 +113,7 @@ export default function Welcome() {
         <meta name="twitter:description" content="Learn English, Spanish, or French through YouTube videos. Click any word for instant meaning and translation. Free to start." />
         <meta name="twitter:image" content="https://languni.dev/og-image.jpg" />
       </Helmet>
-      {/* ===== HEADER ===== */}
-      <header className={`${s.header} ${scrolled ? s.headerScrolled : ""}`}>
-        <div className={s.headerInner}>
-          <a href="/" className={s.logo}>
-            <img src={languni} alt="Languni" width="124" height="32" />
-          </a>
-          <nav className={s.nav}>
-            <a href="#hero" className={s.navLink}>{t('nav.home')}</a>
-            <a href="#problem" className={s.navLink}>{t('nav.whyLanguni')}</a>
-            <a href="#benefits" className={s.navLink}>{t('nav.features')}</a>
-            <a href="#pricing" className={s.navLink}>{t('nav.pricing')}</a>
-          </nav>
-          <div className={s.headerRight}>
-            <button onClick={() => { posthog.capture("landing_cta_clicked", { location: "header_login" }); navigate({ to: "/login" }); }} className={s.loginBtn}>
-              {t('nav.login')}
-            </button>
-            <button onClick={() => { posthog.capture("landing_cta_clicked", { location: "header_register" }); navigate({ to: "/register" }); }} className={s.startBtn}>
-              {t('nav.getStarted')}
-            </button>
-          </div>
-        </div>
-      </header>
+      <PublicNavbar isLanding />
 
       {/* ===== HERO — Split Layout ===== */}
       <section className={s.hero} id="hero">
@@ -385,49 +366,7 @@ export default function Welcome() {
         </div>
       </section>
 
-      {/* ===== FOOTER ===== */}
-      <footer className={s.footer}>
-        <div className={s.footerInner}>
-          <div className={s.footerTop}>
-            <div className={s.footerCta}>
-              <h2 className={s.footerH2}>{t('landing.footerCta')}</h2>
-              <button onClick={() => { posthog.capture("landing_cta_clicked", { location: "footer" }); navigate({ to: "/register" }); }} className={s.ctaPrimary}>
-                {t('landing.ctaPrimary')}
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                  <path d="M4 9h10M10 5l4 4-4 4" />
-                </svg>
-              </button>
-            </div>
-          </div>
-
-          <div className={s.footerDivider} />
-
-          <div className={s.footerBottom}>
-            <a href="/" className={s.footerLogo}>
-              <img src={languni} alt="Languni" width="108" height="28" />
-            </a>
-            <div className={s.footerLinks}>
-              <a href="#benefits">{t('landing.footerFeatLink')}</a>
-              <a href="#pricing">{t('landing.footerPricingLink')}</a>
-              <a href="/contact">{t('landing.footerContact')}</a>
-              <a href="/privacy">{t('landing.footerPrivacy')}</a>
-              <a href="/terms">{t('landing.footerTerms')}</a>
-            </div>
-            <div className={s.langSwitcher}>
-              {LANG_OPTIONS.map(({ code, label }) => (
-                <button
-                  key={code}
-                  className={`${s.langBtn} ${i18n.language === code ? s.langBtnActive : ""}`}
-                  onClick={() => i18n.changeLanguage(code)}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-            <p className={s.footerCopy}>{t('landing.footerCopy')}</p>
-          </div>
-        </div>
-      </footer>
+      <PublicFooter />
     </div>
   );
 }
