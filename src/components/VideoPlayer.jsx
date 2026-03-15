@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback, useEffect } from "react";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, useRouter } from "@tanstack/react-router";
 import posthog from "posthog-js";
 import { ArrowLeft, Bookmark, BookmarkCheck } from "lucide-react";
 import { toast } from "sonner";
@@ -17,6 +17,7 @@ import styles from "../styles/VideoPlayer.module.css";
 function VideoPlayer({ videoId }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const router = useRouter();
   // Use ref for raw time (doesn't cause re-renders)
   const currentTimeRef = useRef(0);
   // Only track caption index in state (causes re-render only when caption changes)
@@ -116,7 +117,11 @@ function VideoPlayer({ videoId }) {
   };
 
   const handleBackToDashboard = () => {
-    navigate({ to: "/dashboard" });
+    if (router.history.length > 1) {
+      router.history.back();
+    } else {
+      navigate({ to: "/dashboard" });
+    }
   };
 
   // Early guard: missing or invalid videoId → show 404 page
