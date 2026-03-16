@@ -1,28 +1,19 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
-import posthog from "posthog-js";
 import { useAuth } from "../contexts/AuthContext";
 import { sendContactMessage } from "../api/contact";
-import languni from "../assets/Languni.webp";
 import ws from "../styles/Welcome.module.css";
 import s from "../styles/Contact.module.css";
 import PublicNavbar from "./PublicNavbar";
 import PublicFooter from "./PublicFooter";
 
-const LANG_OPTIONS = [
-  { code: "en", label: "EN" },
-  { code: "fr", label: "FR" },
-  { code: "es", label: "ES" },
-];
-
 export default function Contact() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const [scrolled, setScrolled] = useState(false);
 
   const SUBJECTS = [
     { value: "General",          label: t("contact.subjects.general") },
@@ -40,12 +31,6 @@ export default function Contact() {
   });
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   const handleChange = (e) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));

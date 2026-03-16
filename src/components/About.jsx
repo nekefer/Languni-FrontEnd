@@ -9,7 +9,7 @@ const STRUCTURED_DATA = {
   "@context": "https://schema.org",
   "@type": "Person",
   name: "Daniel Kloutse",
-  url: "https://www.languni.dev/about",
+  url: "https://languni.dev/about",
   sameAs: [
     "https://www.linkedin.com/in/danielkloutse/",
     "https://twitter.com/daniel_lnch",
@@ -27,14 +27,14 @@ export default function About() {
       <Helmet>
         <title>{t("about.pageTitle")}</title>
         <meta name="description" content={t("about.metaDescription")} />
-        <link rel="canonical" href="https://www.languni.dev/about" />
+        <link rel="canonical" href="https://languni.dev/about" />
 
         {/* Open Graph */}
         <meta property="og:type" content="profile" />
         <meta property="og:title" content={t("about.pageTitle")} />
         <meta property="og:description" content={t("about.metaDescription")} />
-        <meta property="og:url" content="https://www.languni.dev/about" />
-        <meta property="og:image" content="https://www.languni.dev/og-image.png" />
+        <meta property="og:url" content="https://languni.dev/about" />
+        <meta property="og:image" content="https://languni.dev/og-image.png" />
         <meta property="profile:first_name" content="Daniel" />
         <meta property="profile:last_name" content="Kloutse" />
 

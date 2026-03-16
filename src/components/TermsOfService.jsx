@@ -1,30 +1,12 @@
-import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
-import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import posthog from "posthog-js";
 import s from "../styles/LegalPage.module.css";
 import ws from "../styles/Welcome.module.css";
-import languni from "../assets/Languni.webp";
 import PublicNavbar from "./PublicNavbar";
 import PublicFooter from "./PublicFooter";
 
-const LANG_OPTIONS = [
-  { code: "en", label: "EN" },
-  { code: "fr", label: "FR" },
-  { code: "es", label: "ES" },
-];
-
 export default function TermsOfService() {
-  const { t, i18n } = useTranslation();
-  const navigate = useNavigate();
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  const { t } = useTranslation();
 
   return (
     <div className={ws.page}>

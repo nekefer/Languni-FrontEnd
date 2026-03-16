@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import posthog from "posthog-js";
 import s from "../styles/Welcome.module.css";
-import languni from "../assets/Languni.webp";
 import PublicNavbar from "./PublicNavbar";
 import PublicFooter from "./PublicFooter";
 import thumbEn from "../assets/En_landing_pic.webp";
@@ -13,12 +12,6 @@ import thumbFr from "../assets/Fr_landing_pic.webp";
 import { useAuth } from "../contexts/AuthContext";
 import { createCheckout } from "../api/billing";
 import config from "../config";
-
-const LANG_OPTIONS = [
-  { code: "en", label: "EN" },
-  { code: "fr", label: "FR" },
-  { code: "es", label: "ES" },
-];
 
 const HERO_THUMBNAIL = {
   en: thumbEn,
@@ -68,7 +61,6 @@ export default function Welcome() {
   const { isAuthenticated } = useAuth();
   const card = HERO_CARD[i18n.language] ?? HERO_CARD.en;
   const thumbnail = HERO_THUMBNAIL[i18n.language] ?? HERO_THUMBNAIL.en;
-  const [scrolled, setScrolled] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState(null); // 'monthly' | 'yearly' | null
 
   const handleUpgrade = async (billing) => {
@@ -86,12 +78,6 @@ export default function Welcome() {
       setCheckoutLoading(null);
     }
   };
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   return (
     <div className={s.page}>
@@ -168,7 +154,7 @@ export default function Welcome() {
               </div>
               <div className={s.hcBody}>
                 <div className={s.hcVideo}>
-                  <img src={thumbnail} alt="" className={s.hcThumb} fetchpriority="high" />
+                  <img src={thumbnail} alt="" className={s.hcThumb} fetchPriority="high" />
                   <div className={s.hcPlay}>
                     <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
                       <circle cx="16" cy="16" r="16" fill="rgba(0,0,0,0.45)" />
