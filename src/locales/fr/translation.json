@@ -636,5 +636,18 @@
     "s14Title": "14. Nous contacter",
     "s14p1": "Si vous avez des questions sur ces Conditions, contactez-nous :",
     "s14EmailLabel": "E-mail"
+  },
+  "about": {
+    "pageTitle": "À propos — Languni",
+    "metaDescription": "Rencontrez Daniel Kloutse, le fondateur de Languni. Un ingénieur logiciel venu du Togo qui a construit une application d'apprentissage des langues propulsée par YouTube.",
+    "greeting": "Bonjour, je suis Daniel Kloutse.",
+    "p1": "Je viens du Togo et je me suis installé aux États-Unis il y a presque 2 ans en parlant à peine anglais. Quand j'ai eu l'opportunité de venir ici, j'ai commencé à travailler mon anglais et à pratiquer davantage. Ce qui m'a énormément aidé, c'est YouTube. Je passais beaucoup de temps à regarder des vlogs et des vidéos en anglais pour me familiariser avec l'accent, le débit de parole et apprendre de nouveaux mots. Ça m'a pris un certain temps pour atteindre un niveau correct et me sentir à l'aise pour parler avec les gens. YouTube a eu un impact énorme là-dessus.",
+    "p2": "J'étais ingénieur logiciel au Togo avant de venir aux États-Unis et j'ai pensé que je pouvais construire quelque chose autour de YouTube pour rendre l'apprentissage des langues plus facile tout en regardant n'importe quelle vidéo YouTube. Ça m'a pris du temps. Quand on déménage dans un autre pays et qu'on essaie de s'installer, ce n'est vraiment pas simple. Mais j'ai trouvé du temps pour construire ce projet. Cette version actuelle est un prototype pour tester si mon idée peut fonctionner et voir si les gens l'utiliseront. De nouvelles fonctionnalités arrivent. J'ai beaucoup d'idées autour de mes fonctionnalités principales qui peuvent aider tout le monde à apprendre différentes langues en regardant une vidéo YouTube. Pour l'instant je me limite à 3. L'anglais et le français que je connais et comprends très bien, et l'espagnol aussi. J'ajouterai d'autres langues à l'avenir.",
+    "p3a": "est juste un nom amusant que j'ai trouvé pour le projet. Au début je pensais à Linguini, les pâtes, comme un nom drôle pour le projet. Mais j'ai changé en cours de route pour",
+    "p3b": "pour les langues et",
+    "p3c": "pour universel.",
+    "p4": "C'est un projet qui me tient à cœur. Je l'ai construit pour voir ce dont je suis capable et pour m'amuser. Si vous l'aimez, vous pouvez me contacter sur la page contact ou sur Twitter ou LinkedIn.",
+    "contact": "Contact",
+    "photoAlt": "Daniel Kloutse, fondateur de Languni"
   }
 }

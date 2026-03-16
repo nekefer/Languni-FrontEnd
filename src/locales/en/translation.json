@@ -636,5 +636,18 @@
     "s14Title": "14. Contact Us",
     "s14p1": "If you have questions about these Terms, please contact us:",
     "s14EmailLabel": "Email"
+  },
+  "about": {
+    "pageTitle": "About — Languni",
+    "metaDescription": "Meet Daniel Kloutse, the founder of Languni. A software engineer from Togo who moved to the US and built a language learning app powered by YouTube.",
+    "greeting": "Hi, I'm Daniel Kloutse.",
+    "p1": "I'm from Togo and I moved to the US almost 2 years ago knowing English barely. When I got the opportunity to come here I started to work on my English and practice more. What helped me a lot was YouTube. I was spending a lot of time watching vlog videos and react videos in English to get familiar with the accent, the speed of talking and to learn new words too. It took a while to get to a decent level and feel comfortable talking with people. YouTube had a huge impact on that.",
+    "p2": "I was a software engineer in Togo before coming to the US and I thought I could build something around YouTube to make it easier for people to learn a language while having fun watching any YouTube video. It took me a while to do that. When you are moving to another country and trying to get things settled down it is not easy at all. But I found time aside to build this project. This current version is a prototype to test if my idea can work and see if people will use it. There will be more features coming. I have a lot of ideas around my main features that can help everybody learn different languages while watching a YouTube video. For now I just stick to 3. English and French that I know and understand very well, and Spanish too. I will add more languages in the future.",
+    "p3a": "is just a fun name I found for the project. In the beginning I was thinking about Linguini, the spaghetti, as a funny name for the project. But in the middle I changed it to",
+    "p3b": "for languages and",
+    "p3c": "for universal.",
+    "p4": "This is a fun project. I built it just to see what I am capable of and to have fun. If you like it you can reach me on the contact page or on my DM on Twitter or LinkedIn.",
+    "contact": "Contact",
+    "photoAlt": "Daniel Kloutse, founder of Languni"
   }
 }

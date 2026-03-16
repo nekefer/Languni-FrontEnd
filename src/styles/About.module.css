@@ -1,0 +1,136 @@
+.page {
+  min-height: 100vh;
+  padding: 120px 24px 80px;
+  background: var(--bg);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  box-shadow: var(--shadow-md);
+  width: 100%;
+  max-width: 780px;
+  padding: 48px 52px;
+}
+
+.body {
+  display: flex;
+  gap: 48px;
+  align-items: flex-start;
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+}
+
+.greeting {
+  font-family: var(--heading);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--txt);
+  margin: 0 0 20px;
+}
+
+.text {
+  font-size: 0.975rem;
+  line-height: 1.75;
+  color: var(--txt2);
+  margin: 0 0 16px;
+}
+
+.text strong {
+  color: var(--txt);
+  font-weight: 600;
+}
+
+.text em {
+  font-style: italic;
+}
+
+.brandName {
+  font-weight: 600;
+}
+
+.lang {
+  color: var(--txt);
+  font-weight: 700;
+}
+
+.uni {
+  color: var(--pri);
+  font-weight: 700;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.socialLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--txt2);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.socialLink:hover {
+  background: var(--pri-light);
+  color: var(--pri);
+  border-color: var(--pri);
+}
+
+/* ── Photo ── */
+.photoWrap {
+  flex-shrink: 0;
+}
+
+.photo {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: bottom;
+  border: 3px solid var(--border);
+}
+
+/* ── Mobile ── */
+@media (max-width: 600px) {
+  .page {
+    padding: 100px 16px 60px;
+  }
+
+  .card {
+    padding: 32px 24px;
+  }
+
+  .body {
+    flex-direction: column-reverse;
+    gap: 24px;
+    align-items: center;
+  }
+
+  .photo {
+    width: 110px;
+    height: 110px;
+  }
+
+  .greeting {
+    font-size: 1.25rem;
+    text-align: center;
+  }
+}

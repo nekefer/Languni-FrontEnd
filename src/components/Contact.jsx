@@ -1,26 +1,19 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
-import posthog from "posthog-js";
 import { useAuth } from "../contexts/AuthContext";
 import { sendContactMessage } from "../api/contact";
-import languni from "../assets/Languni.webp";
 import ws from "../styles/Welcome.module.css";
 import s from "../styles/Contact.module.css";
-
-const LANG_OPTIONS = [
-  { code: "en", label: "EN" },
-  { code: "fr", label: "FR" },
-  { code: "es", label: "ES" },
-];
+import PublicNavbar from "./PublicNavbar";
+import PublicFooter from "./PublicFooter";
 
 export default function Contact() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const [scrolled, setScrolled] = useState(false);
 
   const SUBJECTS = [
     { value: "General",          label: t("contact.subjects.general") },
@@ -38,12 +31,6 @@ export default function Contact() {
   });
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   const handleChange = (e) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -78,27 +65,7 @@ export default function Contact() {
       </Helmet>
 
       {/* ===== HEADER ===== */}
-      <header className={`${ws.header} ${scrolled ? ws.headerScrolled : ""}`}>
-        <div className={ws.headerInner}>
-          <a href="/" className={ws.logo}>
-            <img src={languni} alt="Languni" width="124" height="32" />
-          </a>
-          <nav className={ws.nav}>
-            <a href="/#hero" className={ws.navLink}>{t("nav.home")}</a>
-            <a href="/#problem" className={ws.navLink}>{t("nav.whyLanguni")}</a>
-            <a href="/#benefits" className={ws.navLink}>{t("nav.features")}</a>
-            <a href="/#pricing" className={ws.navLink}>{t("nav.pricing")}</a>
-          </nav>
-          <div className={ws.headerRight}>
-            <button onClick={() => { posthog.capture("landing_cta_clicked", { location: "header_login" }); navigate({ to: "/login" }); }} className={ws.loginBtn}>
-              {t("nav.login")}
-            </button>
-            <button onClick={() => { posthog.capture("landing_cta_clicked", { location: "header_register" }); navigate({ to: "/register" }); }} className={ws.startBtn}>
-              {t("nav.getStarted")}
-            </button>
-          </div>
-        </div>
-      </header>
+      <PublicNavbar activePage="contact" />
 
       {/* ===== CONTACT SECTION ===== */}
       <div className={s.body}>
@@ -197,48 +164,7 @@ export default function Contact() {
       </div>
 
       {/* ===== FOOTER ===== */}
-      <footer className={ws.footer}>
-        <div className={ws.footerInner}>
-          <div className={ws.footerTop}>
-            <div className={ws.footerCta}>
-              <h2 className={ws.footerH2}>{t("landing.footerCta")}</h2>
-              <button onClick={() => { posthog.capture("landing_cta_clicked", { location: "footer" }); navigate({ to: "/register" }); }} className={ws.ctaPrimary}>
-                {t("landing.ctaPrimary")}
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                  <path d="M4 9h10M10 5l4 4-4 4" />
-                </svg>
-              </button>
-            </div>
-          </div>
-
-          <div className={ws.footerDivider} />
-
-          <div className={ws.footerBottom}>
-            <a href="/" className={ws.footerLogo}>
-              <img src={languni} alt="Languni" width="108" height="28" />
-            </a>
-            <div className={ws.footerLinks}>
-              <a href="/#benefits">{t("landing.footerFeatLink")}</a>
-              <a href="/#pricing">{t("landing.footerPricingLink")}</a>
-              <a href="/contact">{t("landing.footerContact")}</a>
-              <a href="/privacy">{t("landing.footerPrivacy")}</a>
-              <a href="/terms">{t("landing.footerTerms")}</a>
-            </div>
-            <div className={ws.langSwitcher}>
-              {LANG_OPTIONS.map(({ code, label }) => (
-                <button
-                  key={code}
-                  className={`${ws.langBtn} ${i18n.language === code ? ws.langBtnActive : ""}`}
-                  onClick={() => i18n.changeLanguage(code)}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-            <p className={ws.footerCopy}>{t("landing.footerCopy")}</p>
-          </div>
-        </div>
-      </footer>
+      <PublicFooter />
     </div>
   );
 }
