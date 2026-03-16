@@ -87,6 +87,11 @@
   color: var(--txt);
 }
 
+.navLinkActive {
+  color: var(--pri);
+  font-weight: 600;
+}
+
 .headerRight {
   margin-left: auto;
   display: flex;

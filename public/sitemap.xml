@@ -24,4 +24,10 @@
     <priority>0.4</priority>
     <lastmod>2026-03-12</lastmod>
   </url>
+  <url>
+    <loc>https://languni.dev/about</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <lastmod>2026-03-15</lastmod>
+  </url>
 </urlset>

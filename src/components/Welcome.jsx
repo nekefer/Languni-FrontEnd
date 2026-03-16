@@ -1,22 +1,17 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import posthog from "posthog-js";
 import s from "../styles/Welcome.module.css";
-import languni from "../assets/Languni.webp";
+import PublicNavbar from "./PublicNavbar";
+import PublicFooter from "./PublicFooter";
 import thumbEn from "../assets/En_landing_pic.webp";
 import thumbEs from "../assets/Es_landing_pic.webp";
 import thumbFr from "../assets/Fr_landing_pic.webp";
 import { useAuth } from "../contexts/AuthContext";
 import { createCheckout } from "../api/billing";
 import config from "../config";
-
-const LANG_OPTIONS = [
-  { code: "en", label: "EN" },
-  { code: "fr", label: "FR" },
-  { code: "es", label: "ES" },
-];
 
 const HERO_THUMBNAIL = {
   en: thumbEn,
@@ -66,7 +61,6 @@ export default function Welcome() {
   const { isAuthenticated } = useAuth();
   const card = HERO_CARD[i18n.language] ?? HERO_CARD.en;
   const thumbnail = HERO_THUMBNAIL[i18n.language] ?? HERO_THUMBNAIL.en;
-  const [scrolled, setScrolled] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState(null); // 'monthly' | 'yearly' | null
 
   const handleUpgrade = async (billing) => {
@@ -84,12 +78,6 @@ export default function Welcome() {
       setCheckoutLoading(null);
     }
   };
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   return (
     <div className={s.page}>
@@ -111,28 +99,7 @@ export default function Welcome() {
         <meta name="twitter:description" content="Learn English, Spanish, or French through YouTube videos. Click any word for instant meaning and translation. Free to start." />
         <meta name="twitter:image" content="https://languni.dev/og-image.jpg" />
       </Helmet>
-      {/* ===== HEADER ===== */}
-      <header className={`${s.header} ${scrolled ? s.headerScrolled : ""}`}>
-        <div className={s.headerInner}>
-          <a href="/" className={s.logo}>
-            <img src={languni} alt="Languni" width="124" height="32" />
-          </a>
-          <nav className={s.nav}>
-            <a href="#hero" className={s.navLink}>{t('nav.home')}</a>
-            <a href="#problem" className={s.navLink}>{t('nav.whyLanguni')}</a>
-            <a href="#benefits" className={s.navLink}>{t('nav.features')}</a>
-            <a href="#pricing" className={s.navLink}>{t('nav.pricing')}</a>
-          </nav>
-          <div className={s.headerRight}>
-            <button onClick={() => { posthog.capture("landing_cta_clicked", { location: "header_login" }); navigate({ to: "/login" }); }} className={s.loginBtn}>
-              {t('nav.login')}
-            </button>
-            <button onClick={() => { posthog.capture("landing_cta_clicked", { location: "header_register" }); navigate({ to: "/register" }); }} className={s.startBtn}>
-              {t('nav.getStarted')}
-            </button>
-          </div>
-        </div>
-      </header>
+      <PublicNavbar isLanding />
 
       {/* ===== HERO — Split Layout ===== */}
       <section className={s.hero} id="hero">
@@ -187,7 +154,7 @@ export default function Welcome() {
               </div>
               <div className={s.hcBody}>
                 <div className={s.hcVideo}>
-                  <img src={thumbnail} alt="" className={s.hcThumb} fetchpriority="high" />
+                  <img src={thumbnail} alt="" className={s.hcThumb} fetchPriority="high" />
                   <div className={s.hcPlay}>
                     <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
                       <circle cx="16" cy="16" r="16" fill="rgba(0,0,0,0.45)" />
@@ -385,49 +352,7 @@ export default function Welcome() {
         </div>
       </section>
 
-      {/* ===== FOOTER ===== */}
-      <footer className={s.footer}>
-        <div className={s.footerInner}>
-          <div className={s.footerTop}>
-            <div className={s.footerCta}>
-              <h2 className={s.footerH2}>{t('landing.footerCta')}</h2>
-              <button onClick={() => { posthog.capture("landing_cta_clicked", { location: "footer" }); navigate({ to: "/register" }); }} className={s.ctaPrimary}>
-                {t('landing.ctaPrimary')}
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                  <path d="M4 9h10M10 5l4 4-4 4" />
-                </svg>
-              </button>
-            </div>
-          </div>
-
-          <div className={s.footerDivider} />
-
-          <div className={s.footerBottom}>
-            <a href="/" className={s.footerLogo}>
-              <img src={languni} alt="Languni" width="108" height="28" />
-            </a>
-            <div className={s.footerLinks}>
-              <a href="#benefits">{t('landing.footerFeatLink')}</a>
-              <a href="#pricing">{t('landing.footerPricingLink')}</a>
-              <a href="/contact">{t('landing.footerContact')}</a>
-              <a href="/privacy">{t('landing.footerPrivacy')}</a>
-              <a href="/terms">{t('landing.footerTerms')}</a>
-            </div>
-            <div className={s.langSwitcher}>
-              {LANG_OPTIONS.map(({ code, label }) => (
-                <button
-                  key={code}
-                  className={`${s.langBtn} ${i18n.language === code ? s.langBtnActive : ""}`}
-                  onClick={() => i18n.changeLanguage(code)}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-            <p className={s.footerCopy}>{t('landing.footerCopy')}</p>
-          </div>
-        </div>
-      </footer>
+      <PublicFooter />
     </div>
   );
 }

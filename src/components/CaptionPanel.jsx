@@ -52,7 +52,7 @@ const CaptionRow = memo(function CaptionRow({
         </span>
       </div>
       <div className={captionStyles.captionText}>
-        {caption.text.split(" ").map((word, i) => (
+        {caption.text.split(/\s+/).filter(Boolean).map((word, i) => (
           <span
             key={i}
             className={captionStyles.captionWord}
