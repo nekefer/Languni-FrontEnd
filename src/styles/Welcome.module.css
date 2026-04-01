@@ -927,8 +927,111 @@
   .featGrid { grid-template-columns: repeat(2, 1fr); }
 }
 
+/* ───── HAMBURGER & MOBILE MENU ───── */
+
+.hamburger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  background: none;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+  color: var(--txt);
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+.hamburger:hover { background: var(--pri-faint); }
+
+.headerMenuOpen {
+  border-bottom-color: var(--border);
+  box-shadow: 0 1px 16px rgba(15, 26, 20, 0.04);
+}
+
+.mobileMenuWrapper {
+  position: fixed;
+  top: 68px;
+  left: 0;
+  right: 0;
+  z-index: 99;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.mobileMenuWrapperOpen {
+  pointer-events: auto;
+}
+
+.mobileMenu {
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 8px 24px rgba(15, 26, 20, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 20px 20px 28px;
+  transform: translateY(-100%);
+  will-change: transform;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mobileMenuOpen {
+  transform: translateY(0);
+}
+
+.mobileNav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mobileNavLink {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--txt2);
+  text-decoration: none;
+  padding: 12px 8px;
+  border-radius: 8px;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s, color 0.15s;
+  display: block;
+}
+.mobileNavLink:last-child { border-bottom: none; }
+.mobileNavLink:hover { background: var(--pri-faint); color: var(--txt); }
+
+.mobileBtns {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mobilLoginBtn {
+  font-family: var(--body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--txt2);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.mobilLoginBtn:hover { background: var(--pri-faint); color: var(--txt); }
+
+.mobileBtns .startBtn {
+  font-size: 0.95rem;
+  padding: 12px;
+  border-radius: 8px;
+  width: 100%;
+}
+
+
 @media (max-width: 768px) {
   .nav { display: none; }
+  .headerRight { display: none; }
+  .hamburger { display: flex; }
   .heroH1 { font-size: 2.4rem; }
   .sectionH2 { font-size: 2rem; }
   .problemGrid { grid-template-columns: 1fr; }
@@ -943,7 +1046,6 @@
   .hero { padding: 120px 20px 60px; }
   .problem, .benefits, .pricing { padding: 64px 20px; }
   .headerInner { padding: 0 16px; }
-  .loginBtn { display: none; }
   .heroH1 { font-size: 1.9rem; }
   .heroCtas { flex-direction: column; align-items: flex-start; }
   .problemItem { padding-left: 56px; }
