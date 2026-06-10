@@ -1,30 +1,25 @@
-import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { Flame, Sparkles, Lock, ArrowRight } from "lucide-react";
+import { Flame, Sparkles, ArrowRight } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import useTrendingStore from "../stores/trendingStore";
 import { useEffect } from "react";
 import VideoCard from "./VideoCard";
-import { PremiumGate } from "./PremiumGate";
 import { Spinner } from "../ui/Spinner";
 import { useCurated } from "../hooks/useCurated";
 import styles from "../styles/Dashboard.module.css";
 
 export const Dashboard = () => {
   const { t } = useTranslation();
-  const { user, isPremium } = useAuth();
-  const [gateOpen, setGateOpen] = useState(false);
+  const { user } = useAuth();
 
   const {
     videos,
     loading,
     error,
-    hasMore,
     region,
     fetchTrending,
-    loadMore,
     changeRegion,
   } = useTrendingStore();
 
@@ -108,57 +103,27 @@ export const Dashboard = () => {
           <div className={styles.sectionHeader}>
             <h3>
               <Sparkles size={18} /> {t("dashboard.forYou")}
-              {!isPremium && <span className={styles.premiumBadge}>Premium</span>}
             </h3>
           </div>
 
-          {isPremium ? (
-            <>
-              {curatedLoading && (
-                <div className={styles.loadingMessage}>
-                  <Spinner size={24} />
-                  <span>{t("dashboard.loadingForYou")}</span>
-                </div>
-              )}
-              {curatedError && (
-                <div className={styles.errorMessage}><p>{curatedError}</p></div>
-              )}
-              {curated.length > 0 && (
-                <div className={styles.videoGrid}>
-                  {curated.map((video) => (
-                    <VideoCard key={video.video_id} video={video} />
-                  ))}
-                </div>
-              )}
-            </>
-          ) : (
-            <div className={styles.teaserGrid}>
-              {[0, 1, 2].map((i) => (
-                <button
-                  key={i}
-                  className={styles.lockedCard}
-                  onClick={() => setGateOpen(true)}
-                  aria-label={t("premium.unlockForYou")}
-                >
-                  <div className={styles.lockedThumb}>
-                    <Lock size={22} />
-                  </div>
-                  <div className={styles.lockedInfo}>
-                    <span className={styles.lockedBadge}>
-                      <Sparkles size={11} /> Premium
-                    </span>
-                    <span className={styles.lockedLabel}>
-                      {t("premium.teaserLabel")}
-                    </span>
-                  </div>
-                </button>
+          {curatedLoading && (
+            <div className={styles.loadingMessage}>
+              <Spinner size={24} />
+              <span>{t("dashboard.loadingForYou")}</span>
+            </div>
+          )}
+          {curatedError && (
+            <div className={styles.errorMessage}><p>{curatedError}</p></div>
+          )}
+          {curated.length > 0 && (
+            <div className={styles.videoGrid}>
+              {curated.map((video) => (
+                <VideoCard key={video.video_id} video={video} />
               ))}
             </div>
           )}
         </div>
       </main>
-
-      {gateOpen && <PremiumGate onClose={() => setGateOpen(false)} />}
     </div>
   );
 };

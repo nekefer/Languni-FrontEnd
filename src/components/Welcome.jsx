@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
@@ -9,9 +8,6 @@ import PublicFooter from "./PublicFooter";
 import thumbEn from "../assets/En_landing_pic.webp";
 import thumbEs from "../assets/Es_landing_pic.webp";
 import thumbFr from "../assets/Fr_landing_pic.webp";
-import { useAuth } from "../contexts/AuthContext";
-import { createCheckout } from "../api/billing";
-import config from "../config";
 
 const HERO_THUMBNAIL = {
   en: thumbEn,
@@ -58,26 +54,8 @@ const HERO_CARD = {
 export default function Welcome() {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
-  const { isAuthenticated } = useAuth();
   const card = HERO_CARD[i18n.language] ?? HERO_CARD.en;
   const thumbnail = HERO_THUMBNAIL[i18n.language] ?? HERO_THUMBNAIL.en;
-  const [checkoutLoading, setCheckoutLoading] = useState(null); // 'monthly' | 'yearly' | null
-
-  const handleUpgrade = async (billing) => {
-    if (!isAuthenticated) {
-      navigate({ to: "/register" });
-      return;
-    }
-    const variantId = billing === "yearly" ? config.lsYearlyVariantId : config.lsMonthlyVariantId;
-    if (!variantId) return;
-    try {
-      setCheckoutLoading(billing);
-      const checkoutUrl = await createCheckout(variantId);
-      window.location.href = checkoutUrl;
-    } catch {
-      setCheckoutLoading(null);
-    }
-  };
 
   return (
     <div className={s.page}>
@@ -292,65 +270,6 @@ export default function Welcome() {
         </div>
       </section>
 
-      {/* ===== PRICING — Table Style ===== */}
-      <section className={s.pricing} id="pricing">
-        <div className={s.sectionInner}>
-          <span className={s.tag}>{t('landing.pricingTag')}</span>
-          <h2 className={s.sectionH2}>
-            {t('landing.pricingH2')}
-          </h2>
-          <p className={s.sectionP}>
-            {t('landing.pricingSubtitle')}
-          </p>
-
-          <div className={s.priceGrid}>
-            {/* Free */}
-            <div className={s.priceCard}>
-              <div className={s.priceTop}>
-                <h3 className={s.pName}>{t('landing.freePlan')}</h3>
-                <div className={s.pAmount}>{t('landing.freeAmount')}</div>
-                <p className={s.pSub}>{t('landing.freeForever')}</p>
-              </div>
-              <ul className={s.pList}>
-                <li className={s.pYes}>{t('landing.freeFeat1')}</li>
-                <li className={s.pYes}>{t('landing.freeFeat2')}</li>
-                <li className={s.pYes}>{t('landing.freeFeat3')}</li>
-                <li className={s.pYes}>{t('landing.freeFeat4')}</li>
-                <li className={s.pYes}>{t('landing.freeFeat5')}</li>
-              </ul>
-              <button onClick={() => { posthog.capture("landing_cta_clicked", { location: "pricing_free" }); navigate({ to: "/register" }); }} className={s.pBtnLight}>
-                {t('nav.getStarted')}
-              </button>
-            </div>
-
-            {/* Premium */}
-            <div className={`${s.priceCard} ${s.priceCardPop}`}>
-              <div className={s.popTag}>{t('landing.popular')}</div>
-              <div className={s.priceTop}>
-                <h3 className={s.pName}>{t('landing.premiumPlan')}</h3>
-                <div className={s.pAmount}>
-                  $5<span className={s.pMo}>/mo</span>
-                </div>
-                <p className={s.pSub}>{t('landing.premiumYearly')}</p>
-              </div>
-              <ul className={s.pList}>
-                <li className={s.pYes}>{t('landing.premiumFeat1')}</li>
-                <li className={s.pYes}>{t('landing.premiumFeat2')}</li>
-                <li className={s.pYes}>{t('landing.premiumFeat3')}<span className={s.pSoon}>{t('landing.comingSoon')}</span></li>
-                <li className={s.pYes}>{t('landing.premiumFeat4')}<span className={s.pSoon}>{t('landing.comingSoon')}</span></li>
-                <li className={s.pYes}>{t('landing.premiumFeat5')}</li>
-              </ul>
-              <button
-                onClick={() => { posthog.capture("upgrade_clicked", { source: "landing_pricing", plan: "monthly" }); handleUpgrade("monthly"); }}
-                className={s.pBtnSolid}
-                disabled={checkoutLoading !== null}
-              >
-                {checkoutLoading ? "..." : t('landing.startPremium')}
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
 
       <PublicFooter />
     </div>

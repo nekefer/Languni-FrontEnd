@@ -36,7 +36,6 @@ export default function PublicNavbar({ isLanding = false, activePage = "" }) {
     { href: `${prefix}#hero`,     label: t("nav.home"),     page: "home" },
     { href: "/about",             label: "About",            page: "about" },
     { href: `${prefix}#benefits`, label: t("nav.features"), page: "features" },
-    { href: `${prefix}#pricing`,  label: t("nav.pricing"),  page: "pricing" },
   ];
 
   return (

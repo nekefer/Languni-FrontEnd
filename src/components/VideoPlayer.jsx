@@ -8,9 +8,8 @@ import YouTubePlayer from "./YouTubePlayer";
 import CaptionPanel from "./CaptionPanel";
 import VocabularyPanel from "./VocabularyPanel";
 import NotFound from "./NotFound";
-import { UpgradeModal } from "./UpgradeModal";
 import savedVideosService from "../api/savedVideos.js";
-import { startWatching } from "../api/billing.js";
+import videosService from "../api/videos.js";
 import { useOptimisticToggle } from "../hooks/useOptimisticToggle.js";
 import styles from "../styles/VideoPlayer.module.css";
 
@@ -25,19 +24,12 @@ function VideoPlayer({ videoId }) {
   const [playerRef, setPlayerRef] = useState(null);
   const [vocabularyData, setVocabularyData] = useState(null);
   const [isVocabularyPanelOpen, setIsVocabularyPanelOpen] = useState(false);
-  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   // Store captions reference for index calculation
   const captionsRef = useRef([]);
 
-  // Check daily video limit on mount
   useEffect(() => {
     posthog.capture("video_opened", { video_id: videoId });
-    startWatching(videoId).catch((err) => {
-      if (err?.response?.data?.detail?.code === "DAILY_LIMIT_REACHED") {
-        posthog.capture("daily_limit_reached", { video_id: videoId });
-        setShowUpgradeModal(true);
-      }
-    });
+    videosService.startWatching(videoId).catch(() => {});
   }, [videoId]);
 
   const { isSaved, checking, toggle: toggleSave } = useOptimisticToggle({
@@ -133,9 +125,6 @@ function VideoPlayer({ videoId }) {
 
   return (
     <div className={styles.videoPlayerPage}>
-      {showUpgradeModal && (
-        <UpgradeModal onDismiss={() => setShowUpgradeModal(false)} />
-      )}
       <nav className={styles.playerNav}>
         <button className={styles.backButton} onClick={handleBackToDashboard}>
           <ArrowLeft size={15} /> {t('player.back')}

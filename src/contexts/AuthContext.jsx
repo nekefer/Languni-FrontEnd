@@ -117,7 +117,7 @@ export const AuthProvider = ({ children }) => {
     error,
     isAuthenticated: !!user,
     isVerified: !!user?.is_verified,
-    isPremium: user?.subscription_plan === 'premium',
+    isPremium: !!user,
     login,
     register,
     logout,

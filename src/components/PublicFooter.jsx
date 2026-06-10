@@ -41,7 +41,6 @@ export default function PublicFooter() {
           </a>
           <div className={s.footerLinks}>
             <a href="/#benefits">{t("landing.footerFeatLink")}</a>
-            <a href="/#pricing">{t("landing.footerPricingLink")}</a>
             <a href="/about">About</a>
             <a href="/contact">{t("landing.footerContact")}</a>
             <a href="/privacy">{t("landing.footerPrivacy")}</a>

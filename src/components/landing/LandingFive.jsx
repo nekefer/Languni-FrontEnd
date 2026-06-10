@@ -2,31 +2,10 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import s from "../../styles/LandingFive.module.css";
 import languni from "../../assets/Languni.webp";
-import { useAuth } from "../../contexts/AuthContext";
-import { createCheckout } from "../../api/billing";
-import config from "../../config";
 
 export default function LandingFive() {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
   const [scrolled, setScrolled] = useState(false);
-  const [checkoutLoading, setCheckoutLoading] = useState(null); // 'monthly' | 'yearly' | null
-
-  const handleUpgrade = async (billing) => {
-    if (!isAuthenticated) {
-      navigate({ to: "/register" });
-      return;
-    }
-    const variantId = billing === "yearly" ? config.lsYearlyVariantId : config.lsMonthlyVariantId;
-    if (!variantId) return;
-    try {
-      setCheckoutLoading(billing);
-      const checkoutUrl = await createCheckout(variantId);
-      window.location.href = checkoutUrl;
-    } catch {
-      setCheckoutLoading(null);
-    }
-  };
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -46,7 +25,6 @@ export default function LandingFive() {
             <a href="#hero" className={s.navLink}>Home</a>
             <a href="#struggle" className={s.navLink}>Why us</a>
             <a href="#how" className={s.navLink}>How it works</a>
-            <a href="#pricing" className={s.navLink}>Pricing</a>
           </nav>
           <div className={s.headerBtns}>
             <button onClick={() => navigate({ to: "/login" })} className={s.logBtn}>
@@ -144,7 +122,7 @@ export default function LandingFive() {
               <div className={s.tlDot}>&#128184;</div>
               <div className={s.tlCard}>
                 <h3>Wallet drain</h3>
-                <p>Premium apps, private tutors, textbooks — learning a language shouldn't cost more than a gym membership.</p>
+                <p>Expensive apps, private tutors, textbooks — learning a language shouldn't cost more than a gym membership.</p>
               </div>
             </div>
           </div>
@@ -250,61 +228,6 @@ export default function LandingFive() {
         </div>
       </section>
 
-      {/* ===== PRICING — Playful Overlap ===== */}
-      <section className={s.pricing} id="pricing">
-        <div className={s.pricingBlob} />
-        <div className={s.sectionInner}>
-          <div className={s.badge}>Pricing</div>
-          <h2 className={s.sectionH2}>
-            Honest pricing,<br />no surprises
-          </h2>
-          <p className={s.sectionP}>
-            Start free and upgrade only when you want more.
-          </p>
-
-          <div className={s.priceRow}>
-            {/* Free */}
-            <div className={`${s.priceCard} ${s.pcFree}`}>
-              <span className={s.pcEmoji}>&#127793;</span>
-              <h3>Free</h3>
-              <div className={s.pcPrice}>$0</div>
-              <ul>
-                <li>5 videos/day</li>
-                <li>Interactive subtitles</li>
-                <li>Unlimited vocabulary saves</li>
-                <li>Translations &amp; definitions</li>
-                <li>EN / FR / ES UI</li>
-              </ul>
-              <button onClick={() => navigate({ to: "/register" })} className={s.pcBtnOutline}>
-                Get started
-              </button>
-            </div>
-
-            {/* Premium */}
-            <div className={`${s.priceCard} ${s.pcPro}`}>
-              <div className={s.pcFeatured}>Best value</div>
-              <span className={s.pcEmoji}>&#127775;</span>
-              <h3>Premium</h3>
-              <div className={s.pcPrice}>$5<span>/mo</span></div>
-              <p className={s.pcNote}>or $50/yr (2 months free)</p>
-              <ul>
-                <li>Unlimited videos/day</li>
-                <li>Flashcards &amp; spaced repetition <span className={s.pSoon}>Soon</span></li>
-                <li>Stats &amp; streaks <span className={s.pSoon}>Soon</span></li>
-                <li>Chrome Extension <span className={s.pSoon}>Soon</span></li>
-                <li>Priority support</li>
-              </ul>
-              <button
-                onClick={() => handleUpgrade("monthly")}
-                className={s.pcBtnFill}
-                disabled={checkoutLoading !== null}
-              >
-                {checkoutLoading ? "Loading..." : "Go Premium"}
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* ===== FOOTER ===== */}
       <footer className={s.footer}>
@@ -320,7 +243,6 @@ export default function LandingFive() {
             <div className={s.footerCol}>
               <h4>Product</h4>
               <a href="#how">Features</a>
-              <a href="#pricing">Pricing</a>
               <a href="#">Languages</a>
             </div>
             <div className={s.footerCol}>
