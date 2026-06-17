@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Clapperboard } from "lucide-react";
@@ -140,7 +140,7 @@ export const MyLibrary = () => {
   const navigate = useNavigate();
   const totalPages = Math.ceil(totalVideos / VIDEOS_PER_PAGE);
 
-  const loadSavedVideos = async (pageNum = 1) => {
+  const loadSavedVideos = useCallback(async (pageNum = 1) => {
     try {
       setLoading(true);
       setError(null);
@@ -161,7 +161,7 @@ export const MyLibrary = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [t]);
 
   const handleDeleteVideo = async (youtubeVideoId) => {
     try {
@@ -192,7 +192,7 @@ export const MyLibrary = () => {
 
   useEffect(() => {
     loadSavedVideos(page);
-  }, [page]);
+  }, [page, loadSavedVideos]);
 
   const handleNextPage = () => {
     if (page < totalPages) setPage(page + 1);

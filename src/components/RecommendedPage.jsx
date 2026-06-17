@@ -1,7 +1,7 @@
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { Sparkles, RefreshCw } from "lucide-react";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../contexts/auth-context";
 import { useCurated } from "../hooks/useCurated";
 import VideoCard from "./VideoCard";
 import { Spinner } from "../ui/Spinner";

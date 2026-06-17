@@ -5,7 +5,7 @@ import { Search, Loader, CheckCircle, XCircle, Bookmark, X, BookOpen, Globe, Arr
 import { useTranslation } from "react-i18next";
 import vocabularyService from "../api/vocabulary.js";
 import translationService from "../api/translation.js";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../contexts/auth-context";
 import { vocabularyLogger } from "../utils/logger";
 import styles from "../styles/VocabularyPanel.module.css";
 
@@ -71,7 +71,7 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
       setTranslationLoading(false);
       setTranslationError(null);
     }
-  }, [isOpen, vocabularyData?.word]);
+  }, [isOpen, vocabularyData?.word, vocabularyData?.definition?.word]);
 
   // Start translation fetch immediately when panel opens — ready before user clicks the tab
   useEffect(() => {
@@ -89,7 +89,7 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
       .finally(() => { if (!cancelled) setTranslationLoading(false); });
 
     return () => { cancelled = true; };
-  }, [isOpen, vocabularyData?.word]);
+  }, [isOpen, vocabularyData?.word, vocabularyData?.definition?.word]);
 
   // Check if word is already saved when panel opens
   useEffect(() => {

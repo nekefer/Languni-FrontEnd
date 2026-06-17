@@ -1,6 +1,5 @@
-import { createContext, useContext, useState, useEffect } from "react";
-
-const ThemeContext = createContext(null);
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { ThemeContext } from "./theme-context";
 
 export function ThemeProvider({ children }) {
   const [isDark, setIsDark] = useState(
@@ -11,19 +10,19 @@ export function ThemeProvider({ children }) {
     document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
   }, [isDark]);
 
-  const toggleTheme = () => {
+  const toggleTheme = useCallback(() => {
     setIsDark((prev) => {
       const next = !prev;
       localStorage.setItem("theme", next ? "dark" : "light");
       return next;
     });
-  };
+  }, []);
+
+  const value = useMemo(() => ({ isDark, toggleTheme }), [isDark, toggleTheme]);
 
   return (
-    <ThemeContext.Provider value={{ isDark, toggleTheme }}>
+    <ThemeContext.Provider value={value}>
       {children}
     </ThemeContext.Provider>
   );
 }
-
-export const useTheme = () => useContext(ThemeContext);

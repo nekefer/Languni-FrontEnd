@@ -3,8 +3,8 @@ import { Helmet } from "react-helmet-async";
 import { toast } from "sonner";
 import { registerUser, googleRegister, fetchUserInfo } from "../api/auth";
 import { useNavigate, useSearch } from "@tanstack/react-router";
-import { useAuth } from "../contexts/AuthContext";
-import { useOnboarding } from "../contexts/OnboardingContext";
+import { useAuth } from "../contexts/auth-context";
+import { useOnboarding } from "../contexts/onboarding-context";
 import { GuestRoute } from "./GuestRoute";
 import { useDebounce } from "../hooks/useDebounce";
 import { Spinner } from "../ui/Spinner";
@@ -63,7 +63,7 @@ export const Register = () => {
     if (search?.error) {
       setError(search.error === "oauth_failed" ? t('auth.login.oauthFailed') : t('auth.login.authFailed'));
     }
-  }, [search]);
+  }, [search, t]);
 
   useEffect(() => {
     if (!debouncedEmail) {
@@ -154,7 +154,7 @@ export const Register = () => {
 
   const handleGoogleRegister = async () => {
     try { await googleRegister(); }
-    catch (err) { toast.error(t('auth.register.googleFailed')); }
+    catch { toast.error(t('auth.register.googleFailed')); }
   };
 
   const checkIcon = (
