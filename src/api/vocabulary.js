@@ -132,6 +132,15 @@ class VocabularyService {
     }
   }
 
+  prefetchWord(word) {
+    const validation = dictionaryService.isValidWord(word);
+    if (!validation?.valid) {
+      return Promise.resolve(null);
+    }
+
+    return dictionaryService.prefetchDefinition(word);
+  }
+
   /**
    * Save a word to user's vocabulary collection
    * @param {string} word - The word to save (already validated when modal opened)

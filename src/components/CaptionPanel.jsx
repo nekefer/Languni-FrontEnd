@@ -35,6 +35,8 @@ const CaptionRow = memo(function CaptionRow({
   parsedCaptions,
   handleCaptionClick,
   handleWordClick,
+  handleWordHover,
+  handleWordHoverEnd,
 }) {
   const caption = parsedCaptions[index];
   const isActive = useActiveCaptionStore((s) => s.activeIndex === index);
@@ -60,6 +62,8 @@ const CaptionRow = memo(function CaptionRow({
           <span
             key={i}
             className={captionStyles.captionWord}
+            onMouseEnter={() => handleWordHover(word)}
+            onMouseLeave={handleWordHoverEnd}
             onClick={(e) => {
               e.stopPropagation();
               handleWordClick(word, index);
@@ -91,6 +95,7 @@ function CaptionPanel({
   const [isLookingUp, setIsLookingUp] = useState(false);
   const MAX_RETRIES = 2;
   const listRef = useListRef();
+  const hoverTimerRef = useRef(null);
   const scrollTimeoutRef = useRef(null);
   const lastScrolledIndexRef = useRef(-1);
   const setActiveIndex = useActiveCaptionStore((s) => s.setActiveIndex);
@@ -206,9 +211,48 @@ function CaptionPanel({
     [captions, getCurrentTime, onWordClick, pauseVideo, resumeVideo, isLookingUp, t],
   );
 
+  const handleWordHover = useCallback((word) => {
+    if (hoverTimerRef.current) {
+      clearTimeout(hoverTimerRef.current);
+    }
+
+    const cleanWord = word.replace(/[^\w''-]/g, "").toLowerCase();
+    if (!cleanWord) return;
+
+    hoverTimerRef.current = setTimeout(() => {
+      const expanded = expandContractions(cleanWord);
+      const lookupWord =
+        expanded !== cleanWord ? expanded.split(" ")[0] : cleanWord;
+
+      vocabularyService.prefetchWord(lookupWord);
+      hoverTimerRef.current = null;
+    }, 200);
+  }, []);
+
+  const handleWordHoverEnd = useCallback(() => {
+    if (hoverTimerRef.current) {
+      clearTimeout(hoverTimerRef.current);
+      hoverTimerRef.current = null;
+    }
+  }, []);
+
+  useEffect(() => handleWordHoverEnd, [handleWordHoverEnd]);
+
   const rowProps = useMemo(
-    () => ({ parsedCaptions: captions, handleCaptionClick, handleWordClick }),
-    [captions, handleCaptionClick, handleWordClick],
+    () => ({
+      parsedCaptions: captions,
+      handleCaptionClick,
+      handleWordClick,
+      handleWordHover,
+      handleWordHoverEnd,
+    }),
+    [
+      captions,
+      handleCaptionClick,
+      handleWordClick,
+      handleWordHover,
+      handleWordHoverEnd,
+    ],
   );
 
   if (loading) {
