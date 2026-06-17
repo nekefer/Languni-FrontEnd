@@ -373,6 +373,7 @@
     "save": "Guardar",
     "saved": "Guardado",
     "captions": "Subtítulos",
+    "readerTitle": "Lector",
     "captionHint": "Haz clic en el subtítulo para navegar • Haz clic en las palabras para definiciones",
     "loadingCaptions": "Cargando subtítulos...",
     "captionsFailed": "Error al cargar subtítulos",

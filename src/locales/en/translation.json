@@ -373,6 +373,7 @@
     "save": "Save",
     "saved": "Saved",
     "captions": "Captions",
+    "readerTitle": "Reader",
     "captionHint": "Click caption to seek • Click words for definitions",
     "loadingCaptions": "Loading captions...",
     "captionsFailed": "Failed to load captions",

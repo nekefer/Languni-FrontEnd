@@ -23,6 +23,11 @@ const useActiveCaptionStore = create((set) => ({
   setActiveIndex: (index) => set({ activeIndex: index }),
 }));
 
+const formatTimestamp = (seconds) => {
+  const safeSeconds = Math.max(0, seconds || 0);
+  return `${Math.floor(safeSeconds / 60)}:${String(Math.floor(safeSeconds % 60)).padStart(2, "0")}`;
+};
+
 // Memoized row component - OUTSIDE to prevent recreation on every render
 const CaptionRow = memo(function CaptionRow({
   index,
@@ -42,11 +47,10 @@ const CaptionRow = memo(function CaptionRow({
       className={`${captionStyles.captionItem}${isActive ? ` ${captionStyles.active}` : ""}`}
       data-caption-index={index}
       onClick={() => handleCaptionClick(caption.start)}
-      title={`Seek to ${Math.floor(caption.start / 60)}:${String(Math.floor(caption.start % 60)).padStart(2, "0")}`}
+      title={`Seek to ${formatTimestamp(caption.start)}`}
     >
       <div className={captionStyles.captionTimestamp}>
-        {Math.floor(caption.start / 60)}:
-        {String(Math.floor(caption.start % 60)).padStart(2, "0")}
+        {formatTimestamp(caption.start)}
         <span className={captionStyles.captionDuration}>
           ({caption.duration.toFixed(1)}s)
         </span>
@@ -253,7 +257,7 @@ function CaptionPanel({
   return (
     <div className={`${captionStyles.captionPanel}${isLookingUp ? ` ${captionStyles.captionPanelBusy}` : ""}`}>
       <div className={captionStyles.captionHeader}>
-        <h3>{t('player.captions')}</h3>
+        <h3>{t('player.readerTitle', { defaultValue: 'Reader' })}</h3>
         <p className={captionStyles.captionInfo}>
           {t('player.captionHint')}
         </p>
@@ -263,7 +267,7 @@ function CaptionPanel({
         listRef={listRef}
         rowComponent={CaptionRow}
         rowCount={captions.length}
-        rowHeight={80}
+        rowHeight={112}
         rowProps={rowProps}
         style={{ width: "100%" }}
       />

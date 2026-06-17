@@ -373,6 +373,7 @@
     "save": "Sauvegarder",
     "saved": "Sauvegardé",
     "captions": "Sous-titres",
+    "readerTitle": "Lecteur",
     "captionHint": "Cliquez sur un sous-titre pour naviguer • Cliquez sur les mots pour les définitions",
     "loadingCaptions": "Chargement des sous-titres...",
     "captionsFailed": "Échec du chargement des sous-titres",
