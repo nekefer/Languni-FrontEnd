@@ -63,7 +63,7 @@ export const validatePassword = (password) => {
     errors.push("Password must contain at least one digit");
   }
 
-  const hasSpecial = /[!@#$%^&*(),.?":{}|<>\-_=+\[\]\\;'`~/]/.test(password);
+  const hasSpecial = /[!@#$%^&*(),.?":{}|<>\-_=+[\]\\;'`~/]/.test(password);
   if (!hasSpecial) {
     errors.push("Password must contain at least one special character");
   }

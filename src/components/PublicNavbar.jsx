@@ -15,6 +15,7 @@ export default function PublicNavbar({ isLanding = false, activePage = "" }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -22,51 +23,120 @@ export default function PublicNavbar({ isLanding = false, activePage = "" }) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Close menu on route change / scroll lock
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [menuOpen]);
+
+  const close = () => setMenuOpen(false);
   const prefix = isLanding ? "" : "/";
 
+  const navLinks = [
+    { href: `${prefix}#hero`,     label: t("nav.home"),     page: "home" },
+    { href: "/about",             label: "About",            page: "about" },
+    { href: `${prefix}#benefits`, label: t("nav.features"), page: "features" },
+  ];
+
   return (
-    <header className={`${s.header} ${scrolled ? s.headerScrolled : ""}`}>
-      <div className={s.headerInner}>
-        <a href="/" className={s.logo}>
-          <img src={languni} alt="Languni" width="124" height="32" />
-        </a>
+    <>
+      <header className={`${s.header} ${scrolled ? s.headerScrolled : ""} ${menuOpen ? s.headerMenuOpen : ""}`}>
+        <div className={s.headerInner}>
+          <a href="/" className={s.logo} onClick={close}>
+            <img src={languni} alt="Languni" width="124" height="32" />
+          </a>
 
-        <nav className={s.nav}>
-          <a href={`${prefix}#hero`} className={`${s.navLink} ${activePage === "home" ? s.navLinkActive : ""}`}>
-            {t("nav.home")}
-          </a>
-          <a href="/about" className={`${s.navLink} ${activePage === "about" ? s.navLinkActive : ""}`}>
-            About
-          </a>
-          <a href={`${prefix}#benefits`} className={`${s.navLink} ${activePage === "features" ? s.navLinkActive : ""}`}>
-            {t("nav.features")}
-          </a>
-          <a href={`${prefix}#pricing`} className={`${s.navLink} ${activePage === "pricing" ? s.navLinkActive : ""}`}>
-            {t("nav.pricing")}
-          </a>
-        </nav>
+          {/* Desktop nav */}
+          <nav className={s.nav}>
+            {navLinks.map(({ href, label, page }) => (
+              <a
+                key={page}
+                href={href}
+                className={`${s.navLink} ${activePage === page ? s.navLinkActive : ""}`}
+              >
+                {label}
+              </a>
+            ))}
+          </nav>
 
-        <div className={s.headerRight}>
+          {/* Desktop buttons */}
+          <div className={s.headerRight}>
+            <button
+              onClick={() => {
+                posthog.capture("landing_cta_clicked", { location: "header_login" });
+                navigate({ to: "/login" });
+              }}
+              className={s.loginBtn}
+            >
+              {t("nav.login")}
+            </button>
+            <button
+              onClick={() => {
+                posthog.capture("landing_cta_clicked", { location: "header_register" });
+                navigate({ to: "/register" });
+              }}
+              className={s.startBtn}
+            >
+              {t("nav.getStarted")}
+            </button>
+          </div>
+
+          {/* Hamburger — mobile only */}
           <button
-            onClick={() => {
-              posthog.capture("landing_cta_clicked", { location: "header_login" });
-              navigate({ to: "/login" });
-            }}
-            className={s.loginBtn}
+            className={s.hamburger}
+            onClick={() => setMenuOpen((o) => !o)}
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={menuOpen}
+          >
+            {menuOpen ? (
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <line x1="4" y1="4" x2="18" y2="18" />
+                <line x1="18" y1="4" x2="4" y2="18" />
+              </svg>
+            ) : (
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <line x1="3" y1="6" x2="19" y2="6" />
+                <line x1="3" y1="11" x2="19" y2="11" />
+                <line x1="3" y1="16" x2="19" y2="16" />
+              </svg>
+            )}
+          </button>
+        </div>
+
+      </header>
+
+      {/* Mobile menu — wrapper clips the slide, menu animates inside */}
+      <div className={`${s.mobileMenuWrapper} ${menuOpen ? s.mobileMenuWrapperOpen : ""}`}>
+      <div className={`${s.mobileMenu} ${menuOpen ? s.mobileMenuOpen : ""}`}>
+        <nav className={s.mobileNav}>
+          {navLinks.map(({ href, label, page }) => (
+            <a
+              key={page}
+              href={href}
+              className={`${s.mobileNavLink} ${activePage === page ? s.navLinkActive : ""}`}
+              onClick={close}
+            >
+              {label}
+            </a>
+          ))}
+        </nav>
+        <div className={s.mobileBtns}>
+          <button
+            onClick={() => { close(); posthog.capture("landing_cta_clicked", { location: "mobile_menu_login" }); navigate({ to: "/login" }); }}
+            className={s.mobilLoginBtn}
           >
             {t("nav.login")}
           </button>
           <button
-            onClick={() => {
-              posthog.capture("landing_cta_clicked", { location: "header_register" });
-              navigate({ to: "/register" });
-            }}
+            onClick={() => { close(); posthog.capture("landing_cta_clicked", { location: "mobile_menu_register" }); navigate({ to: "/register" }); }}
             className={s.startBtn}
           >
             {t("nav.getStarted")}
           </button>
         </div>
       </div>
-    </header>
+      </div>{/* /mobileMenuWrapper */}
+
+    </>
   );
 }

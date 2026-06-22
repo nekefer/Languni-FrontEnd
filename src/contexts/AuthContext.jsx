@@ -1,24 +1,13 @@
 import React, {
-  createContext,
-  useContext,
   useState,
   useEffect,
   useCallback,
+  useMemo,
 } from "react";
 import posthog from "posthog-js";
 import { fetchUserInfo, logoutUser } from "../api/auth";
 import { authLogger } from "../utils/logger";
-
-const AuthContext = createContext();
-
-// Custom hook to use the AuthContext
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
-};
+import { AuthContext } from "./auth-context";
 
 // AuthProvider component to wrap the app and provide auth state
 export const AuthProvider = ({ children }) => {
@@ -51,7 +40,7 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  const login = (userData) => {
+  const login = useCallback((userData) => {
     setUser(userData);
     setError(null);
     posthog.identify(userData.id, {
@@ -59,9 +48,9 @@ export const AuthProvider = ({ children }) => {
       plan: userData.subscription_plan ?? "free",
     });
     authLogger.info("User logged in", { method: userData.auth_method });
-  };
+  }, []);
 
-  const register = (userData) => {
+  const register = useCallback((userData) => {
     setUser(userData);
     setError(null);
     posthog.identify(userData.id, {
@@ -70,9 +59,9 @@ export const AuthProvider = ({ children }) => {
     });
     posthog.capture("signed_up", { method: userData.auth_method });
     authLogger.info("User registered", { method: userData.auth_method });
-  };
+  }, []);
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     try {
       await logoutUser();
     } catch (error) {
@@ -82,7 +71,7 @@ export const AuthProvider = ({ children }) => {
       setError(null);
       posthog.reset();
     }
-  };
+  }, []);
 
   // Check auth on mount
   useEffect(() => {
@@ -111,18 +100,21 @@ export const AuthProvider = ({ children }) => {
     return () => window.removeEventListener("auth:sessionExpired", handleSessionExpired);
   }, [user]);
 
-  const value = {
-    user,
-    loading,
-    error,
-    isAuthenticated: !!user,
-    isVerified: !!user?.is_verified,
-    isPremium: user?.subscription_plan === 'premium',
-    login,
-    register,
-    logout,
-    checkAuth,
-  };
+  const value = useMemo(
+    () => ({
+      user,
+      loading,
+      error,
+      isAuthenticated: !!user,
+      isVerified: !!user?.is_verified,
+      isPremium: !!user,
+      login,
+      register,
+      logout,
+      checkAuth,
+    }),
+    [user, loading, error, login, register, logout, checkAuth],
+  );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

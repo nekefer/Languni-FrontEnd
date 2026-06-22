@@ -1,6 +1,6 @@
 // src/components/GuestRoute.jsx
 import { Navigate } from '@tanstack/react-router';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../contexts/auth-context';
 import { FullPageSpinner } from "../ui/Spinner";
 
 export const GuestRoute = ({ children }) => {

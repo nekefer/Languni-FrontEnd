@@ -1,5 +1,5 @@
 import { Navigate } from "@tanstack/react-router";
-import { useOnboarding } from "../contexts/OnboardingContext";
+import { useOnboarding } from "../contexts/onboarding-context";
 import { FullPageSpinner } from "../ui/Spinner";
 
 /**

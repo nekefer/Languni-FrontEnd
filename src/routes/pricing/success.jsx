@@ -11,9 +11,9 @@ function PricingSuccess() {
     <div className={styles.page}>
       <div className={styles.card}>
         <CheckCircle size={48} className={styles.icon} />
-        <h1 className={styles.title}>You're now Premium!</h1>
+        <h1 className={styles.title}>Full access is ready</h1>
         <p className={styles.subtitle}>
-          Thank you for upgrading. Enjoy unlimited videos and all Premium features.
+          Languni is free for registered users. Enjoy the full app.
         </p>
         <Link to="/dashboard" className={styles.btn}>
           Go to Dashboard

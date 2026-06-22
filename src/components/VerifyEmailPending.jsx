@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../contexts/auth-context";
 import { resendVerification } from "../api/auth";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";

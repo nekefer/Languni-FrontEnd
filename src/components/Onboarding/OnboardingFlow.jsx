@@ -3,7 +3,7 @@ import posthog from "posthog-js";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
-import { useOnboarding } from "../../contexts/OnboardingContext";
+import { useOnboarding } from "../../contexts/onboarding-context";
 import preferencesService from "../../api/preferences";
 import { NativeLanguageStep } from "./NativeLanguageStep";
 import { LearningLanguageStep } from "./LearningLanguageStep";

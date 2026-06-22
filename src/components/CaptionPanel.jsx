@@ -23,6 +23,11 @@ const useActiveCaptionStore = create((set) => ({
   setActiveIndex: (index) => set({ activeIndex: index }),
 }));
 
+const formatTimestamp = (seconds) => {
+  const safeSeconds = Math.max(0, seconds || 0);
+  return `${Math.floor(safeSeconds / 60)}:${String(Math.floor(safeSeconds % 60)).padStart(2, "0")}`;
+};
+
 // Memoized row component - OUTSIDE to prevent recreation on every render
 const CaptionRow = memo(function CaptionRow({
   index,
@@ -30,6 +35,8 @@ const CaptionRow = memo(function CaptionRow({
   parsedCaptions,
   handleCaptionClick,
   handleWordClick,
+  handleWordHover,
+  handleWordHoverEnd,
 }) {
   const caption = parsedCaptions[index];
   const isActive = useActiveCaptionStore((s) => s.activeIndex === index);
@@ -42,11 +49,10 @@ const CaptionRow = memo(function CaptionRow({
       className={`${captionStyles.captionItem}${isActive ? ` ${captionStyles.active}` : ""}`}
       data-caption-index={index}
       onClick={() => handleCaptionClick(caption.start)}
-      title={`Seek to ${Math.floor(caption.start / 60)}:${String(Math.floor(caption.start % 60)).padStart(2, "0")}`}
+      title={`Seek to ${formatTimestamp(caption.start)}`}
     >
       <div className={captionStyles.captionTimestamp}>
-        {Math.floor(caption.start / 60)}:
-        {String(Math.floor(caption.start % 60)).padStart(2, "0")}
+        {formatTimestamp(caption.start)}
         <span className={captionStyles.captionDuration}>
           ({caption.duration.toFixed(1)}s)
         </span>
@@ -56,6 +62,8 @@ const CaptionRow = memo(function CaptionRow({
           <span
             key={i}
             className={captionStyles.captionWord}
+            onMouseEnter={() => handleWordHover(word)}
+            onMouseLeave={handleWordHoverEnd}
             onClick={(e) => {
               e.stopPropagation();
               handleWordClick(word, index);
@@ -87,6 +95,7 @@ function CaptionPanel({
   const [isLookingUp, setIsLookingUp] = useState(false);
   const MAX_RETRIES = 2;
   const listRef = useListRef();
+  const hoverTimerRef = useRef(null);
   const scrollTimeoutRef = useRef(null);
   const lastScrolledIndexRef = useRef(-1);
   const setActiveIndex = useActiveCaptionStore((s) => s.setActiveIndex);
@@ -202,9 +211,48 @@ function CaptionPanel({
     [captions, getCurrentTime, onWordClick, pauseVideo, resumeVideo, isLookingUp, t],
   );
 
+  const handleWordHover = useCallback((word) => {
+    if (hoverTimerRef.current) {
+      clearTimeout(hoverTimerRef.current);
+    }
+
+    const cleanWord = word.replace(/[^\w''-]/g, "").toLowerCase();
+    if (!cleanWord) return;
+
+    hoverTimerRef.current = setTimeout(() => {
+      const expanded = expandContractions(cleanWord);
+      const lookupWord =
+        expanded !== cleanWord ? expanded.split(" ")[0] : cleanWord;
+
+      vocabularyService.prefetchWord(lookupWord);
+      hoverTimerRef.current = null;
+    }, 200);
+  }, []);
+
+  const handleWordHoverEnd = useCallback(() => {
+    if (hoverTimerRef.current) {
+      clearTimeout(hoverTimerRef.current);
+      hoverTimerRef.current = null;
+    }
+  }, []);
+
+  useEffect(() => handleWordHoverEnd, [handleWordHoverEnd]);
+
   const rowProps = useMemo(
-    () => ({ parsedCaptions: captions, handleCaptionClick, handleWordClick }),
-    [captions, handleCaptionClick, handleWordClick],
+    () => ({
+      parsedCaptions: captions,
+      handleCaptionClick,
+      handleWordClick,
+      handleWordHover,
+      handleWordHoverEnd,
+    }),
+    [
+      captions,
+      handleCaptionClick,
+      handleWordClick,
+      handleWordHover,
+      handleWordHoverEnd,
+    ],
   );
 
   if (loading) {
@@ -253,7 +301,7 @@ function CaptionPanel({
   return (
     <div className={`${captionStyles.captionPanel}${isLookingUp ? ` ${captionStyles.captionPanelBusy}` : ""}`}>
       <div className={captionStyles.captionHeader}>
-        <h3>{t('player.captions')}</h3>
+        <h3>{t('player.readerTitle', { defaultValue: 'Reader' })}</h3>
         <p className={captionStyles.captionInfo}>
           {t('player.captionHint')}
         </p>
@@ -263,7 +311,7 @@ function CaptionPanel({
         listRef={listRef}
         rowComponent={CaptionRow}
         rowCount={captions.length}
-        rowHeight={80}
+        rowHeight={112}
         rowProps={rowProps}
         style={{ width: "100%" }}
       />

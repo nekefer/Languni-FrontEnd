@@ -1,12 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { Home, Clapperboard, BookOpen, Settings, Menu, Sun, Moon, Flame, Sparkles, Lock } from "lucide-react";
-import { useAuth } from "../contexts/AuthContext";
-import { useTheme } from "../contexts/ThemeContext";
-import { useOnboarding } from "../contexts/OnboardingContext";
+import { Home, Clapperboard, BookOpen, Settings, Menu, Sun, Moon, Flame, Sparkles, PlusCircle } from "lucide-react";
+import { useAuth } from "../contexts/auth-context";
+import { useTheme } from "../contexts/theme-context";
+import { useOnboarding } from "../contexts/onboarding-context";
 import { VerificationBanner } from "./VerificationBanner";
-import { PremiumGate } from "./PremiumGate";
 import { getUserInitials } from "../utils/avatar";
 import styles from "../styles/AppLayout.module.css";
 import languni from "../assets/Languni.webp";
@@ -14,14 +13,13 @@ import languniDark from "../assets/Languni dark.webp";
 
 export function AppLayout({ children }) {
   const { t } = useTranslation();
-  const { user, logout, isPremium } = useAuth();
+  const { user, logout } = useAuth();
   const { isDark, toggleTheme } = useTheme();
   const { resetOnboardingState } = useOnboarding();
   const navigate = useNavigate();
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [gateOpen, setGateOpen] = useState(false);
   const dropdownRef = useRef(null);
 
   const initials = getUserInitials(user);
@@ -85,26 +83,15 @@ export function AppLayout({ children }) {
             <span>{t("nav.appTrending")}</span>
           </Link>
 
-          {isPremium ? (
-            <Link
-              to="/recommended"
-              className={styles.navLink}
-              activeProps={{ className: `${styles.navLink} ${styles.navLinkActive}` }}
-              onClick={closeSidebar}
-            >
-              <span className={styles.navIcon}><Sparkles size={18} /></span>
-              <span>{t("nav.appForYou")}</span>
-            </Link>
-          ) : (
-            <button
-              className={`${styles.navLink} ${styles.navLinkLocked}`}
-              onClick={() => { closeSidebar(); setGateOpen(true); }}
-            >
-              <span className={styles.navIcon}><Sparkles size={18} /></span>
-              <span>{t("nav.appForYou")}</span>
-              <Lock size={13} className={styles.lockIcon} />
-            </button>
-          )}
+          <Link
+            to="/recommended"
+            className={styles.navLink}
+            activeProps={{ className: `${styles.navLink} ${styles.navLinkActive}` }}
+            onClick={closeSidebar}
+          >
+            <span className={styles.navIcon}><Sparkles size={18} /></span>
+            <span>{t("nav.appForYou")}</span>
+          </Link>
 
           <Link
             to="/library"
@@ -114,6 +101,16 @@ export function AppLayout({ children }) {
           >
             <span className={styles.navIcon}><Clapperboard size={18} /></span>
             <span>{t("nav.appLibrary")}</span>
+          </Link>
+
+          <Link
+            to="/add-video"
+            className={styles.navLink}
+            activeProps={{ className: `${styles.navLink} ${styles.navLinkActive}` }}
+            onClick={closeSidebar}
+          >
+            <span className={styles.navIcon}><PlusCircle size={18} /></span>
+            <span>{t("nav.appAddVideo")}</span>
           </Link>
 
           <Link
@@ -188,9 +185,6 @@ export function AppLayout({ children }) {
                     <span className={styles.dropdownName}>
                       {user?.first_name} {user?.last_name}
                     </span>
-                    {isPremium && (
-                      <span className={styles.planBadge}>Premium</span>
-                    )}
                   </div>
                   <span className={styles.dropdownEmail}>{user?.email}</span>
                 </div>
@@ -209,8 +203,6 @@ export function AppLayout({ children }) {
           {children}
         </main>
       </div>
-
-      {gateOpen && <PremiumGate onClose={() => setGateOpen(false)} />}
     </div>
   );
 }

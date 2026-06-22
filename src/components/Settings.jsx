@@ -1,14 +1,11 @@
-import { useState, useEffect } from "react";
+import { createElement, useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { Zap } from "lucide-react";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../contexts/auth-context";
 import { updateProfile, changePassword, deleteAccount } from "../api/user";
 import preferencesService from "../api/preferences";
-import { createPortal, getSubscription, createCheckout } from "../api/billing";
-import config from "../config";
 import { getUserInitials } from "../utils/avatar";
 import { LANGUAGES, LEVELS, TOPICS } from "../utils/onboarding";
 import styles from "../styles/Settings.module.css";
@@ -22,7 +19,7 @@ const PASSWORD_FIELDS = [
 export default function Settings() {
   const { i18n } = useTranslation();
   const navigate = useNavigate();
-  const { user, checkAuth, logout, isPremium } = useAuth();
+  const { user, checkAuth, logout } = useAuth();
 
   // ── Profile ──
   const [firstName, setFirstName] = useState("");
@@ -45,28 +42,20 @@ export default function Settings() {
   const [pwSaving, setPwSaving] = useState(false);
 
   // ── Subscription ──
-  const [sub, setSub] = useState(null);
-
   // ── Delete ──
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [deletePassword, setDeletePassword] = useState("");
 
   // ── Checkout ──
-  const [checkoutLoading, setCheckoutLoading] = useState(null);
-
   useEffect(() => {
-    Promise.all([
-      preferencesService.getPreferences(),
-      getSubscription().catch(() => null),
-    ]).then(([p, s]) => {
+    preferencesService.getPreferences().then((p) => {
       setPrefs({
         native_language: p.native_language,
         learning_language: p.learning_language,
         level: p.level,
         topics: p.topics ?? [],
       });
-      if (s) setSub(s);
     });
   }, []);
 
@@ -118,32 +107,6 @@ export default function Settings() {
       toast.error(err?.response?.data?.detail ?? "Failed to change password");
     } finally {
       setPwSaving(false);
-    }
-  };
-
-  const handleManageSubscription = async () => {
-    try {
-      const url = await createPortal();
-      window.location.href = url;
-    } catch {
-      toast.error("Could not open billing portal");
-    }
-  };
-
-  const handleUpgrade = async (billing = "monthly") => {
-    const variantId = billing === "yearly" ? config.lsYearlyVariantId : config.lsMonthlyVariantId;
-    if (!variantId) return;
-    try {
-      setCheckoutLoading(billing);
-      const checkoutUrl = await createCheckout(variantId);
-      window.location.href = checkoutUrl;
-    } catch (err) {
-      setCheckoutLoading(null);
-      if (err?.response?.status === 403) {
-        toast.error("Please verify your email address before upgrading.");
-      } else {
-        toast.error("Could not start checkout. Please try again.");
-      }
     }
   };
 
@@ -273,7 +236,7 @@ export default function Settings() {
                     className={`${styles.levelCard} ${prefs.level === id ? styles.chipActive : ""}`}
                     onClick={() => setPrefs((p) => ({ ...p, level: id }))}
                   >
-                    <span className={styles.levelIcon}><Icon size={18} /></span>
+                    <span className={styles.levelIcon}>{createElement(Icon, { size: 18 })}</span>
                     <span className={styles.levelName}>{name}</span>
                     <span className={styles.levelDesc}>{description}</span>
                   </button>
@@ -297,7 +260,7 @@ export default function Settings() {
                     className={`${styles.topicChip} ${prefs.topics.includes(id) ? styles.topicChipActive : ""}`}
                     onClick={() => toggleTopic(id)}
                   >
-                    <Icon size={16} />
+                    {createElement(Icon, { size: 16 })}
                     {name}
                   </button>
                 ))}
@@ -355,36 +318,6 @@ export default function Settings() {
         )}
       </section>
 
-      {/* ── Subscription ── */}
-      <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>Subscription</h2>
-        <div className={styles.subRow}>
-          <span className={`${styles.planBadge} ${isPremium ? styles.planBadgePremium : ""}`}>
-            {isPremium ? "Premium" : "Free"}
-          </span>
-          {sub?.current_period_end && (() => {
-            const renewalDate = new Date(sub.current_period_end).toLocaleDateString();
-            return (
-              <span className={styles.subDetail}>
-                {isPremium ? `Renews ${renewalDate}` : `Next billing: ${renewalDate}`}
-              </span>
-            );
-          })()}
-        </div>
-        {isPremium ? (
-          <button className={styles.manageBtn} onClick={handleManageSubscription}>
-            Manage subscription
-          </button>
-        ) : (
-          <button
-            className={styles.upgradeBtn}
-            onClick={() => handleUpgrade("monthly")}
-            disabled={checkoutLoading !== null}
-          >
-            <Zap size={14} /> {checkoutLoading ? "Loading…" : "Upgrade to Premium"}
-          </button>
-        )}
-      </section>
 
       {/* ── Danger Zone ── */}
       <section className={`${styles.section} ${styles.dangerSection}`}>

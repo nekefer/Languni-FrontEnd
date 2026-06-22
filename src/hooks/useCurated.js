@@ -1,16 +1,12 @@
 import { useState, useEffect } from "react";
 import { getCuratedVideos } from "../api/youtube";
-import { useAuth } from "../contexts/AuthContext";
 
 export function useCurated() {
-  const { isPremium } = useAuth();
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!isPremium) return;
-
     let cancelled = false;
     setLoading(true);
     setError(null);
@@ -27,7 +23,7 @@ export function useCurated() {
       });
 
     return () => { cancelled = true; };
-  }, [isPremium]);
+  }, []);
 
   return { videos, loading, error };
 }

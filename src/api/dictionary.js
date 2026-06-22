@@ -5,6 +5,7 @@ const API_URL = config.apiUrl;
 class DictionaryService {
   constructor() {
     this.cache = new Map(); // In-memory cache keyed by "word:language"
+    this.pendingRequests = new Map();
     this.maxCacheSize = 200;
   }
 
@@ -25,6 +26,21 @@ class DictionaryService {
       return this.cache.get(cacheKey);
     }
 
+    if (this.pendingRequests.has(cacheKey)) {
+      return this.pendingRequests.get(cacheKey);
+    }
+
+    const request = this.fetchDefinition(word, cacheKey);
+    this.pendingRequests.set(cacheKey, request);
+
+    try {
+      return await request;
+    } finally {
+      this.pendingRequests.delete(cacheKey);
+    }
+  }
+
+  async fetchDefinition(word, cacheKey) {
     try {
       const response = await fetch(
         `${API_URL}/api/dictionary/${encodeURIComponent(word)}`,
@@ -50,6 +66,10 @@ class DictionaryService {
       }
       throw new Error(`Network error: ${error.message}`);
     }
+  }
+
+  prefetchDefinition(word) {
+    return this.getDefinition(word).catch(() => null);
   }
 
   /**

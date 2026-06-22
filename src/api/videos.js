@@ -161,6 +161,13 @@ class VideosService {
       throw new Error(errorMessage);
     }
   }
+
+  async startWatching(youtubeVideoId) {
+    const response = await axios.post(
+      `${API_URL}/api/videos/${encodeURIComponent(youtubeVideoId)}/start-watching`,
+    );
+    return response.data;
+  }
 }
 
 // Export singleton instance

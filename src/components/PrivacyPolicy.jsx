@@ -85,10 +85,6 @@ export default function PrivacyPolicy() {
               <a href="https://www.youtube.com/t/terms" target="_blank" rel="noopener noreferrer">{t("privacy.s4YouTubeTosLink")}</a>.
             </li>
             <li>
-              <strong>Lemon Squeezy</strong> — {t("privacy.s4LemonDesc")}{" "}
-              <a href="https://www.lemonsqueezy.com/privacy" target="_blank" rel="noopener noreferrer">{t("privacy.s4LinkText")}</a>.
-            </li>
-            <li>
               <strong>PostHog</strong> — {t("privacy.s4PosthogDesc")}{" "}
               <a href="https://posthog.com/privacy" target="_blank" rel="noopener noreferrer">{t("privacy.s4LinkText")}</a>.
             </li>

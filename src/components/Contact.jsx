@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet-async";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../contexts/auth-context";
 import { sendContactMessage } from "../api/contact";
 import ws from "../styles/Welcome.module.css";
 import s from "../styles/Contact.module.css";
@@ -18,7 +18,7 @@ export default function Contact() {
   const SUBJECTS = [
     { value: "General",          label: t("contact.subjects.general") },
     { value: "Bug report",       label: t("contact.subjects.bugReport") },
-    { value: "Billing",          label: t("contact.subjects.billing") },
+    { value: "Account support",  label: t("contact.subjects.accountSupport") },
     { value: "Feature request",  label: t("contact.subjects.featureRequest") },
     { value: "Other",            label: t("contact.subjects.other") },
   ];

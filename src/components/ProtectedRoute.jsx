@@ -1,10 +1,10 @@
 import { Navigate } from "@tanstack/react-router";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../contexts/auth-context";
 import { FullPageSpinner } from "../ui/Spinner";
 import { AppLayout } from "./AppLayout";
 
 export const ProtectedRoute = ({ children, noLayout = false }) => {
-  const { isAuthenticated, isVerified, loading } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
 
   if (loading) {
     return <FullPageSpinner text="Checking access..." />;
