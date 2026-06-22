@@ -2,7 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { Flame, Sparkles, ArrowRight } from "lucide-react";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../contexts/auth-context";
 import useTrendingStore from "../stores/trendingStore";
 import { useEffect } from "react";
 import VideoCard from "./VideoCard";

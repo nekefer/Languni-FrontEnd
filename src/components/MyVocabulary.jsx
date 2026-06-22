@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Video, Trash2, Tv, XCircle, BookOpen } from "lucide-react";
@@ -205,7 +205,7 @@ export const MyVocabulary = () => {
   const totalPages = Math.ceil(totalWords / WORDS_PER_PAGE);
 
   // Load saved words with pagination
-  const loadSavedWords = async (pageNum = 1) => {
+  const loadSavedWords = useCallback(async (pageNum = 1) => {
     try {
       setLoading(true);
       setError(null);
@@ -237,7 +237,7 @@ export const MyVocabulary = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [t]);
 
   // Delete a word from vocabulary
   const handleDeleteWord = async (word) => {
@@ -292,7 +292,7 @@ export const MyVocabulary = () => {
   // Load words on component mount and page change
   useEffect(() => {
     loadSavedWords(page);
-  }, [page]);
+  }, [page, loadSavedWords]);
 
   // Handle page navigation
   const handleNextPage = () => {

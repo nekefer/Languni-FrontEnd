@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { Home, Clapperboard, BookOpen, Settings, Menu, Sun, Moon, Flame, Sparkles } from "lucide-react";
-import { useAuth } from "../contexts/AuthContext";
-import { useTheme } from "../contexts/ThemeContext";
-import { useOnboarding } from "../contexts/OnboardingContext";
+import { Home, Clapperboard, BookOpen, Settings, Menu, Sun, Moon, Flame, Sparkles, PlusCircle } from "lucide-react";
+import { useAuth } from "../contexts/auth-context";
+import { useTheme } from "../contexts/theme-context";
+import { useOnboarding } from "../contexts/onboarding-context";
 import { VerificationBanner } from "./VerificationBanner";
 import { getUserInitials } from "../utils/avatar";
 import styles from "../styles/AppLayout.module.css";
@@ -101,6 +101,16 @@ export function AppLayout({ children }) {
           >
             <span className={styles.navIcon}><Clapperboard size={18} /></span>
             <span>{t("nav.appLibrary")}</span>
+          </Link>
+
+          <Link
+            to="/add-video"
+            className={styles.navLink}
+            activeProps={{ className: `${styles.navLink} ${styles.navLinkActive}` }}
+            onClick={closeSidebar}
+          >
+            <span className={styles.navIcon}><PlusCircle size={18} /></span>
+            <span>{t("nav.appAddVideo")}</span>
           </Link>
 
           <Link

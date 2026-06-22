@@ -1,26 +1,15 @@
 import React, {
-  createContext,
-  useContext,
   useState,
   useCallback,
   useEffect,
+  useMemo,
 } from "react";
-import { useAuth } from "./AuthContext";
+import { useAuth } from "./auth-context";
 import preferencesService from "../api/preferences";
 import { createLogger } from "../utils/logger";
+import { OnboardingContext } from "./onboarding-context";
 
 const logger = createLogger("onboarding");
-
-const OnboardingContext = createContext();
-
-// Custom hook to use the OnboardingContext
-export const useOnboarding = () => {
-  const context = useContext(OnboardingContext);
-  if (!context) {
-    throw new Error("useOnboarding must be used within an OnboardingProvider");
-  }
-  return context;
-};
 
 // OnboardingProvider component
 export const OnboardingProvider = ({ children }) => {
@@ -48,29 +37,29 @@ export const OnboardingProvider = ({ children }) => {
   }, []);
 
   // Mark user as new (called after registration)
-  const markAsNewUser = () => {
+  const markAsNewUser = useCallback(() => {
     setIsNewUser(true);
     setHasCompletedOnboarding(false);
     setOnboardingLoading(false);
     logger.debug("User marked as new");
-  };
+  }, []);
 
   // Clear the new user flag
-  const clearNewUserFlag = () => setIsNewUser(false);
+  const clearNewUserFlag = useCallback(() => setIsNewUser(false), []);
 
   // Mark onboarding as completed (called after onboarding flow)
-  const markOnboardingComplete = () => {
+  const markOnboardingComplete = useCallback(() => {
     setHasCompletedOnboarding(true);
     setIsNewUser(false);
     logger.info("Onboarding marked as complete");
-  };
+  }, []);
 
   // Reset onboarding state (called on logout)
-  const resetOnboardingState = () => {
+  const resetOnboardingState = useCallback(() => {
     setHasCompletedOnboarding(false);
     setOnboardingLoading(true);
     setIsNewUser(false);
-  };
+  }, []);
 
   // Check onboarding status when user becomes authenticated on page refresh
   useEffect(() => {
@@ -81,16 +70,28 @@ export const OnboardingProvider = ({ children }) => {
     }
   }, [authLoading, isAuthenticated, isNewUser, checkOnboardingStatus]);
 
-  const value = {
-    hasCompletedOnboarding,
-    onboardingLoading,
-    isNewUser,
-    checkOnboardingStatus,
-    markAsNewUser,
-    clearNewUserFlag,
-    markOnboardingComplete,
-    resetOnboardingState,
-  };
+  const value = useMemo(
+    () => ({
+      hasCompletedOnboarding,
+      onboardingLoading,
+      isNewUser,
+      checkOnboardingStatus,
+      markAsNewUser,
+      clearNewUserFlag,
+      markOnboardingComplete,
+      resetOnboardingState,
+    }),
+    [
+      hasCompletedOnboarding,
+      onboardingLoading,
+      isNewUser,
+      checkOnboardingStatus,
+      markAsNewUser,
+      clearNewUserFlag,
+      markOnboardingComplete,
+      resetOnboardingState,
+    ],
+  );
 
   return (
     <OnboardingContext.Provider value={value}>

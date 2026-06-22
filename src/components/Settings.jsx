@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet-async";
 import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../contexts/auth-context";
 import { updateProfile, changePassword, deleteAccount } from "../api/user";
 import preferencesService from "../api/preferences";
 import { getUserInitials } from "../utils/avatar";

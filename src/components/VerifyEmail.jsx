@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "@tanstack/react-router";
 import { verifyEmail, resendVerification } from "../api/auth";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../contexts/auth-context";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import styles from "../styles/auth-card.module.css";
@@ -29,7 +29,7 @@ export const VerifyEmail = ({ token }) => {
         const code = err.response?.data?.detail?.code;
         setStatus(code === "TOKEN_EXPIRED" ? "expired" : "invalid");
       });
-  }, [token]);
+  }, [token, checkAuth]);
 
   const handleResend = async () => {
     if (cooldown > 0 || sending || !email) return;

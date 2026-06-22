@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet-async";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../contexts/auth-context";
 import { sendContactMessage } from "../api/contact";
 import ws from "../styles/Welcome.module.css";
 import s from "../styles/Contact.module.css";
