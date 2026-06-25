@@ -25,7 +25,6 @@ import { Route as LibraryRouteImport } from './routes/library'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ContactRouteImport } from './routes/contact'
-import { Route as AddVideoRouteImport } from './routes/add-video'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as WordWordIdRouteImport } from './routes/word/$wordId'
@@ -113,11 +112,6 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AddVideoRoute = AddVideoRouteImport.update({
-  id: '/add-video',
-  path: '/add-video',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -152,7 +146,6 @@ const PlayerVideoIdRoute = PlayerVideoIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/add-video': typeof AddVideoRoute
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
   '/forgot-password': typeof ForgotPasswordRoute
@@ -177,7 +170,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/add-video': typeof AddVideoRoute
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
   '/forgot-password': typeof ForgotPasswordRoute
@@ -203,7 +195,6 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/add-video': typeof AddVideoRoute
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
   '/forgot-password': typeof ForgotPasswordRoute
@@ -230,7 +221,6 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
-    | '/add-video'
     | '/contact'
     | '/dashboard'
     | '/forgot-password'
@@ -255,7 +245,6 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
-    | '/add-video'
     | '/contact'
     | '/dashboard'
     | '/forgot-password'
@@ -280,7 +269,6 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
-    | '/add-video'
     | '/contact'
     | '/dashboard'
     | '/forgot-password'
@@ -306,7 +294,6 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  AddVideoRoute: typeof AddVideoRoute
   ContactRoute: typeof ContactRoute
   DashboardRoute: typeof DashboardRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
@@ -443,13 +430,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/add-video': {
-      id: '/add-video'
-      path: '/add-video'
-      fullPath: '/add-video'
-      preLoaderRoute: typeof AddVideoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -498,7 +478,6 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  AddVideoRoute: AddVideoRoute,
   ContactRoute: ContactRoute,
   DashboardRoute: DashboardRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,

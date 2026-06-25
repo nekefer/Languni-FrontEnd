@@ -5,23 +5,39 @@ import { Bookmark, BookmarkCheck } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import savedVideosService from "../api/savedVideos.js";
+import { useAuth } from "../contexts/auth-context";
 import { useOptimisticToggle } from "../hooks/useOptimisticToggle.js";
 import styles from "../styles/VideoCard.module.css";
 
 const VideoCard = ({ video, onClick }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   const { video_id, title, thumbnails, channel_title, published_at } = video;
 
   const { isSaved, checking, toggle } = useOptimisticToggle({
     id: video_id,
-    fetchSaved: () => savedVideosService.isVideoSaved(video_id),
+    fetchSaved: () => (
+      isAuthenticated
+        ? savedVideosService.isVideoSaved(video_id)
+        : Promise.resolve(false)
+    ),
     onSave: async () => {
+      if (!isAuthenticated) {
+        toast.info(t("videoCard.loginToSave"));
+        navigate({ to: "/register" });
+        return;
+      }
       await savedVideosService.saveVideo(video_id);
       posthog.capture("video_saved", { video_id, title, source: "card" });
       toast.success(t("videoCard.videoSaved"));
     },
     onUnsave: async () => {
+      if (!isAuthenticated) {
+        toast.info(t("videoCard.loginToSave"));
+        navigate({ to: "/register" });
+        return;
+      }
       await savedVideosService.deleteSavedVideo(video_id);
       posthog.capture("video_unsaved", { video_id, title, source: "card" });
       toast.success(t("videoCard.videoRemoved"));
@@ -33,6 +49,11 @@ const VideoCard = ({ video, onClick }) => {
 
   const handleSaveToggle = (e) => {
     e.stopPropagation();
+    if (!isAuthenticated) {
+      toast.info(t("videoCard.loginToSave"));
+      navigate({ to: "/register" });
+      return;
+    }
     toggle();
   };
 

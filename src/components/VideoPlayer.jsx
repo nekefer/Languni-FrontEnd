@@ -1,9 +1,10 @@
 import React, { useState, useRef, useCallback, useEffect } from "react";
 import { useNavigate, useRouter } from "@tanstack/react-router";
 import posthog from "posthog-js";
-import { ArrowLeft, Bookmark, BookmarkCheck } from "lucide-react";
+import { ArrowLeft, Bookmark, BookmarkCheck, Home } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "../contexts/auth-context";
 import YouTubePlayer from "./YouTubePlayer";
 import CaptionPanel from "./CaptionPanel";
 import VocabularyPanel from "./VocabularyPanel";
@@ -17,6 +18,7 @@ function VideoPlayer({ videoId }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const router = useRouter();
+  const { isAuthenticated } = useAuth();
   // Use ref for raw time (doesn't cause re-renders)
   const currentTimeRef = useRef(0);
   // Only track caption index in state (causes re-render only when caption changes)
@@ -29,18 +31,30 @@ function VideoPlayer({ videoId }) {
 
   useEffect(() => {
     posthog.capture("video_opened", { video_id: videoId });
-    videosService.startWatching(videoId).catch(() => {});
-  }, [videoId]);
+    if (isAuthenticated) {
+      videosService.startWatching(videoId).catch(() => {});
+    }
+  }, [videoId, isAuthenticated]);
 
   const { isSaved, checking, toggle: toggleSave } = useOptimisticToggle({
     id: videoId,
-    fetchSaved: () => savedVideosService.isVideoSaved(videoId),
+    fetchSaved: () => isAuthenticated
+      ? savedVideosService.isVideoSaved(videoId)
+      : Promise.resolve(false),
     onSave: async () => {
+      if (!isAuthenticated) {
+        toast.info(t("player.loginToSave"));
+        navigate({ to: "/register" });
+        return;
+      }
       await savedVideosService.saveVideo(videoId);
       posthog.capture("video_saved", { video_id: videoId, source: "player" });
       toast.success(t("videoCard.videoSaved"));
     },
     onUnsave: async () => {
+      if (!isAuthenticated) {
+        return;
+      }
       await savedVideosService.deleteSavedVideo(videoId);
       posthog.capture("video_unsaved", { video_id: videoId, source: "player" });
       toast.success(t("videoCard.videoRemoved"));
@@ -109,6 +123,11 @@ function VideoPlayer({ videoId }) {
   };
 
   const handleBackToDashboard = () => {
+    if (!isAuthenticated) {
+      navigate({ to: "/dashboard" });
+      return;
+    }
+
     if (router.history.length > 1) {
       router.history.back();
     } else {
@@ -127,7 +146,10 @@ function VideoPlayer({ videoId }) {
     <div className={styles.videoPlayerPage}>
       <nav className={styles.playerNav}>
         <button className={styles.backButton} onClick={handleBackToDashboard}>
-          <ArrowLeft size={15} /> {t('player.back')}
+          {isAuthenticated
+            ? <><ArrowLeft size={15} /> {t('player.back')}</>
+            : <><Home size={15} /> {t('player.home')}</>
+          }
         </button>
         <h2 className={styles.videoTitle}>Video Player</h2>
         <button

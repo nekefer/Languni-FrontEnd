@@ -15,6 +15,11 @@ import vocabularyService from "../api/vocabulary";
 import { Spinner } from "../ui/Spinner";
 import expandContractions from "@stdlib/nlp-expand-contractions";
 import { playerLogger } from "../utils/logger";
+import {
+  getGuestLearningLanguage,
+  getGuestNativeLanguage,
+  setGuestLearningLanguage,
+} from "../utils/guestPreferences";
 import captionStyles from "../styles/CaptionPanel.module.css";
 
 // Isolated store — only the 2 rows that change active state re-render
@@ -113,8 +118,14 @@ function CaptionPanel({
     setError(null);
 
     try {
-      const response = await getCaptions(videoId);
+      const response = await getCaptions(videoId, {
+        nativeLanguage: getGuestNativeLanguage(),
+        learningLanguage: getGuestLearningLanguage(),
+      });
       const fetchedCaptions = response.captions || [];
+      if (response.language) {
+        setGuestLearningLanguage(response.language);
+      }
       setCaptions(fetchedCaptions);
       // Notify parent about captions for index calculation
       onCaptionsLoaded?.(fetchedCaptions);
@@ -190,6 +201,7 @@ function CaptionPanel({
           captions,
           captionIndex,
           getCurrentTime(),
+          { learningLanguage: getGuestLearningLanguage() },
         );
 
         if (isContraction) {
@@ -224,7 +236,9 @@ function CaptionPanel({
       const lookupWord =
         expanded !== cleanWord ? expanded.split(" ")[0] : cleanWord;
 
-      vocabularyService.prefetchWord(lookupWord);
+      vocabularyService.prefetchWord(lookupWord, {
+        learningLanguage: getGuestLearningLanguage(),
+      });
       hoverTimerRef.current = null;
     }, 200);
   }, []);

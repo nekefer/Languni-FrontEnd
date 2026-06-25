@@ -15,12 +15,12 @@ class DictionaryService {
    * @param {string} language - Language code: en, es, fr, de, it, pt
    * @returns {Promise<Object|null>} Dictionary data or null if not found
    */
-  async getDefinition(word) {
+  async getDefinition(word, language = null) {
     if (!word || typeof word !== "string") {
       throw new Error("Word must be a non-empty string");
     }
 
-    const cacheKey = word.toLowerCase().trim();
+    const cacheKey = `${word.toLowerCase().trim()}:${language || "profile"}`;
 
     if (this.cache.has(cacheKey)) {
       return this.cache.get(cacheKey);
@@ -30,7 +30,7 @@ class DictionaryService {
       return this.pendingRequests.get(cacheKey);
     }
 
-    const request = this.fetchDefinition(word, cacheKey);
+    const request = this.fetchDefinition(word, cacheKey, language);
     this.pendingRequests.set(cacheKey, request);
 
     try {
@@ -40,10 +40,13 @@ class DictionaryService {
     }
   }
 
-  async fetchDefinition(word, cacheKey) {
+  async fetchDefinition(word, cacheKey, language = null) {
     try {
+      const params = new URLSearchParams();
+      if (language) params.set("language", language);
+      const query = params.toString() ? `?${params.toString()}` : "";
       const response = await fetch(
-        `${API_URL}/api/dictionary/${encodeURIComponent(word)}`,
+        `${API_URL}/api/dictionary/${encodeURIComponent(word)}${query}`,
         { credentials: "include" }
       );
 
@@ -68,8 +71,8 @@ class DictionaryService {
     }
   }
 
-  prefetchDefinition(word) {
-    return this.getDefinition(word).catch(() => null);
+  prefetchDefinition(word, language = null) {
+    return this.getDefinition(word, language).catch(() => null);
   }
 
   /**

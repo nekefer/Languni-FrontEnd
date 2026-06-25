@@ -30,7 +30,7 @@ export default function LandingFive() {
             <button onClick={() => navigate({ to: "/login" })} className={s.logBtn}>
               Log in
             </button>
-            <button onClick={() => navigate({ to: "/register" })} className={s.tryBtn}>
+            <button onClick={() => navigate({ to: "/dashboard" })} className={s.tryBtn}>
               Try it free
             </button>
           </div>
@@ -61,7 +61,7 @@ export default function LandingFive() {
             you don't know — boom, instant definition. Save it, review it, own it.
             That's Languni.
           </p>
-          <button onClick={() => navigate({ to: "/register" })} className={s.heroBtn}>
+          <button onClick={() => navigate({ to: "/dashboard" })} className={s.heroBtn}>
             Start learning — free forever
           </button>
 

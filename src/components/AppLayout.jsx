@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { Home, Clapperboard, BookOpen, Settings, Menu, Sun, Moon, Flame, Sparkles, PlusCircle } from "lucide-react";
+import { Home, Clapperboard, BookOpen, Settings, Menu, Sun, Moon, Flame, Sparkles } from "lucide-react";
 import { useAuth } from "../contexts/auth-context";
 import { useTheme } from "../contexts/theme-context";
 import { useOnboarding } from "../contexts/onboarding-context";
@@ -13,7 +13,7 @@ import languniDark from "../assets/Languni dark.webp";
 
 export function AppLayout({ children }) {
   const { t } = useTranslation();
-  const { user, logout } = useAuth();
+  const { user, logout, isAuthenticated } = useAuth();
   const { isDark, toggleTheme } = useTheme();
   const { resetOnboardingState } = useOnboarding();
   const navigate = useNavigate();
@@ -83,58 +83,54 @@ export function AppLayout({ children }) {
             <span>{t("nav.appTrending")}</span>
           </Link>
 
-          <Link
-            to="/recommended"
-            className={styles.navLink}
-            activeProps={{ className: `${styles.navLink} ${styles.navLinkActive}` }}
-            onClick={closeSidebar}
-          >
-            <span className={styles.navIcon}><Sparkles size={18} /></span>
-            <span>{t("nav.appForYou")}</span>
-          </Link>
+          {isAuthenticated && (
+            <>
+              <Link
+                to="/recommended"
+                className={styles.navLink}
+                activeProps={{ className: `${styles.navLink} ${styles.navLinkActive}` }}
+                onClick={closeSidebar}
+              >
+                <span className={styles.navIcon}><Sparkles size={18} /></span>
+                <span>{t("nav.appForYou")}</span>
+              </Link>
 
-          <Link
-            to="/library"
-            className={styles.navLink}
-            activeProps={{ className: `${styles.navLink} ${styles.navLinkActive}` }}
-            onClick={closeSidebar}
-          >
-            <span className={styles.navIcon}><Clapperboard size={18} /></span>
-            <span>{t("nav.appLibrary")}</span>
-          </Link>
+              <Link
+                to="/library"
+                className={styles.navLink}
+                activeProps={{ className: `${styles.navLink} ${styles.navLinkActive}` }}
+                onClick={closeSidebar}
+              >
+                <span className={styles.navIcon}><Clapperboard size={18} /></span>
+                <span>{t("nav.appLibrary")}</span>
+              </Link>
 
-          <Link
-            to="/add-video"
-            className={styles.navLink}
-            activeProps={{ className: `${styles.navLink} ${styles.navLinkActive}` }}
-            onClick={closeSidebar}
-          >
-            <span className={styles.navIcon}><PlusCircle size={18} /></span>
-            <span>{t("nav.appAddVideo")}</span>
-          </Link>
-
-          <Link
-            to="/words"
-            className={styles.navLink}
-            activeProps={{ className: `${styles.navLink} ${styles.navLinkActive}` }}
-            onClick={closeSidebar}
-          >
-            <span className={styles.navIcon}><BookOpen size={18} /></span>
-            <span>{t("nav.appVocabulary")}</span>
-          </Link>
+              <Link
+                to="/words"
+                className={styles.navLink}
+                activeProps={{ className: `${styles.navLink} ${styles.navLinkActive}` }}
+                onClick={closeSidebar}
+              >
+                <span className={styles.navIcon}><BookOpen size={18} /></span>
+                <span>{t("nav.appVocabulary")}</span>
+              </Link>
+            </>
+          )}
         </nav>
 
-        <div className={styles.sidebarBottom}>
-          <Link
-            to="/settings"
-            className={styles.navLink}
-            activeProps={{ className: `${styles.navLink} ${styles.navLinkActive}` }}
-            onClick={closeSidebar}
-          >
-            <span className={styles.navIcon}><Settings size={18} /></span>
-            <span>{t("nav.appSettings")}</span>
-          </Link>
-        </div>
+        {isAuthenticated && (
+          <div className={styles.sidebarBottom}>
+            <Link
+              to="/settings"
+              className={styles.navLink}
+              activeProps={{ className: `${styles.navLink} ${styles.navLinkActive}` }}
+              onClick={closeSidebar}
+            >
+              <span className={styles.navIcon}><Settings size={18} /></span>
+              <span>{t("nav.appSettings")}</span>
+            </Link>
+          </div>
+        )}
       </aside>
 
       {/* Mobile overlay */}
@@ -168,33 +164,40 @@ export function AppLayout({ children }) {
             {isDark ? <Sun size={18} /> : <Moon size={18} />}
           </button>
 
-          <div className={styles.avatarWrap} ref={dropdownRef}>
-            <button
-              className={styles.avatar}
-              onClick={() => setDropdownOpen((v) => !v)}
-              aria-label="User menu"
-              aria-expanded={dropdownOpen}
-            >
-              {initials}
-            </button>
+          {isAuthenticated ? (
+            <div className={styles.avatarWrap} ref={dropdownRef}>
+              <button
+                className={styles.avatar}
+                onClick={() => setDropdownOpen((v) => !v)}
+                aria-label="User menu"
+                aria-expanded={dropdownOpen}
+              >
+                {initials}
+              </button>
 
-            {dropdownOpen && (
-              <div className={styles.dropdown}>
-                <div className={styles.dropdownUser}>
-                  <div className={styles.dropdownNameRow}>
-                    <span className={styles.dropdownName}>
-                      {user?.first_name} {user?.last_name}
-                    </span>
+              {dropdownOpen && (
+                <div className={styles.dropdown}>
+                  <div className={styles.dropdownUser}>
+                    <div className={styles.dropdownNameRow}>
+                      <span className={styles.dropdownName}>
+                        {user?.first_name} {user?.last_name}
+                      </span>
+                    </div>
+                    <span className={styles.dropdownEmail}>{user?.email}</span>
                   </div>
-                  <span className={styles.dropdownEmail}>{user?.email}</span>
+                  <hr className={styles.dropdownDivider} />
+                  <button className={styles.dropdownItem} onClick={handleLogout}>
+                    {t("nav.signOut")}
+                  </button>
                 </div>
-                <hr className={styles.dropdownDivider} />
-                <button className={styles.dropdownItem} onClick={handleLogout}>
-                  {t("nav.signOut")}
-                </button>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          ) : (
+            <div className={styles.guestActions}>
+              <Link to="/login" className={styles.guestLogin}>{t("nav.login")}</Link>
+              <Link to="/register" className={styles.guestSignup}>{t("auth.register.submit")}</Link>
+            </div>
+          )}
         </header>
 
         <VerificationBanner />

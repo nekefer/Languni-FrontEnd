@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import posthog from "posthog-js";
 import { toast } from "sonner";
 import { Search, Loader, CheckCircle, XCircle, Bookmark, X, BookOpen, Globe, ArrowRight } from "lucide-react";
@@ -7,11 +8,16 @@ import vocabularyService from "../api/vocabulary.js";
 import translationService from "../api/translation.js";
 import { useAuth } from "../contexts/auth-context";
 import { vocabularyLogger } from "../utils/logger";
+import {
+  getGuestLearningLanguage,
+  getGuestNativeLanguage,
+} from "../utils/guestPreferences";
 import styles from "../styles/VocabularyPanel.module.css";
 
 const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
   const { t } = useTranslation();
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("definition");
   const modalRef = useRef(null);
 
@@ -83,17 +89,25 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
     setTranslationLoading(true);
     setTranslationError(null);
 
-    translationService.translate(word)
+    translationService.translate(word, isAuthenticated ? {} : {
+      sourceLanguage: getGuestLearningLanguage(),
+      targetLanguage: getGuestNativeLanguage(),
+    })
       .then((result) => { if (!cancelled) setTranslationData(result); })
       .catch((error) => { if (!cancelled) setTranslationError(error.message || "Translation failed"); })
       .finally(() => { if (!cancelled) setTranslationLoading(false); });
 
     return () => { cancelled = true; };
-  }, [isOpen, vocabularyData?.word, vocabularyData?.definition?.word]);
+  }, [isOpen, vocabularyData?.word, vocabularyData?.definition?.word, isAuthenticated]);
 
   // Check if word is already saved when panel opens
   useEffect(() => {
     if (isOpen && vocabularyData?.word && saveState === "checking") {
+      if (!isAuthenticated) {
+        setSaveState("idle");
+        return;
+      }
+
       vocabularyService
         .isWordSaved(vocabularyData.word)
         .then((result) => {
@@ -104,7 +118,7 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
           setSaveState("idle");
         });
     }
-  }, [isOpen, vocabularyData?.word, saveState]);
+  }, [isOpen, vocabularyData?.word, saveState, isAuthenticated]);
 
   const formatPhonetic = (phonetic) => {
     if (!phonetic) return "";
@@ -116,6 +130,12 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
   // Handle save word — optimistic: show "saved" immediately, sync in background
   const handleSaveWord = async () => {
     const wordText = vocabularyData.definition?.word || vocabularyData.word;
+
+    if (!isAuthenticated) {
+      toast.info(t('vocPanel.loginToSave'));
+      navigate({ to: "/register" });
+      return;
+    }
 
     setSaveState("saved");
     setSaveError(null);
@@ -161,7 +181,10 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
     setTranslationLoading(true);
     setTranslationError(null);
     try {
-      const result = await translationService.translate(word);
+      const result = await translationService.translate(word, isAuthenticated ? {} : {
+        sourceLanguage: getGuestLearningLanguage(),
+        targetLanguage: getGuestNativeLanguage(),
+      });
       setTranslationData(result);
     } catch (error) {
       vocabularyLogger.error("Translation fetch failed", error);

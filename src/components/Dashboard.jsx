@@ -1,18 +1,29 @@
 import { Helmet } from "react-helmet-async";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { Flame, Sparkles, ArrowRight } from "lucide-react";
 import { useAuth } from "../contexts/auth-context";
 import useTrendingStore from "../stores/trendingStore";
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import VideoCard from "./VideoCard";
 import { Spinner } from "../ui/Spinner";
 import { useCurated } from "../hooks/useCurated";
+import {
+  GUEST_LANGUAGES,
+  getGuestNativeLanguage,
+  setGuestNativeLanguage,
+} from "../utils/guestPreferences";
+import { extractYouTubeVideoId } from "../utils/youtube";
 import styles from "../styles/Dashboard.module.css";
 
 export const Dashboard = () => {
   const { t } = useTranslation();
-  const { user } = useAuth();
+  const navigate = useNavigate();
+  const { user, isAuthenticated } = useAuth();
+  const [youtubeUrl, setYoutubeUrl] = useState("");
+  const [nativeLanguage, setNativeLanguage] = useState(() => getGuestNativeLanguage());
+  const [trialError, setTrialError] = useState("");
+  const videoId = useMemo(() => extractYouTubeVideoId(youtubeUrl), [youtubeUrl]);
 
   const {
     videos,
@@ -23,13 +34,27 @@ export const Dashboard = () => {
     changeRegion,
   } = useTrendingStore();
 
-  const { videos: curated, loading: curatedLoading, error: curatedError } = useCurated();
+  const { videos: curated, loading: curatedLoading, error: curatedError } = useCurated({
+    enabled: isAuthenticated,
+  });
 
   useEffect(() => {
     if (videos.length === 0) {
       fetchTrending({ region, reset: true });
     }
   }, [fetchTrending, region, videos.length]);
+
+  const handleQuickStart = (event) => {
+    event.preventDefault();
+    if (!videoId) {
+      setTrialError(t("landing.trialInvalid"));
+      return;
+    }
+
+    setTrialError("");
+    setGuestNativeLanguage(nativeLanguage);
+    navigate({ to: `/player/${videoId}` });
+  };
 
   return (
     <div className={styles.dashboardContainer}>
@@ -39,11 +64,45 @@ export const Dashboard = () => {
       </Helmet>
       <main className={styles.dashboardBody}>
         <div className={styles.dashboardGreeting}>
-          <h2>{t("dashboard.welcome", { name: user.first_name })}</h2>
-          <p>{user.email}</p>
+          <h2>
+            {isAuthenticated
+              ? t("dashboard.welcome", { name: user?.first_name })
+              : t("dashboard.guestWelcome")}
+          </h2>
+          <p>{isAuthenticated ? user?.email : t("dashboard.guestSubtitle")}</p>
         </div>
 
-        {/* ── Trending ── */}
+        <section className={styles.quickStart}>
+          <div className={styles.quickStartCopy}>
+            <span>{t("dashboard.quickStartEyebrow")}</span>
+            <h3>{t("dashboard.quickStartTitle")}</h3>
+          </div>
+          <form className={styles.quickStartForm} onSubmit={handleQuickStart}>
+            <input
+              type="text"
+              value={youtubeUrl}
+              onChange={(event) => setYoutubeUrl(event.target.value)}
+              placeholder={t("landing.trialPlaceholder")}
+              aria-label={t("landing.trialPlaceholder")}
+            />
+            <select
+              value={nativeLanguage}
+              onChange={(event) => setNativeLanguage(event.target.value)}
+              aria-label={t("landing.nativeLanguageLabel")}
+            >
+              {GUEST_LANGUAGES.map((language) => (
+                <option key={language.value} value={language.value}>
+                  {language.label}
+                </option>
+              ))}
+            </select>
+            <button type="submit">
+              {t("nav.getStarted")} <ArrowRight size={16} />
+            </button>
+          </form>
+          {trialError && <p className={styles.quickStartError}>{trialError}</p>}
+        </section>
+
         <div className={styles.section}>
           <div className={styles.sectionHeader}>
             <h3><Flame size={18} /> {t("dashboard.trendingVideos")}</h3>
@@ -52,7 +111,7 @@ export const Dashboard = () => {
                 {t("dashboard.regionLabel")}:
                 <select
                   value={region}
-                  onChange={(e) => changeRegion(e.target.value)}
+                  onChange={(event) => changeRegion(event.target.value)}
                   className={styles.regionSelect}
                 >
                   <option value="US">{t("dashboard.regionUS")}</option>
@@ -98,31 +157,43 @@ export const Dashboard = () => {
           )}
         </div>
 
-        {/* ── For You ── */}
-        <div className={styles.section}>
-          <div className={styles.sectionHeader}>
-            <h3>
-              <Sparkles size={18} /> {t("dashboard.forYou")}
-            </h3>
-          </div>
+        {isAuthenticated ? (
+          <div className={styles.section}>
+            <div className={styles.sectionHeader}>
+              <h3>
+                <Sparkles size={18} /> {t("dashboard.forYou")}
+              </h3>
+            </div>
 
-          {curatedLoading && (
-            <div className={styles.loadingMessage}>
-              <Spinner size={24} />
-              <span>{t("dashboard.loadingForYou")}</span>
+            {curatedLoading && (
+              <div className={styles.loadingMessage}>
+                <Spinner size={24} />
+                <span>{t("dashboard.loadingForYou")}</span>
+              </div>
+            )}
+            {curatedError && (
+              <div className={styles.errorMessage}><p>{curatedError}</p></div>
+            )}
+            {curated.length > 0 && (
+              <div className={styles.videoGrid}>
+                {curated.map((video) => (
+                  <VideoCard key={video.video_id} video={video} />
+                ))}
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className={styles.guestSavePrompt}>
+            <div>
+              <span>{t("dashboard.guestPromptEyebrow")}</span>
+              <h3>{t("dashboard.guestPromptTitle")}</h3>
+              <p>{t("dashboard.guestPromptText")}</p>
             </div>
-          )}
-          {curatedError && (
-            <div className={styles.errorMessage}><p>{curatedError}</p></div>
-          )}
-          {curated.length > 0 && (
-            <div className={styles.videoGrid}>
-              {curated.map((video) => (
-                <VideoCard key={video.video_id} video={video} />
-              ))}
-            </div>
-          )}
-        </div>
+            <Link to="/register" className={styles.guestPromptButton}>
+              {t("auth.register.submit")} <ArrowRight size={15} />
+            </Link>
+          </div>
+        )}
       </main>
     </div>
   );

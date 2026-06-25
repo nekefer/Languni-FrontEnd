@@ -1,13 +1,21 @@
 import { useState, useEffect } from "react";
 import { getCuratedVideos } from "../api/youtube";
 
-export function useCurated() {
+export function useCurated({ enabled = true } = {}) {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     let cancelled = false;
+
+    if (!enabled) {
+      setVideos([]);
+      setLoading(false);
+      setError(null);
+      return () => { cancelled = true; };
+    }
+
     setLoading(true);
     setError(null);
 
@@ -23,7 +31,7 @@ export function useCurated() {
       });
 
     return () => { cancelled = true; };
-  }, []);
+  }, [enabled]);
 
   return { videos, loading, error };
 }
