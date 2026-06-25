@@ -31,6 +31,10 @@ export default function PublicNavbar({ isLanding = false, activePage = "" }) {
 
   const close = () => setMenuOpen(false);
   const prefix = isLanding ? "" : "/";
+  const goToTrial = () => {
+    close();
+    navigate({ to: "/dashboard" });
+  };
 
   const navLinks = [
     { href: `${prefix}#hero`,     label: t("nav.home"),     page: "home" },
@@ -73,7 +77,7 @@ export default function PublicNavbar({ isLanding = false, activePage = "" }) {
             <button
               onClick={() => {
                 posthog.capture("landing_cta_clicked", { location: "header_register" });
-                navigate({ to: "/register" });
+                goToTrial();
               }}
               className={s.startBtn}
             >
@@ -128,7 +132,7 @@ export default function PublicNavbar({ isLanding = false, activePage = "" }) {
             {t("nav.login")}
           </button>
           <button
-            onClick={() => { close(); posthog.capture("landing_cta_clicked", { location: "mobile_menu_register" }); navigate({ to: "/register" }); }}
+            onClick={() => { posthog.capture("landing_cta_clicked", { location: "mobile_menu_register" }); goToTrial(); }}
             className={s.startBtn}
           >
             {t("nav.getStarted")}

@@ -95,7 +95,7 @@ class VocabularyService {
    * @param {number} currentTime - Current video time
    * @returns {Promise<Object>} Complete vocabulary data
    */
-  async processWordClick(word, captions, currentIndex, currentTime) {
+  async processWordClick(word, captions, currentIndex, currentTime, options = {}) {
     try {
       // Validate word
       if (!dictionaryService.isValidWord(word)) {
@@ -111,7 +111,10 @@ class VocabularyService {
       );
 
       // Get dictionary definition — language is determined server-side from user profile
-      const definition = await dictionaryService.getDefinition(word);
+      const definition = await dictionaryService.getDefinition(
+        word,
+        options.learningLanguage || null,
+      );
 
       if (!definition) {
         throw new Error(`No definition found for "${word}"`);
@@ -132,13 +135,13 @@ class VocabularyService {
     }
   }
 
-  prefetchWord(word) {
+  prefetchWord(word, options = {}) {
     const validation = dictionaryService.isValidWord(word);
     if (!validation?.valid) {
       return Promise.resolve(null);
     }
 
-    return dictionaryService.prefetchDefinition(word);
+    return dictionaryService.prefetchDefinition(word, options.learningLanguage || null);
   }
 
   /**

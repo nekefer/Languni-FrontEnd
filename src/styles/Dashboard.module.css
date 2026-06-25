@@ -35,6 +35,123 @@
   color: var(--txt2);
 }
 
+.quickStart {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.75fr) minmax(360px, 1.5fr);
+  align-items: center;
+  gap: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 22px;
+  margin-bottom: 28px;
+  box-shadow: var(--shadow-sm);
+}
+
+.quickStartCopy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.quickStartCopy span,
+.guestSavePrompt span {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--pri);
+}
+
+.quickStartCopy h3,
+.guestSavePrompt h3 {
+  font-family: var(--heading);
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--txt);
+  margin: 0;
+}
+
+.quickStartForm {
+  display: grid;
+  grid-template-columns: minmax(190px, 1fr) minmax(130px, 0.45fr) auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.quickStartForm input,
+.quickStartForm select {
+  height: 44px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  background: var(--pri-faint);
+  color: var(--txt);
+  font-family: var(--body);
+  font-size: 0.9rem;
+  outline: none;
+  padding: 0 14px;
+}
+
+.quickStartForm input:focus,
+.quickStartForm select:focus {
+  border-color: var(--pri);
+  background: var(--surface);
+}
+
+.quickStartForm button,
+.guestPromptButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 18px;
+  border-radius: 10px;
+  border: none;
+  background: var(--pri);
+  color: #fff;
+  font-family: var(--body);
+  font-size: 0.9rem;
+  font-weight: 800;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.15s;
+}
+
+.quickStartForm button:hover,
+.guestPromptButton:hover {
+  background: var(--pri-dark);
+  transform: translateY(-1px);
+}
+
+.quickStartError {
+  grid-column: 2;
+  margin: -8px 0 0;
+  color: var(--red);
+  font-size: 0.85rem;
+}
+
+.guestSavePrompt {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.guestSavePrompt p {
+  margin: 6px 0 0;
+  color: var(--txt2);
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
 /* ── Section card ── */
 
 .section {
@@ -255,6 +372,18 @@
     padding: 20px;
   }
 
+  .quickStart {
+    grid-template-columns: 1fr;
+  }
+
+  .quickStartForm {
+    grid-template-columns: 1fr;
+  }
+
+  .quickStartError {
+    grid-column: 1;
+  }
+
   .videoGrid {
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 16px;
@@ -271,6 +400,11 @@
   }
 
   .sectionHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .guestSavePrompt {
     flex-direction: column;
     align-items: flex-start;
   }

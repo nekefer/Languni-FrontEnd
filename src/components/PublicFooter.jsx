@@ -1,5 +1,5 @@
-import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "@tanstack/react-router";
 import posthog from "posthog-js";
 import s from "../styles/Welcome.module.css";
 import languni from "../assets/Languni.webp";
@@ -11,8 +11,12 @@ const LANG_OPTIONS = [
 ];
 
 export default function PublicFooter() {
-  const navigate = useNavigate();
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
+
+  const goToTrial = () => {
+    navigate({ to: "/dashboard" });
+  };
 
   return (
     <footer className={s.footer}>
@@ -23,11 +27,11 @@ export default function PublicFooter() {
             <button
               onClick={() => {
                 posthog.capture("landing_cta_clicked", { location: "footer" });
-                navigate({ to: "/register" });
+                goToTrial();
               }}
               className={s.ctaPrimary}
             >
-              {t("landing.ctaPrimary")}
+              {t("nav.getStarted")}
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                 <path d="M4 9h10M10 5l4 4-4 4" />
               </svg>

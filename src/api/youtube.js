@@ -31,9 +31,12 @@ export const getLastLikedVideo = async () => {
   return response.data;
 };
 
-export const getCaptions = async (videoId, language = "en") => {
+export const getCaptions = async (videoId, options = {}) => {
   const response = await axios.get(`${API_URL}/youtube/${videoId}/captions`, {
-    params: { language },
+    params: {
+      native_language: options.nativeLanguage,
+      learning_language: options.learningLanguage,
+    },
   });
   return response.data;
 };

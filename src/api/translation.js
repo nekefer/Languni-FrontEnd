@@ -17,8 +17,12 @@ const translationCache = new Map();
 /**
  * Generate cache key for translation
  */
-function getCacheKey(text) {
-  return text.toLowerCase().trim();
+function getCacheKey(text, options = {}) {
+  return [
+    text.toLowerCase().trim(),
+    options.sourceLanguage || "profile",
+    options.targetLanguage || "profile",
+  ].join(":");
 }
 
 /**
@@ -30,7 +34,7 @@ class TranslationService {
    * @param {string} text - Text to translate
    * @returns {Promise<{translatedText: string, sourceLanguage: string, targetLanguage: string}>}
    */
-  async translate(text) {
+  async translate(text, options = {}) {
     if (!text) {
       throw new Error("Text is required");
     }
@@ -40,7 +44,7 @@ class TranslationService {
       return { translatedText: "", sourceLanguage: "", targetLanguage: "" };
     }
 
-    const cacheKey = getCacheKey(cleanText);
+    const cacheKey = getCacheKey(cleanText, options);
     if (translationCache.has(cacheKey)) {
       logger.debug("Client cache hit", { text: cleanText });
       return translationCache.get(cacheKey);
@@ -49,6 +53,8 @@ class TranslationService {
     try {
       const response = await axios.post(`${API_URL}/api/translate`, {
         text: cleanText,
+        sourceLanguage: options.sourceLanguage || null,
+        targetLanguage: options.targetLanguage || null,
       });
 
       const data = response.data;
